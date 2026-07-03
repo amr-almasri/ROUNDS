@@ -1,1 +1,1815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Rounds — The orthopaedic literature that matters to you</title>
+<meta name="description" content="Rounds is a daily digest and full-text resolver for orthopaedic surgeons, residents, and researchers. Search any paper, save it for later, and read a curated edition each day." />
 
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --r-teal: #0D7A6B;
+    --r-teal-pressed: #0A5E55;
+    --r-teal-faint: #E6F5F2;
+    --r-text-primary: #111827;
+    --r-text-soft: #374151;
+    --r-text-muted: #6B7280;
+    --r-text-faint: #9CA3AF;
+    --r-border: #E5E7EB;
+    --r-hairline: #EDEFF2;
+    --r-bg: #F9FAFB;
+    --r-card: #FFFFFF;
+    --r-warning: #991B1B;
+    --r-warning-bg: #FEF2F2;
+    --r-society: #4338CA;
+    --r-industry: #92400E;
+    --r-regulatory: #991B1B;
+    --r-surgical: #1E3A5F;
+    --r-cme: #1D4ED8;
+    --r-provincial: #5B21B6;
+    --r-literature: #15803D;
+
+    --space-xs: 4px;
+    --space-s: 8px;
+    --space-m: 12px;
+    --space-l: 16px;
+    --space-xl: 20px;
+    --space-xxl: 32px;
+
+    --radius-card: 12px;
+    --radius-control: 10px;
+
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --fast: 0.15s;
+    --base: 0.2s;
+    --slow: 0.55s;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--r-bg);
+    color: var(--r-text-primary);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #root { min-height: 100vh; }
+
+  h1, h2, h3, .r-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+    margin: 0;
+    color: var(--r-text-primary);
+  }
+
+  p { margin: 0; }
+  a { color: inherit; }
+  button { font-family: inherit; cursor: pointer; }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--r-teal);
+    outline-offset: 2px;
+  }
+
+  .r-container {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 var(--space-xl);
+  }
+
+  /* ---------- Header ---------- */
+
+  .r-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(249, 250, 251, 0.86);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--r-border);
+  }
+
+  .r-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .r-logo-img { display: block; width: auto; }
+
+  .r-nav-cta {
+    background: var(--r-teal);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-control);
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background var(--base) var(--ease), transform var(--fast) var(--ease);
+  }
+  .r-nav-cta:hover { background: var(--r-teal-pressed); }
+  .r-nav-cta:active { transform: scale(0.97); }
+
+  /* ---------- Buttons / chips shared ---------- */
+
+  .r-btn-primary {
+    background: var(--r-teal);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-control);
+    padding: 14px 26px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background var(--base) var(--ease), transform var(--fast) var(--ease);
+  }
+  .r-btn-primary:hover { background: var(--r-teal-pressed); }
+  .r-btn-primary:active { transform: scale(0.97); }
+
+  .r-btn-secondary {
+    background: transparent;
+    color: var(--r-teal);
+    border: 1px solid var(--r-teal);
+    border-radius: var(--radius-control);
+    padding: 13px 25px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background var(--base) var(--ease), transform var(--fast) var(--ease);
+  }
+  .r-btn-secondary:hover { background: var(--r-teal-faint); }
+  .r-btn-secondary:active { transform: scale(0.97); }
+
+  .r-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--r-teal);
+  }
+
+  .r-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid var(--r-border);
+    background: #fff;
+    color: var(--r-text-soft);
+    transition: background var(--fast) var(--ease), border-color var(--fast) var(--ease), color var(--fast) var(--ease);
+  }
+  .r-chip[data-active="true"] { background: var(--r-teal-faint); border-color: var(--r-teal); color: var(--r-teal); }
+
+  .r-card {
+    background: var(--r-card);
+    border: 1px solid var(--r-border);
+    border-radius: var(--radius-card);
+    box-shadow: 0 6px 6px -4px rgba(0,0,0,0.05);
+  }
+
+  /* ---------- Hero ---------- */
+
+  .r-hero { padding: 88px 0 96px; }
+
+  .r-hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 56px;
+    align-items: center;
+  }
+
+  .r-hero-title {
+    font-size: 44px;
+    line-height: 1.12;
+    font-weight: 600;
+    margin: 18px 0 20px;
+  }
+
+  .r-hero-sub {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--r-text-soft);
+    max-width: 46ch;
+    margin-bottom: 32px;
+  }
+
+  .r-hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .r-phone-wrap { display: flex; justify-content: center; }
+
+  /* ---------- Sections ---------- */
+
+  .r-section { padding: 88px 0; border-top: 1px solid var(--r-hairline); }
+  .r-section-head { max-width: 62ch; margin-bottom: 8px; }
+  .r-section-head h2 { font-size: 30px; font-weight: 600; margin: 10px 0 14px; }
+  .r-section-head p { color: var(--r-text-soft); font-size: 16px; line-height: 1.6; }
+
+  /* Consistent text-left / visual-right grid used by every demo section */
+  .r-demo-grid {
+    display: grid;
+    grid-template-columns: minmax(260px, 380px) 1fr;
+    gap: 40px;
+    align-items: start;
+    margin-top: 32px;
+  }
+  .r-demo-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+  .r-demo-visual--wide { max-width: 640px; }
+  .r-demo-visual-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .r-step-list { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+  .r-step { display: flex; gap: 12px; align-items: flex-start; }
+  .r-step-num {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--r-teal-faint);
+    color: var(--r-teal);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .r-step p { font-size: 14px; color: var(--r-text-soft); line-height: 1.5; }
+  .r-step strong { color: var(--r-text-primary); }
+
+  /* ============================================================
+     Live phone simulator
+     ============================================================ */
+
+  .r-sim-phone {
+    width: 300px;
+    height: 686px;
+    background: #0b0b0c;
+    border-radius: 46px;
+    padding: 12px;
+    box-shadow: 0 30px 60px -20px rgba(17,24,39,0.35);
+    flex-shrink: 0;
+  }
+
+  .r-sim-screen {
+    width: 100%;
+    height: 100%;
+    background: var(--r-bg);
+    border-radius: 34px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .r-phone-notch {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 84px;
+    height: 20px;
+    background: #0b0b0c;
+    border-radius: 12px;
+    z-index: 5;
+  }
+
+  .r-sim-status-bar { height: 34px; flex-shrink: 0; }
+
+  .r-sim-content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .r-sim-screen-content { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+
+  .r-sim-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 0;
+    flex-shrink: 0;
+  }
+
+  .r-sim-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--r-border); flex-shrink: 0; }
+
+  .r-sim-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 21px;
+    font-weight: 600;
+    padding: 6px 16px 12px;
+    flex-shrink: 0;
+  }
+
+  .r-sim-search-row { padding: 0 16px 10px; flex-shrink: 0; display: flex; gap: 8px; }
+
+  .r-sim-search-pill {
+    flex: 1; min-width: 0;
+    display: flex; align-items: center; gap: 6px;
+    background: #fff; border: 1px solid var(--r-border);
+    border-radius: var(--radius-control);
+    padding: 9px 10px;
+  }
+  .r-sim-search-pill input {
+    border: none; outline: none; flex: 1; min-width: 0;
+    font-size: 12.5px; font-family: inherit; background: transparent; color: var(--r-text-primary);
+  }
+  .r-sim-search-pill input::placeholder { color: var(--r-text-faint); }
+
+  .r-sim-clear { background: none; border: none; color: var(--r-text-faint); font-size: 15px; line-height: 1; padding: 0 2px; flex-shrink: 0; }
+
+  .r-sim-search-btn {
+    background: var(--r-teal); color: #fff; border: none; border-radius: var(--radius-control);
+    font-size: 12px; font-weight: 700; padding: 0 14px; flex-shrink: 0;
+  }
+  .r-sim-search-btn:disabled { background: var(--r-teal-faint); color: var(--r-teal); }
+
+  .r-sim-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 16px 16px; }
+
+  .r-sim-empty {
+    margin-top: 56px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    color: var(--r-text-faint); font-size: 12.5px; text-align: center; padding: 0 20px;
+  }
+
+  .r-sim-error {
+    margin-top: 20px; font-size: 12.5px; color: var(--r-text-soft);
+    background: #fff; border: 1px solid var(--r-border); border-radius: var(--radius-card);
+    padding: 14px; text-align: center;
+  }
+
+  .r-sim-result-card {
+    background: var(--r-card); border: 1px solid var(--r-border); border-radius: var(--radius-card);
+    box-shadow: 0 6px 6px -4px rgba(0,0,0,0.05); overflow: hidden;
+    transition: box-shadow var(--base) var(--ease);
+  }
+  .r-sim-result-card.just-saved { box-shadow: 0 0 0 2px var(--r-teal); }
+
+  .r-sim-result-title-block { padding: 13px; display: flex; flex-direction: column; gap: 4px; }
+  .r-sim-eyebrow-teal { font-size: 9.5px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--r-teal); }
+  .r-sim-result-title { font-size: 13.5px; font-weight: 600; color: var(--r-text-primary); line-height: 1.35; }
+  .r-sim-result-authors { font-size: 11.5px; color: var(--r-text-soft); }
+  .r-sim-result-caption { font-size: 11px; color: var(--r-text-muted); }
+
+  .r-sim-hairline { height: 1px; background: var(--r-hairline); }
+  .r-sim-divider { height: 1px; background: var(--r-border); }
+
+  .r-sim-action-row { display: flex; align-items: center; gap: 8px; padding: 13px; }
+
+  .r-sim-read-btn {
+    flex: 1; background: var(--r-teal); color: #fff; border: none; border-radius: var(--radius-control);
+    font-size: 12.5px; font-weight: 600; padding: 10px 12px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: transform var(--fast) var(--ease), background var(--fast) var(--ease);
+  }
+  .r-sim-read-btn:active { transform: scale(0.97); }
+  .r-sim-read-btn--sm { font-size: 11.5px; padding: 8px 10px; }
+
+  .r-sim-save-btn {
+    width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--r-border); background: #fff;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: background var(--fast) var(--ease), border-color var(--fast) var(--ease), transform var(--fast) var(--ease);
+  }
+  .r-sim-save-btn:active { transform: scale(0.9); }
+  .r-sim-save-btn.is-saved { background: var(--r-teal); border-color: var(--r-teal); }
+
+  .r-sim-not-this-one {
+    width: calc(100% - 26px); margin: 0 13px 13px; background: none; border: 1px solid var(--r-teal);
+    color: var(--r-teal); border-radius: var(--radius-control); font-size: 12px; font-weight: 600; padding: 9px;
+  }
+
+  .r-sim-safety { margin: 13px; display: flex; background: var(--r-warning-bg); border: 1px solid rgba(153, 27, 27, 0.3); border-radius: 6px; overflow: hidden; }
+  .r-sim-safety-bar { width: 4px; background: var(--r-warning); flex-shrink: 0; }
+  .r-sim-safety-body { padding: 10px 12px; display: flex; flex-direction: column; gap: 5px; }
+  .r-sim-safety-headline { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-warning); }
+  .r-sim-safety-copy { font-size: 11.5px; color: var(--r-text-soft); line-height: 1.45; }
+  .r-sim-safety-btn { margin-top: 4px; align-self: flex-start; background: none; border: 1px solid var(--r-border); color: var(--r-text-muted); border-radius: var(--radius-control); font-size: 11px; font-weight: 600; padding: 6px 10px; }
+  .r-sim-safety-open { margin-top: 4px; align-self: flex-start; background: none; border: 1px solid var(--r-warning); color: var(--r-warning); border-radius: var(--radius-control); font-size: 11px; font-weight: 600; padding: 6px 10px; animation: r-fade-in var(--base) var(--ease) both; }
+
+  @keyframes r-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes r-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .r-sim-skel-card { background: var(--r-card); border: 1px solid var(--r-border); border-radius: var(--radius-card); overflow: hidden; position: relative; }
+  .r-sim-skel-title-block { padding: 13px; display: flex; flex-direction: column; gap: 8px; }
+  .r-sim-skel-bar { height: 11px; border-radius: 5px; background: var(--r-hairline); }
+  .r-sim-skel-row { display: flex; gap: 8px; padding: 13px; }
+  .r-sim-skel-shimmer {
+    position: absolute; inset: 0;
+    background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.85) 50%, transparent 70%);
+    background-size: 250% 100%;
+    animation: r-shimmer 1.25s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes r-shimmer { from { background-position: 120% 0; } to { background-position: -20% 0; } }
+
+  /* Try-these panel */
+  .r-try-panel { width: 100%; }
+  .r-try-panel h3 { font-size: 14px; font-weight: 700; font-family: 'DM Sans', sans-serif; margin-bottom: 6px; text-align: center; }
+  .r-try-panel > p { font-size: 12.5px; color: var(--r-text-muted); margin-bottom: 14px; line-height: 1.5; text-align: center; }
+  .r-try-list { display: flex; flex-direction: column; gap: 8px; }
+  .r-try-chip {
+    display: flex; align-items: center; gap: 10px; text-align: left;
+    background: #fff; border: 1px solid var(--r-border); border-radius: var(--radius-control);
+    padding: 10px 12px; transition: border-color var(--fast) var(--ease), background var(--fast) var(--ease);
+  }
+  .r-try-chip:hover { border-color: var(--r-teal); background: var(--r-teal-faint); }
+  .r-try-chip-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .r-try-chip-label { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-muted); }
+  .r-try-chip-value { font-size: 12.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--r-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .r-try-chip-action { flex-shrink: 0; font-size: 11.5px; font-weight: 700; color: var(--r-teal); min-width: 42px; text-align: right; }
+
+  /* Library screen */
+  .r-sim-segment { display: flex; gap: 18px; padding: 4px 16px 10px; border-bottom: 1px solid var(--r-hairline); flex-shrink: 0; }
+  .r-sim-seg-btn { background: none; border: none; font-size: 13.5px; font-weight: 600; color: var(--r-text-muted); padding: 0 0 8px; position: relative; }
+  .r-sim-seg-btn::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; border-radius: 2px; background: transparent; }
+  .r-sim-seg-btn.is-active { color: var(--r-text-primary); }
+  .r-sim-seg-btn.is-active::after { background: var(--r-teal); }
+
+  .r-sim-list { display: flex; flex-direction: column; gap: 10px; padding-top: 12px; }
+  .r-sim-article-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--r-card); border: 1px solid var(--r-border); border-radius: var(--radius-card);
+    box-shadow: 0 6px 6px -4px rgba(0,0,0,0.05); padding: 12px;
+  }
+  .r-sim-article-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .r-sim-badge-oa { align-self: flex-start; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; color: var(--r-teal); background: var(--r-teal-faint); padding: 3px 7px; border-radius: 999px; }
+  .r-sim-article-title { font-size: 13px; font-weight: 600; line-height: 1.35; }
+  .r-sim-article-doi { font-size: 10.5px; color: var(--r-text-faint); }
+  .r-sim-article-date { font-size: 10px; color: var(--r-text-faint); }
+  .r-sim-chevron { color: var(--r-text-faint); flex-shrink: 0; margin-top: 4px; }
+
+  /* Rounds screen */
+  .r-sim-rounds-masthead { display: flex; align-items: flex-start; justify-content: space-between; padding: 14px 16px 10px; flex-shrink: 0; }
+  .r-sim-greeting { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+  .r-sim-edition-row { display: flex; align-items: center; gap: 6px; }
+  .r-sim-chev { background: none; border: none; color: var(--r-text-muted); width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; padding: 0; }
+  .r-sim-chev:disabled { color: var(--r-text-faint); opacity: 0.5; }
+  .r-sim-edition-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-muted); }
+
+  .r-sim-double-rule { flex-shrink: 0; margin: 0 16px; }
+  .r-sim-double-rule .r1 { height: 1px; background: var(--r-border); }
+  .r-sim-double-rule .r2 { height: 1px; background: var(--r-hairline); margin-top: 3px; }
+
+  .r-sim-status-row { display: flex; align-items: center; gap: 7px; padding: 10px 16px 8px; flex-shrink: 0; }
+  .r-sim-status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .r-sim-status-label { font-size: 11.5px; font-weight: 700; color: var(--r-text-soft); }
+  .r-sim-status-spacer { flex: 1; }
+  .r-sim-status-read { font-size: 10.5px; color: var(--r-text-faint); }
+
+  .r-sim-progress { display: flex; gap: 3px; padding: 0 16px 14px; flex-shrink: 0; }
+  .r-sim-progress-seg { height: 5px; border: none; border-radius: 999px; padding: 0; transition: height var(--fast) var(--ease), opacity var(--fast) var(--ease); }
+  .r-sim-progress-seg.is-active { height: 7px; }
+
+  .r-sim-loading { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: var(--r-text-muted); font-size: 12.5px; }
+
+  .r-sim-hero-card {
+    background: var(--r-card); border: 1px solid var(--r-border); border-left: 4px solid var(--r-teal);
+    border-radius: var(--radius-card); box-shadow: 0 8px 10px -6px rgba(0,0,0,0.08);
+    padding: 16px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .r-sim-hero-card h5 { font-family: 'Playfair Display', Georgia, serif; font-size: 16.5px; font-weight: 600; line-height: 1.32; margin: 0; }
+
+  .r-sim-badge-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .r-sim-cat-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-soft); padding: 3px 8px; border-radius: 999px; }
+  .r-sim-cat-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .r-sim-top-label { font-size: 8.5px; font-weight: 700; letter-spacing: 0.5px; color: var(--r-text-faint); text-transform: uppercase; white-space: nowrap; }
+
+  .r-sim-summary { font-size: 12px; color: var(--r-text-soft); line-height: 1.5; }
+  .r-sim-meta { font-size: 10px; color: var(--r-text-faint); }
+
+  .r-sim-section { margin-bottom: 6px; }
+  .r-sim-section-rule { display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-muted); padding: 10px 0 8px; }
+
+  .r-sim-digest-card {
+    background: var(--r-card); border: 1px solid var(--r-border); border-left: 3px solid transparent;
+    border-radius: var(--radius-card); box-shadow: 0 4px 6px -4px rgba(0,0,0,0.05);
+    padding: 13px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .r-sim-digest-card h6 { font-family: 'Playfair Display', Georgia, serif; font-size: 13.5px; font-weight: 600; line-height: 1.32; margin: 0; }
+  .r-sim-digest-card .r-sim-action-row, .r-sim-digest-card .r-sim-hairline { margin-left: -13px; margin-right: -13px; }
+  .r-sim-digest-card .r-sim-action-row { padding-left: 13px; padding-right: 13px; }
+  .r-sim-hero-card .r-sim-action-row, .r-sim-hero-card .r-sim-hairline { margin-left: -16px; margin-right: -16px; }
+  .r-sim-hero-card .r-sim-action-row { padding-left: 16px; padding-right: 16px; }
+
+  .r-spin { animation: r-rotate 1.05s linear infinite; transform-origin: 50% 50%; }
+  @keyframes r-rotate { to { transform: rotate(360deg); } }
+
+  /* Reader sheet (opens over the whole phone screen) */
+  .r-reader-overlay {
+    position: absolute; inset: 0; z-index: 30; background: #fff;
+    border-radius: 34px; overflow: hidden;
+    display: flex; flex-direction: column;
+    animation: r-sheet-up-full 0.25s var(--ease) both;
+  }
+  @keyframes r-sheet-up-full { from { transform: translateY(6%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .r-reader-bar { display: flex; align-items: center; justify-content: space-between; padding: 40px 14px 10px; border-bottom: 1px solid var(--r-border); flex-shrink: 0; }
+  .r-reader-close { background: var(--r-bg); border: none; width: 26px; height: 26px; border-radius: 50%; color: var(--r-text-muted); font-size: 15px; line-height: 1; }
+  .r-reader-domain { font-size: 11px; color: var(--r-text-muted); display: flex; align-items: center; gap: 5px; }
+  .r-reader-body { flex: 1; overflow-y: auto; padding: 18px 18px 28px; }
+  .r-reader-video { width: 100%; aspect-ratio: 16/9; background: #111827; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .r-reader-play { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.15); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .r-reader-body h6 { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; font-weight: 600; line-height: 1.35; margin: 0 0 6px; }
+  .r-reader-byline { font-size: 12px; color: var(--r-text-muted); margin-bottom: 16px; }
+  .r-reader-p { font-size: 13px; color: var(--r-text-soft); line-height: 1.6; margin-bottom: 12px; }
+  .r-reader-note { font-size: 11px; color: var(--r-text-faint); font-style: italic; margin-top: 8px; }
+
+  /* Tab bar — notched shape + floating disc + Rounds-tab orbit dots */
+  .r-simbar { position: relative; flex-shrink: 0; }
+  .r-simbar-shape { position: absolute; left: 0; bottom: 0; display: block; }
+  .r-simbar-row { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; padding-bottom: 8px; }
+  .r-simbar-item { flex: 1; background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 3px; padding-bottom: 2px; }
+  .r-simbar-item span { font-size: 10px; font-weight: 600; }
+  .r-simbar-oslot { flex: 1; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 5px; }
+  .r-simbar-word { height: 9px; width: auto; transition: opacity var(--fast) var(--ease); }
+  .r-simbar-icon-wrap { position: relative; }
+  .r-simbar-ping { position: absolute; top: -3px; right: -6px; width: 8px; height: 8px; border-radius: 50%; background: var(--r-teal); animation: r-ping 1.6s var(--ease) both; }
+  @keyframes r-ping { 0% { transform: scale(0.6); opacity: 0; } 15% { transform: scale(1.2); opacity: 1; } 30% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+  .r-simbar-disc { position: absolute; border-radius: 50%; background: var(--r-teal); border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 10px -3px rgba(17,24,39,0.35); transition: transform var(--fast) var(--ease); }
+  .r-simbar-disc:active { transform: scale(0.93); }
+  .r-simbar-orbit { position: absolute; inset: 0; pointer-events: none; }
+  .r-simbar-dot { position: absolute; border-radius: 50%; border: 1.5px solid #fff; transform: translate(-50%, -50%); padding: 0; pointer-events: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.18); transition: width var(--fast) var(--ease), height var(--fast) var(--ease); }
+  .r-simbar-orbit-label { position: absolute; top: 4px; left: 0; right: 0; text-align: center; font-size: 8.5px; font-weight: 700; letter-spacing: 0.5px; }
+
+  /* Share extension demo */
+  .r-share-stack { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .r-share-browser { width: 276px; background: #fff; border: 1px solid var(--r-border); border-radius: 16px; box-shadow: 0 20px 40px -20px rgba(17,24,39,0.25); overflow: hidden; position: relative; }
+  .r-share-browser-bar { display: flex; align-items: center; gap: 6px; padding: 10px 12px; background: #f3f4f6; font-size: 11px; color: var(--r-text-muted); border-bottom: 1px solid var(--r-border); }
+  .r-share-article { padding: 16px; }
+  .r-share-article-kicker { font-size: 9px; font-weight: 700; letter-spacing: 0.6px; color: var(--r-text-faint); margin-bottom: 6px; }
+  .r-share-article-title { font-family: 'Playfair Display', Georgia, serif; font-size: 14px; font-weight: 600; line-height: 1.35; margin-bottom: 6px; }
+  .r-share-article-byline { font-size: 11px; color: var(--r-text-muted); }
+  .r-share-btn { width: calc(100% - 32px); margin: 0 16px 16px; display: flex; align-items: center; justify-content: center; gap: 6px; background: var(--r-bg); border: 1px solid var(--r-border); border-radius: 10px; padding: 10px; font-size: 12.5px; font-weight: 600; color: var(--r-text-soft); }
+  .r-share-sheet-backdrop { position: absolute; inset: 0; background: rgba(17,24,39,0.3); display: flex; align-items: flex-end; border-radius: 16px; overflow: hidden; animation: r-fade-in 0.15s ease both; }
+  .r-share-sheet { width: 100%; background: #fff; border-radius: 18px 18px 0 0; padding: 12px 16px 20px; animation: r-sheet-up 0.25s var(--ease) both; }
+  @keyframes r-sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .r-share-grabber { width: 36px; height: 4px; border-radius: 2px; background: var(--r-border); margin: 0 auto 14px; }
+  .r-share-apps { display: flex; justify-content: space-between; gap: 8px; }
+  .r-share-app { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 9.5px; color: var(--r-text-muted); background: none; border: none; flex: 1; }
+  .r-share-app-generic-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--r-border); }
+  .r-share-app--rounds .r-share-app-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--r-teal); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px -2px rgba(13,122,107,0.5); }
+  .r-share-app--rounds { color: var(--r-teal); font-weight: 700; }
+  .r-share-arrow { font-size: 20px; color: var(--r-text-faint); line-height: 1; }
+  .r-share-source-tabs { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-bottom: 4px; }
+  .r-share-source-tab {
+    font-size: 11.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px;
+    border: 1px solid var(--r-border); background: #fff; color: var(--r-text-muted);
+    transition: background var(--fast) var(--ease), border-color var(--fast) var(--ease), color var(--fast) var(--ease);
+  }
+  .r-share-source-tab[data-active="true"] { background: var(--r-teal-faint); border-color: var(--r-teal); color: var(--r-teal); }
+  .r-share-context { padding: 16px; }
+  .r-share-context-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.4px; color: var(--r-text-faint); text-transform: uppercase; margin-bottom: 10px; }
+  .r-share-mail-subject { font-size: 12.5px; font-weight: 600; color: var(--r-text-primary); margin-bottom: 8px; }
+  .r-share-bubble { font-size: 13px; line-height: 1.55; color: var(--r-text-soft); background: var(--r-bg); border: 1px solid var(--r-border); border-radius: 14px; padding: 12px 14px; }
+  .r-share-bubble--mail { border-radius: 8px; background: #fff; }
+  .r-share-bubble--social { border-radius: 10px; background: #fff; }
+  .r-share-highlight { background: var(--r-teal-faint); color: var(--r-text-primary); padding: 1px 2px; border-radius: 3px; }
+  .r-before-after { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+  .r-before-after-row { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: var(--r-text-soft); line-height: 1.5; }
+  .r-before-after-tag { flex-shrink: 0; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; margin-top: 1px; }
+  .r-before-after-tag--before { background: var(--r-warning-bg); color: var(--r-warning); }
+  .r-before-after-tag--after { background: var(--r-teal-faint); color: var(--r-teal); }
+
+  /* Taxonomy explorer */
+  .r-taxonomy-detail { margin-top: 16px; padding: 16px; background: #fff; border: 1px solid var(--r-border); border-radius: var(--radius-card); display: flex; flex-direction: column; gap: 12px; animation: r-rise 0.2s var(--ease) both; }
+  .r-taxonomy-row { display: flex; gap: 12px; align-items: flex-start; }
+  .r-taxonomy-axis { flex-shrink: 0; width: 76px; font-size: 11px; font-weight: 700; color: var(--r-text-muted); text-transform: uppercase; letter-spacing: 0.4px; padding-top: 4px; }
+  .r-taxonomy-leaves { display: flex; flex-wrap: wrap; gap: 6px; }
+  .r-leaf-chip { font-size: 11.5px; padding: 4px 10px; border-radius: 999px; background: var(--r-teal-faint); color: var(--r-teal); font-weight: 600; }
+  .r-leaf-chip--alt { background: #fff; border: 1px solid var(--r-border); color: var(--r-text-soft); }
+
+  /* ---------- Feature grid ---------- */
+  .r-feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 900px) { .r-feature-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .r-feature-grid { grid-template-columns: 1fr; } }
+  .r-feature-card { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+  .r-feature-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--r-teal-faint); display: flex; align-items: center; justify-content: center; }
+  .r-feature-card h3 { font-family: 'DM Sans', sans-serif; font-size: 15.5px; font-weight: 700; }
+  .r-feature-card p { font-size: 13.5px; color: var(--r-text-soft); line-height: 1.55; }
+
+  /* ---------- Audience ---------- */
+  .r-audience-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: start; }
+  .r-audience-list { display: flex; flex-direction: column; gap: 16px; }
+  .r-audience-item { display: flex; gap: 12px; align-items: flex-start; }
+  .r-audience-item p { font-size: 14.5px; color: var(--r-text-soft); line-height: 1.6; }
+  .r-audience-item strong { color: var(--r-text-primary); }
+  .r-subspecialty-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* ---------- CTA + footer ---------- */
+  .r-cta-section { padding: 96px 0; text-align: center; border-top: 1px solid var(--r-hairline); }
+  .r-cta-section h2 { font-size: 32px; font-weight: 600; margin-bottom: 14px; }
+  .r-cta-section p { color: var(--r-text-soft); font-size: 16px; max-width: 50ch; margin: 0 auto 32px; line-height: 1.6; }
+  .r-store-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .r-store-badge { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: var(--radius-control); border: 1px solid var(--r-border); background: #fff; color: var(--r-text-faint); font-size: 13px; cursor: default; }
+  .r-store-badge strong { display: block; font-size: 15px; color: var(--r-text-muted); }
+
+  footer { border-top: 1px solid var(--r-border); padding: 40px 0; }
+  .r-footer-inner { display: flex; flex-direction: column; gap: 16px; }
+  .r-footer-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .r-footer-links { display: flex; gap: 20px; font-size: 13px; color: var(--r-text-muted); }
+  .r-disclaimer { font-size: 12px; color: var(--r-text-muted); line-height: 1.6; max-width: 80ch; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .r-spin { animation: none; }
+    .r-sim-skel-shimmer { animation: none; }
+    * { transition-duration: 0.01ms !important; }
+  }
+
+  @media (max-width: 900px) {
+    .r-hero-grid { grid-template-columns: 1fr; }
+    .r-phone-wrap { order: -1; margin-bottom: 8px; }
+    .r-demo-grid { grid-template-columns: 1fr; }
+    .r-audience-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 560px) {
+    .r-container { padding: 0 var(--space-l); }
+    .r-hero { padding: 56px 0 64px; }
+    .r-hero-title { font-size: 32px; }
+    .r-section { padding: 64px 0; }
+    .r-sim-phone { width: 260px; height: 610px; }
+    .r-cta-section h2 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel-source" id="app-source">
+const { useState, useMemo, useRef, useEffect } = React;
+
+/* ============================== Brand mark ============================== */
+
+// The real wordmark asset (rounds-wordmark.svg) — same file the app ships.
+function RoundsWordmark({ height = 20, style = {} }) {
+  return <img src="rounds-wordmark.svg" alt="Rounds" className="r-logo-img" style={{ height, ...style }} />;
+}
+
+function SegmentedOMark({ size = 40, lineWidth = 3, color = "var(--r-teal)" }) {
+  const segments = 6;
+  const r = (size - lineWidth) / 2;
+  const c = 2 * Math.PI * r;
+  const period = c / segments;
+  const dash = period * 0.74;
+  const gap = period * 0.26;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label="Rounds segmented-O mark">
+      <circle
+        cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={lineWidth} strokeLinecap="round"
+        strokeDasharray={`${dash} ${gap}`} strokeDashoffset={gap / 2}
+        transform={`rotate(-90 ${size / 2} ${size / 2})`}
+      />
+    </svg>
+  );
+}
+
+// The rotating "comet" loading spinner — mirrors RotatingOMark in RoundsLogo.swift.
+function RotatingOMark({ size = 40, lineWidth = 3, color = "var(--r-teal)" }) {
+  const segments = 6;
+  const r = (size - lineWidth) / 2;
+  const c = 2 * Math.PI * r;
+  const period = c / segments;
+  const dash = period * 0.74;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="r-spin" aria-hidden="true">
+      {Array.from({ length: segments }).map((_, i) => {
+        const opacity = 0.22 + (1 - i / (segments - 1)) * 0.78;
+        return (
+          <circle key={i} cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeOpacity={opacity}
+            strokeWidth={lineWidth} strokeLinecap="round"
+            strokeDasharray={`${dash} ${c - dash}`} strokeDashoffset={-(i * period)}
+            transform={`rotate(-90 ${size / 2} ${size / 2})`} />
+        );
+      })}
+    </svg>
+  );
+}
+
+/* ============================== Icons ============================== */
+
+const iconProps = { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: "var(--r-teal)", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" };
+
+const Icons = {
+  institution: () => (<svg {...iconProps} aria-hidden="true"><path d="M3 10 12 4l9 6" /><path d="M5 10v9h14v-9" /><path d="M10 19v-6h4v6" /></svg>),
+  share: () => (<svg {...iconProps} aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="M8.1 10.8 15.9 7.2M8.1 13.2l7.8 3.6" /></svg>),
+  related: () => (<svg {...iconProps} aria-hidden="true"><circle cx="8" cy="8" r="3.2" /><circle cx="17" cy="8" r="3.2" /><circle cx="12.5" cy="17" r="3.2" /><path d="M10.7 9.6 14.7 15M9.3 9.6 5.3 15" /></svg>),
+  filter: () => (<svg {...iconProps} aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" /></svg>),
+  discussion: () => (<svg {...iconProps} aria-hidden="true"><path d="M4 5h16v10H9l-5 4V5Z" /></svg>),
+  account: () => (<svg {...iconProps} aria-hidden="true"><circle cx="12" cy="8" r="3.4" /><path d="M5 19c1.4-3.4 4-5 7-5s5.6 1.6 7 5" /></svg>),
+  layers: () => (<svg {...iconProps} aria-hidden="true"><path d="M12 3.5 20.5 8 12 12.5 3.5 8 12 3.5Z" /><path d="M3.5 12 12 16.5 20.5 12" /><path d="M3.5 16 12 20.5 20.5 16" /></svg>),
+  bookmarkOutline: () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--r-text-faint)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 4h12v16l-6-4-6 4V4Z" /></svg>),
+  bookmarkFilled: () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M6 4h12v16l-6-4-6 4V4Z" /></svg>),
+  chevronLeft: () => (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>),
+  chevronRight: () => (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>),
+  chevronRightSmall: () => (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--r-text-faint)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>),
+  search: () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--r-text-faint)" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>),
+  upload: () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3v12" /><path d="m7 8 5-5 5 5" /><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" /></svg>),
+};
+
+/* ============================== Fictional demo data ============================== */
+/* All titles, authors, DOIs, and journals below are invented for demonstration
+   only. None reference real studies, and no DOI resolves to a real record. */
+
+const SEARCH_PAPERS = [
+  { doi: "10.9999/rd.2026.0142", title: "Five-year outcomes of anterior cruciate ligament reconstruction with quadriceps tendon autograft", authors: "Whitfield R, Okafor N, et al.", journal: "Journal of Sports Medicine Research (demo)", subspecialty: "Sports Medicine", openAccess: true },
+  { doi: "10.9999/rd.2026.0187", title: "Cementless versus cemented fixation in primary total hip arthroplasty: a matched cohort", authors: "Dumont L, Vasquez P, et al.", journal: "Arthroplasty Quarterly (demo)", subspecialty: "Arthroplasty and Reconstruction", openAccess: false },
+  { doi: "10.9999/rd.2026.0203", title: "Early weight-bearing after operative fixation of tibial plateau fractures", authors: "Nakamura T, Singh A, et al.", journal: "Trauma & Injury Reports (demo)", subspecialty: "Trauma", openAccess: true },
+  { doi: "10.9999/rd.2026.0219", title: "Comparative outcomes of total ankle replacement versus arthrodesis at ten years", authors: "Bergström K, Alli H, et al.", journal: "Foot & Ankle Clinical Review (demo)", subspecialty: "Foot & Ankle", openAccess: false },
+  { doi: "10.9999/rd.2026.0288", title: "Robotic-assisted versus conventional total knee arthroplasty: two-year functional outcomes", authors: "Iqbal S, Moreau C, et al.", journal: "Arthroplasty Quarterly (demo)", subspecialty: "Arthroplasty and Reconstruction", openAccess: true },
+  { doi: "10.9999/rd.2026.0450", title: "Long-term durability of a since-withdrawn meniscal repair anchor system", authors: "Talbot M, Osei R, et al.", journal: "Journal of Sports Medicine Research (demo)", subspecialty: "Sports Medicine", openAccess: false, safetyFlag: "retracted" },
+];
+
+const SEARCH_EXAMPLES = [
+  { label: "DOI · open access", value: "10.9999/rd.2026.0142" },
+  { label: "DOI · institutional access", value: "10.9999/rd.2026.0187" },
+  { label: "Title search", value: "Robotic-assisted versus conventional total knee arthroplasty" },
+  { label: "Publisher link", value: "https://doi.org/10.9999/rd.2026.0219" },
+  { label: "Flagged article", value: "10.9999/rd.2026.0450" },
+  { label: "Unrecognized DOI", value: "10.9999/rd.2026.9999" },
+];
+
+const CATEGORY_META = {
+  peer_reviewed_literature: { label: "Literature", dot: "var(--r-literature)", stripe: null },
+  society_update: { label: "Society", dot: "var(--r-society)", stripe: "var(--r-society)" },
+  industry_update: { label: "Industry", dot: "var(--r-industry)", stripe: "var(--r-industry)" },
+  regulatory_update: { label: "Regulatory", dot: "var(--r-regulatory)", stripe: "var(--r-regulatory)" },
+  surgical_technique_video: { label: "Video", dot: "var(--r-surgical)", stripe: "var(--r-surgical)" },
+  cme_opportunity: { label: "CME", dot: "var(--r-cme)", stripe: "var(--r-cme)" },
+  provincial_news: { label: "Podcast", dot: "var(--r-provincial)", stripe: "var(--r-provincial)" },
+};
+const CATEGORY_ORDER = Object.keys(CATEGORY_META);
+
+const DIGEST_DAYS = [
+  {
+    hero: {
+      title: "Quadriceps versus hamstring autograft in ACL reconstruction: five-year revision rates",
+      summary: "A matched-cohort analysis following 640 patients found no significant difference in revision rate between graft types, though hamstring grafts showed a modest strength deficit at five years that quadriceps grafts did not.",
+      source: "Journal of Sports Medicine Research (demo)", category: "peer_reviewed_literature", actionLabel: "Read now",
+    },
+    items: [
+      { title: "Fixation choice in geriatric hip fracture: a pragmatic trial update", summary: "Interim results favour sliding hip screws over cephalomedullary nails for stable intertrochanteric patterns, with no difference in mortality.", source: "Trauma & Injury Reports (demo)", category: "peer_reviewed_literature", actionLabel: "Read now" },
+      { title: "Canadian Orthopaedic Association releases updated fellowship match guidance", summary: "The update clarifies interview scheduling and offer-response windows ahead of this year's cycle.", source: "COA Bulletin (demo)", category: "society_update", actionLabel: "Read now" },
+      { title: "New anchor system for rotator cuff repair enters limited release", summary: "The manufacturer reports a knotless, all-suture design intended to reduce tunnel size in revision cases.", source: "OrthoDevice Wire (demo)", category: "industry_update", actionLabel: "Read now" },
+      { title: "Health Canada updates labelling for a widely used bone cement", summary: "The notice adds a caution regarding cardiopulmonary monitoring during cementation in high-risk patients.", source: "Health Canada Notices (demo)", category: "regulatory_update", actionLabel: "Read now" },
+      { title: "Technique video: posterior approach total hip with capsular repair", summary: "A step-by-step walkthrough of capsular repair technique intended to reduce early dislocation risk.", source: "Rounds Technique Library (demo)", category: "surgical_technique_video", actionLabel: "Watch" },
+      { title: "Accredited module: managing periprosthetic joint infection", summary: "A one-hour accredited case-based module covering diagnostic criteria and staged revision timing.", source: "Rounds CME (demo)", category: "cme_opportunity", actionLabel: "Read now" },
+    ],
+  },
+  {
+    hero: {
+      title: "Sagittal alignment targets in adult spinal deformity correction: a registry analysis",
+      summary: "Undercorrection relative to age-adjusted alignment targets was the strongest predictor of mechanical complication at two years, ahead of fusion length or osteotomy type.",
+      source: "Spine Surgery Today (demo)", category: "peer_reviewed_literature", actionLabel: "Read now",
+    },
+    items: [
+      { title: "Guided growth outcomes in paediatric genu valgum: a multicentre series", summary: "Correction rate was fastest in patients under age 10, with recurrence more common after early plate removal.", source: "Paediatric Orthopaedics Digest (demo)", category: "peer_reviewed_literature", actionLabel: "Read now" },
+      { title: "Provincial fee schedule update affects same-day arthroplasty billing", summary: "The revision adjusts facility fee codes for outpatient joint replacement effective next quarter.", source: "Provincial Health Bulletin (demo)", category: "provincial_news", actionLabel: "Read now" },
+      { title: "Denosumab as an adjunct to curettage for giant cell tumour of bone", summary: "Neoadjuvant use reduced intraoperative blood loss but was associated with a higher local recurrence rate in this series.", source: "Musculoskeletal Oncology Review (demo)", category: "peer_reviewed_literature", actionLabel: "Read now" },
+      { title: "Technique video: wide-awake fixation for distal radius fractures", summary: "A demonstration of local anaesthetic dosing and volar plating without tourniquet.", source: "Rounds Technique Library (demo)", category: "surgical_technique_video", actionLabel: "Watch" },
+      { title: "New impaction bone graft substitute cleared for revision arthroplasty", summary: "The manufacturer's early data describes handling characteristics comparable to morselized allograft.", source: "OrthoDevice Wire (demo)", category: "industry_update", actionLabel: "Read now" },
+    ],
+  },
+  {
+    hero: {
+      title: "Return-to-sport benchmarks after hip arthroscopy for femoroacetabular impingement",
+      summary: "Patients meeting strength-based return-to-sport criteria before six months had a lower two-year reoperation rate than those cleared on time-based criteria alone.",
+      source: "Journal of Sports Medicine Research (demo)", category: "peer_reviewed_literature", actionLabel: "Read now",
+    },
+    items: [
+      { title: "Robotic-assisted total knee arthroplasty: two-year functional outcomes", summary: "Functional scores converged with conventional instrumentation by eighteen months, with earlier gains in the robotic-assisted group.", source: "Arthroplasty Quarterly (demo)", category: "peer_reviewed_literature", actionLabel: "Read now" },
+      { title: "Accredited module: damage control orthopaedics in the multiply injured patient", summary: "A case-based module on staged fixation sequencing and physiologic thresholds for definitive surgery.", source: "Rounds CME (demo)", category: "cme_opportunity", actionLabel: "Read now" },
+      { title: "Regulatory notice: revised sterilization guidance for external fixation sets", summary: "The update specifies revalidated cycle parameters for reusable frame components.", source: "Health Canada Notices (demo)", category: "regulatory_update", actionLabel: "Read now" },
+      { title: "Society update: new position statement on same-day discharge arthroplasty", summary: "The statement outlines patient selection criteria and minimum monitoring requirements.", source: "COA Bulletin (demo)", category: "society_update", actionLabel: "Read now" },
+    ],
+  },
+];
+
+const AUDIENCE = [
+  { title: "Orthopaedic surgeons", body: "A daily edition scoped to the subspecialties you practice, and one search bar for anything a colleague sends you." },
+  { title: "Residents", body: "Full-text access through your institution's existing library session, with the literature grouped the way your rotations are." },
+  { title: "Researchers", body: "Related-paper suggestions on every result, so a single citation opens into the surrounding literature." },
+];
+
+const SUBSPECIALTIES = ["Sports Medicine", "Arthroplasty and Reconstruction", "Trauma", "Foot & Ankle", "Hand & Upper Extremity", "Spine", "Musculoskeletal Oncology", "Paediatric Orthopaedics"];
+
+// Authoritative taxonomy leaves — pulled directly from db_utils.PATHOLOGY_VOCAB /
+// ARTHROPLASTY_JOINTS / SPINE_LEVELS in the rounds-pipeline repo, not invented.
+const TAXONOMY = {
+  "Sports Medicine": { pathology: ["ACL/Multiligament Knee", "Meniscus", "Cartilage/Osteochondral", "Rotator Cuff", "Shoulder Instability", "Hip Preservation/FAI", "Elbow (UCL)", "Ankle Ligament Instability", "Return to Sport/Rehab"] },
+  "Arthroplasty and Reconstruction": { pathology: ["Primary", "Revision and Complex Primary", "Periprosthetic Fracture", "Periprosthetic Joint Infection", "Unicompartmental/Partial"], joints: ["Hip", "Knee", "Shoulder", "Elbow", "Ankle"] },
+  "Trauma": { pathology: ["Pelvic and Acetabular", "Lower Extremity Fractures", "Upper Extremity Fractures", "Polytrauma and Open Fractures", "Nonunion/Malunion"] },
+  "Foot & Ankle": { pathology: ["Bunion/Forefoot", "Flatfoot Deformity", "Ankle Arthritis", "Achilles", "Diabetic Foot/Charcot"] },
+  "Hand & Upper Extremity": { pathology: ["Carpal Tunnel/Nerve Compression", "Wrist Arthritis", "Dupuytren's", "Forearm"] },
+  "Spine": { pathology: ["Degenerative/Disc Disease", "Spine Deformity", "Spine Tumour", "Spine Infection", "Minimally Invasive Technique"], levels: ["Cervical", "Thoracic", "Lumbar", "Sacral"] },
+  "Musculoskeletal Oncology": { pathology: ["Bone Tumour", "Soft Tissue Tumour", "Metastatic Disease", "Reconstruction after Resection", "Benign Tumour/Cyst"] },
+  "Paediatric Orthopaedics": { pathology: ["Hip Dysplasia/Perthes/SCFE", "Lower Extremity Deformity", "Congenital Upper Extremity", "Neuromuscular", "Paediatric Sports"] },
+};
+
+const FEATURES = [
+  { icon: "institution", title: "Institutional access", body: "Sign in once through your library. Rounds carries that session so full text opens without signing in again." },
+  { icon: "related", title: "Related papers", body: "Every result surfaces similar literature beneath it, so one citation leads to the surrounding evidence." },
+  { icon: "filter", title: "Subspecialty preferences", body: "Choose the subspecialties you follow. The daily edition narrows immediately, with no reload." },
+  { icon: "layers", title: "More than journal articles", body: "Society updates, industry news, regulatory notices, technique videos, and CME — not just peer-reviewed papers." },
+  { icon: "discussion", title: "Discussion", body: "Read what colleagues are saying under a paper, or add your own note under a verified profile." },
+  { icon: "account", title: "One account, your data", body: "Sign in with Apple, Google, or email. Your saved library and preferences follow your account, not your device." },
+];
+
+/* ============================== Helpers ============================== */
+
+function greeting() {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return "Good morning";
+  if (h >= 12 && h < 17) return "Good afternoon";
+  if (h >= 17 && h < 21) return "Good evening";
+  return "Welcome back";
+}
+
+function formatEditionDate(daysAgo) {
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  return d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+}
+
+function readEstimate(day) {
+  const words = day.items.reduce((s, i) => s + (i.summary ? i.summary.split(/\s+/).length : 0), 0) +
+    (day.hero.summary ? day.hero.summary.split(/\s+/).length : 0);
+  return Math.max(1, Math.round(words / 200)) + " min read";
+}
+
+function extractDoi(raw) {
+  const m = raw.match(/10\.\d{4,9}\/[^\s"'<>]+/i);
+  return m ? m[0].toLowerCase().replace(/[.,)]+$/, "") : null;
+}
+
+function resolveQuery(raw) {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  const doi = extractDoi(trimmed);
+  if (doi) {
+    const paper = SEARCH_PAPERS.find(p => p.doi.toLowerCase() === doi);
+    return paper ? { paper, matchType: "doi" } : { paper: null, matchType: "notfound" };
+  }
+  const lower = trimmed.toLowerCase();
+  const paper = SEARCH_PAPERS.find(p => p.title.toLowerCase().includes(lower) || lower.includes(p.title.toLowerCase().slice(0, 20)));
+  return paper ? { paper, matchType: "title" } : { paper: null, matchType: "notfound" };
+}
+
+/* ============================== Header ============================== */
+
+function Header() {
+  return (
+    <header className="r-header">
+      <div className="r-container r-header-inner">
+        <RoundsWordmark height={22} />
+        <button className="r-nav-cta" onClick={() => document.getElementById('cta').scrollIntoView({ behavior: 'smooth' })}>
+          Get early access
+        </button>
+      </div>
+    </header>
+  );
+}
+
+/* ============================== Article reader sheet ============================== */
+/* Stands in for the real ArticleWebView: Rounds never downloads or stores a PDF,
+   it only ever opens a link. This demonstrates that a Read/Watch tap goes somewhere,
+   without pretending to fetch a real file. */
+
+function ArticleReaderSheet({ item, onClose }) {
+  if (!item) return null;
+  const isVideo = item.kind === "video";
+  return (
+    <div className="r-reader-overlay">
+      <div className="r-reader-bar">
+        <button className="r-reader-close" onClick={onClose} aria-label="Close">×</button>
+        <span className="r-reader-domain">
+          <Icons.institution />
+          {isVideo ? "rounds-technique-library.demo" : "libaccess.lib.mcmaster.ca"}
+        </span>
+        <span style={{ width: 26 }} />
+      </div>
+      <div className="r-sim-scroll r-reader-body">
+        {isVideo && (
+          <div className="r-reader-video"><div className="r-reader-play">▶</div></div>
+        )}
+        <h6>{item.title}</h6>
+        <p className="r-reader-byline">{item.source}</p>
+        <p className="r-reader-p">
+          This is a fictional preview standing in for the real article page. In the real app, Rounds resolves this
+          link through your institution's access and opens the publisher's page here, inside a normal in-app browser.
+        </p>
+        <p className="r-reader-p">
+          Rounds never downloads or stores the file — it only ever opens a link, the same way tapping it in Safari would.
+        </p>
+        <p className="r-reader-note">Demo content — not a real article.</p>
+      </div>
+    </div>
+  );
+}
+
+/* ============================== Skeleton (loading) ============================== */
+
+function SkeletonResultCard() {
+  return (
+    <div className="r-sim-skel-card" style={{ marginTop: 16 }}>
+      <div className="r-sim-skel-title-block">
+        <div className="r-sim-skel-bar" style={{ width: 60 }} />
+        <div className="r-sim-skel-bar" style={{ width: "100%" }} />
+        <div className="r-sim-skel-bar" style={{ width: "72%" }} />
+      </div>
+      <div className="r-sim-hairline" />
+      <div className="r-sim-skel-row">
+        <div className="r-sim-skel-bar" style={{ flex: 1, height: 32, borderRadius: 8 }} />
+        <div className="r-sim-skel-bar" style={{ width: 32, height: 32, borderRadius: 8 }} />
+      </div>
+      <div className="r-sim-skel-shimmer" />
+    </div>
+  );
+}
+
+/* ============================== Search result card ============================== */
+
+function SimResultCard({ paper, matchType, saved, onToggleSave, onNotThisOne, onRead }) {
+  const [revealed, setRevealed] = useState(false);
+  const [pulse, setPulse] = useState(false);
+
+  useEffect(() => { setRevealed(false); }, [paper.doi]);
+
+  const handleSave = () => {
+    onToggleSave();
+    setPulse(true);
+    setTimeout(() => setPulse(false), 500);
+  };
+
+  return (
+    <div className={"r-sim-result-card" + (pulse ? " just-saved" : "")} style={{ marginTop: 16, animation: "r-rise 0.2s cubic-bezier(0.4,0,0.2,1) both" }}>
+      <div className="r-sim-result-title-block">
+        {paper.openAccess && <span className="r-sim-eyebrow-teal">Open access</span>}
+        <div className="r-sim-result-title">{paper.title}</div>
+        <div className="r-sim-result-authors">{paper.authors} · {paper.journal}</div>
+        {matchType === "title" && <div className="r-sim-result-caption">Is this the right paper?</div>}
+      </div>
+      <div className="r-sim-divider" />
+
+      {paper.safetyFlag ? (
+        <>
+          <div className="r-sim-safety">
+            <div className="r-sim-safety-bar" />
+            <div className="r-sim-safety-body">
+              <span className="r-sim-safety-headline">Retracted article</span>
+              <span className="r-sim-safety-copy">This article has been flagged by the publisher. Review with caution before use.</span>
+              {!revealed ? (
+                <button className="r-sim-safety-btn" onClick={() => setRevealed(true)}>I understand, open anyway</button>
+              ) : (
+                <button className="r-sim-safety-open" onClick={onRead}>Open anyway</button>
+              )}
+            </div>
+          </div>
+          <div className="r-sim-divider" />
+          <div className="r-sim-action-row" style={{ justifyContent: "flex-end" }}>
+            <button className={"r-sim-save-btn" + (saved ? " is-saved" : "")} onClick={handleSave} aria-label="Save" aria-pressed={saved}>
+              {saved ? <Icons.bookmarkFilled /> : <Icons.bookmarkOutline />}
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="r-sim-action-row">
+            <button className="r-sim-read-btn" onClick={onRead}>{paper.openAccess ? "Read now" : "Open"}</button>
+            <button className={"r-sim-save-btn" + (saved ? " is-saved" : "")} onClick={handleSave} aria-label="Save" aria-pressed={saved}>
+              {saved ? <Icons.bookmarkFilled /> : <Icons.bookmarkOutline />}
+            </button>
+          </div>
+          {matchType === "title" && (
+            <>
+              <div className="r-sim-divider" />
+              <button className="r-sim-not-this-one" onClick={onNotThisOne}>Not this one</button>
+            </>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ============================== Search screen ============================== */
+
+function SearchScreen({ saved, setSaved, onOpenReader, onSaved, shareSignal }) {
+  const [query, setQuery] = useState("");
+  const [submitted, setSubmitted] = useState("");
+  const [phase, setPhase] = useState("idle");
+  const [match, setMatch] = useState(null);
+  const timerRef = useRef(null);
+  const lastNonceRef = useRef(null);
+
+  useEffect(() => {
+    if (shareSignal && shareSignal.nonce !== lastNonceRef.current) {
+      lastNonceRef.current = shareSignal.nonce;
+      setQuery(shareSignal.doi);
+      setSubmitted(shareSignal.doi);
+    }
+  }, [shareSignal]);
+
+  useEffect(() => {
+    clearTimeout(timerRef.current);
+    if (!submitted) { setPhase("idle"); setMatch(null); return; }
+    setPhase("loading");
+    timerRef.current = setTimeout(() => {
+      const resolved = resolveQuery(submitted);
+      if (resolved && resolved.paper) { setMatch(resolved); setPhase("result"); }
+      else { setMatch(null); setPhase("notfound"); }
+    }, 550);
+    return () => clearTimeout(timerRef.current);
+  }, [submitted]);
+
+  const runSearch = () => setSubmitted(query.trim());
+  const clear = () => { setQuery(""); setSubmitted(""); };
+
+  const isSaved = match && match.paper ? saved.some(s => s.doi === match.paper.doi) : false;
+  const toggleSave = () => {
+    if (!match || !match.paper) return;
+    const p = match.paper;
+    const already = saved.some(s => s.doi === p.doi);
+    setSaved(prev => already ? prev.filter(s => s.doi !== p.doi) : [{ doi: p.doi, title: p.title, openAccess: p.openAccess, savedAt: new Date() }, ...prev]);
+    if (!already && onSaved) onSaved();
+  };
+  const openReader = () => {
+    if (match && match.paper) onOpenReader && onOpenReader({ title: match.paper.title, source: match.paper.journal, kind: "article" });
+  };
+
+  return (
+    <div className="r-sim-screen-content">
+      <div className="r-sim-header"><RoundsWordmark height={13} /><div className="r-sim-avatar" /></div>
+      <h4 className="r-sim-title">Find a paper</h4>
+      <div className="r-sim-search-row">
+        <div className="r-sim-search-pill">
+          <Icons.search />
+          <input
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            onKeyDown={e => { if (e.key === "Enter") runSearch(); }}
+            placeholder="Paste a title, DOI, or link"
+            aria-label="Search field — paste a demo query and press Search"
+          />
+          {query && <button className="r-sim-clear" onClick={clear} aria-label="Clear">×</button>}
+        </div>
+        <button className="r-sim-search-btn" onClick={runSearch} disabled={!query.trim()}>Search</button>
+      </div>
+
+      <div className="r-sim-scroll">
+        {phase === "idle" && (
+          <div className="r-sim-empty"><SegmentedOMark size={36} /><span>Paste a title or DOI to begin.</span></div>
+        )}
+        {phase === "loading" && <SkeletonResultCard />}
+        {phase === "notfound" && (
+          <div className="r-sim-error">We couldn't find this article. Check the DOI, or try the exact title.</div>
+        )}
+        {phase === "result" && match && match.paper && (
+          <SimResultCard paper={match.paper} matchType={match.matchType} saved={isSaved} onToggleSave={toggleSave} onNotThisOne={clear} onRead={openReader} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============================== Library screen ============================== */
+
+function LibraryScreen({ saved }) {
+  const [tab, setTab] = useState("saved");
+  return (
+    <div className="r-sim-screen-content">
+      <div className="r-sim-header"><RoundsWordmark height={13} /><div className="r-sim-avatar" /></div>
+      <h4 className="r-sim-title">Library</h4>
+      <div className="r-sim-segment">
+        <button className={"r-sim-seg-btn" + (tab === "saved" ? " is-active" : "")} onClick={() => setTab("saved")}>Saved</button>
+        <button className={"r-sim-seg-btn" + (tab === "notes" ? " is-active" : "")} onClick={() => setTab("notes")}>Notes</button>
+      </div>
+      <div className="r-sim-scroll">
+        {tab === "notes" ? (
+          <div className="r-sim-empty"><SegmentedOMark size={32} /><span>Notes you write will appear here.</span></div>
+        ) : saved.length === 0 ? (
+          <div className="r-sim-empty"><SegmentedOMark size={32} /><span>Papers you save will appear here.</span></div>
+        ) : (
+          <div className="r-sim-list">
+            {saved.map(item => (
+              <div className="r-sim-article-row" key={item.doi}>
+                <div className="r-sim-article-main">
+                  {item.openAccess && <span className="r-sim-badge-oa">OPEN ACCESS</span>}
+                  <div className="r-sim-article-title">{item.title}</div>
+                  <div className="r-sim-article-doi">{item.doi}</div>
+                  <div className="r-sim-article-date">Saved {item.savedAt.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</div>
+                </div>
+                <span className="r-sim-chevron"><Icons.chevronRightSmall /></span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============================== Rounds screen (presentational — state lives in AppSimulator) ============================== */
+
+function RoundsScreen({ day, groups, dayIndex, loading, activeCategory, scrollRef, sectionRefs, onScroll, goTo, saved, setSaved, onOpenReader, onSaved }) {
+  const isSavedDigest = (id) => saved.some(s => s.doi === id);
+  const toggleSaveDigest = (item, id) => {
+    const already = saved.some(s => s.doi === id);
+    setSaved(prev => already ? prev.filter(s => s.doi !== id) : [{ doi: id, title: item.title, openAccess: false, savedAt: new Date() }, ...prev]);
+    if (!already && onSaved) onSaved();
+  };
+  const openReader = (item, isVideo) => onOpenReader && onOpenReader({ title: item.title, source: item.source, kind: isVideo ? "video" : "article" });
+
+  const heroId = "hero-" + dayIndex;
+  const activeMeta = CATEGORY_META[activeCategory];
+  const activeColor = activeMeta ? activeMeta.dot : "var(--r-teal)";
+  const activeLabel = activeMeta ? activeMeta.label : "";
+
+  return (
+    <div className="r-sim-screen-content">
+      <div className="r-sim-rounds-masthead">
+        <div>
+          <div className="r-sim-greeting">{greeting()}</div>
+          <div className="r-sim-edition-row">
+            <button className="r-sim-chev" disabled={dayIndex === DIGEST_DAYS.length - 1} onClick={() => goTo(1)} aria-label="Older edition"><Icons.chevronLeft /></button>
+            <span className="r-sim-edition-label">{dayIndex === 0 ? "Today's Rounds" : "Rounds"} · {formatEditionDate(dayIndex)}</span>
+            <button className="r-sim-chev" disabled={dayIndex === 0} onClick={() => goTo(-1)} aria-label="Newer edition"><Icons.chevronRight /></button>
+          </div>
+        </div>
+        <div className="r-sim-avatar" />
+      </div>
+      <div className="r-sim-double-rule"><div className="r1" /><div className="r2" /></div>
+
+      <div className="r-sim-status-row">
+        <span className="r-sim-status-dot" style={{ background: activeColor }} />
+        <span className="r-sim-status-label">{activeLabel}</span>
+        <span className="r-sim-status-spacer" />
+        <span className="r-sim-status-read">{readEstimate(day)}</span>
+      </div>
+      <div className="r-sim-progress">
+        {groups.map(g => (
+          <button
+            key={g.category}
+            className={"r-sim-progress-seg" + (activeCategory === g.category ? " is-active" : "")}
+            style={{ flexGrow: g.items.length, background: g.color, opacity: activeCategory === g.category ? 1 : 0.5 }}
+            onClick={() => { const el = sectionRefs.current[g.category]; if (el && scrollRef.current) scrollRef.current.scrollTo({ top: el.offsetTop - 8, behavior: "smooth" }); }}
+            aria-label={`Jump to ${g.label}`}
+          />
+        ))}
+      </div>
+
+      {loading ? (
+        <div className="r-sim-loading"><RotatingOMark size={40} /><span>Loading today's Rounds</span></div>
+      ) : (
+        <div className="r-sim-scroll" ref={scrollRef} onScroll={onScroll}>
+          <article className="r-sim-hero-card">
+            <div className="r-sim-badge-row">
+              <span className="r-sim-cat-badge" style={{ background: `color-mix(in srgb, ${CATEGORY_META[day.hero.category].dot} 12%, white)` }}>
+                <span className="r-sim-cat-dot" style={{ background: CATEGORY_META[day.hero.category].dot }} />
+                {CATEGORY_META[day.hero.category].label}
+              </span>
+              <span className="r-sim-top-label">Top of your Rounds</span>
+            </div>
+            <h5>{day.hero.title}</h5>
+            <p className="r-sim-summary">{day.hero.summary}</p>
+            <div className="r-sim-meta">{day.hero.source} · {formatEditionDate(dayIndex)}</div>
+            <div className="r-sim-hairline" />
+            <div className="r-sim-action-row">
+              <button className="r-sim-read-btn" onClick={() => openReader(day.hero, false)}>{day.hero.actionLabel}</button>
+              <button className={"r-sim-save-btn" + (isSavedDigest(heroId) ? " is-saved" : "")} onClick={() => toggleSaveDigest(day.hero, heroId)} aria-label="Save">
+                {isSavedDigest(heroId) ? <Icons.bookmarkFilled /> : <Icons.bookmarkOutline />}
+              </button>
+            </div>
+          </article>
+
+          {groups.map(g => {
+            const meta = CATEGORY_META[g.category];
+            return (
+              <div className="r-sim-section" key={g.category} ref={el => { sectionRefs.current[g.category] = el; }}>
+                <div className="r-sim-section-rule">
+                  <span className="r-sim-cat-dot" style={{ background: meta.dot }} />
+                  <span>{meta.label} · {g.items.length}</span>
+                </div>
+                {g.items.map((item, idx) => {
+                  const id = `${g.category}-${dayIndex}-${idx}`;
+                  const isVideo = item.actionLabel === "Watch";
+                  return (
+                    <article className="r-sim-digest-card" style={meta.stripe ? { borderLeftColor: meta.stripe } : {}} key={id}>
+                      <span className="r-sim-cat-badge" style={{ background: `color-mix(in srgb, ${meta.dot} 12%, white)`, alignSelf: "flex-start" }}>
+                        <span className="r-sim-cat-dot" style={{ background: meta.dot }} />
+                        {meta.label}
+                      </span>
+                      <h6>{item.title}</h6>
+                      <p className="r-sim-summary">{item.summary}</p>
+                      <div className="r-sim-meta">{item.source}</div>
+                      <div className="r-sim-hairline" />
+                      <div className="r-sim-action-row">
+                        <button className="r-sim-read-btn r-sim-read-btn--sm" onClick={() => openReader(item, isVideo)}>{item.actionLabel}</button>
+                        <button className={"r-sim-save-btn" + (isSavedDigest(id) ? " is-saved" : "")} onClick={() => toggleSaveDigest(item, id)} aria-label="Save">
+                          {isSavedDigest(id) ? <Icons.bookmarkFilled /> : <Icons.bookmarkOutline />}
+                        </button>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================== Tab bar — notched shape, floating disc, orbit dots ============================== */
+/* Recreated from RoundsTabBar.swift: Search | central elevated teal disc (segmented-O)
+   | Library, cradled in a notched bar. When the Rounds tab is active, a colored dot
+   per content-type section arcs above the disc — the real "orbit" the app actually has. */
+
+function SimTabBar({ tab, setTab, groups, activeCategory, onJump, onDiscTap, libraryPulse }) {
+  const barHeight = 54, discSize = 44, discRise = 8, orbitHeadroom = 40, orbitGap = 8;
+  const discRadius = discSize / 2;
+  const totalHeight = barHeight + discRise + discRadius + orbitHeadroom;
+  const cyTop = orbitHeadroom + discRadius;
+  const orbitR = discRadius + orbitGap;
+  const showOrbit = tab === "rounds" && groups.length > 0;
+  const activeMeta = groups.find(g => g.category === activeCategory);
+  const notchPath = "M0,0 L26.8,0 C35.5,0 41,18 50,18 C59,18 64.5,0 73.2,0 L100,0 L100,54 L0,54 Z";
+
+  return (
+    <div className="r-simbar" style={{ height: totalHeight }}>
+      <svg className="r-simbar-shape" width="100%" height={barHeight} viewBox="0 0 100 54" preserveAspectRatio="none">
+        <path d={notchPath} fill="var(--r-card)" stroke="var(--r-border)" strokeWidth="0.6" vectorEffect="non-scaling-stroke" />
+      </svg>
+      <div className="r-simbar-row" style={{ height: barHeight }}>
+        <button className="r-simbar-item" onClick={() => setTab("search")}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={tab === "search" ? "var(--r-teal)" : "var(--r-text-muted)"} strokeWidth="1.7" strokeLinecap="round"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+          <span style={{ color: tab === "search" ? "var(--r-teal)" : "var(--r-text-muted)" }}>Search</span>
+        </button>
+        <div className="r-simbar-oslot">
+          <img src="rounds-wordmark.svg" alt="" className="r-simbar-word" style={{ opacity: tab === "rounds" ? 1 : 0.35 }} />
+        </div>
+        <button className="r-simbar-item" onClick={() => setTab("library")}>
+          <span className="r-simbar-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={tab === "library" ? "var(--r-teal)" : "var(--r-text-muted)"} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 6v14" /><path d="M4 6c2.4-1.3 5.4-1.3 8 0 2.6-1.3 5.6-1.3 8 0v12c-2.4-1.3-5.4-1.3-8 0-2.6-1.3-5.6-1.3-8 0V6Z" /></svg>
+            {libraryPulse && <span className="r-simbar-ping" />}
+          </span>
+          <span style={{ color: tab === "library" ? "var(--r-teal)" : "var(--r-text-muted)" }}>Library</span>
+        </button>
+      </div>
+      <button
+        className="r-simbar-disc"
+        style={{ width: discSize, height: discSize, left: `calc(50% - ${discRadius}px)`, bottom: barHeight + discRise - discRadius }}
+        onClick={onDiscTap}
+        aria-label="Rounds"
+      >
+        <SegmentedOMark size={26} lineWidth={2.6} color="#fff" />
+      </button>
+      {showOrbit && (
+        <div className="r-simbar-orbit">
+          {groups.map((g, i) => {
+            const t = groups.length === 1 ? 0.5 : i / (groups.length - 1);
+            const angleDeg = -158 + 136 * t;
+            const angleRad = angleDeg * Math.PI / 180;
+            const dx = orbitR * Math.cos(angleRad);
+            const dy = orbitR * Math.sin(angleRad);
+            const isActive = activeCategory === g.category;
+            const size = isActive ? 13 : 9;
+            return (
+              <button
+                key={g.category}
+                className={"r-simbar-dot" + (isActive ? " is-active" : "")}
+                style={{ left: `calc(50% + ${dx}px)`, top: cyTop + dy, width: size, height: size, background: g.color }}
+                onClick={() => onJump(g.category)}
+                aria-label={`Jump to ${g.label}`}
+              />
+            );
+          })}
+          {activeMeta && <span className="r-simbar-orbit-label" style={{ color: activeMeta.color }}>{activeMeta.label.toUpperCase()}</span>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================== Phone simulator shell ============================== */
+
+function AppSimulator({ defaultTab = "search", saved, setSaved, shareSignal, label }) {
+  const [tab, setTab] = useState(defaultTab);
+  const [readerItem, setReaderItem] = useState(null);
+  const [pulseVisible, setPulseVisible] = useState(false);
+  const pulseTimer = useRef(null);
+
+  const [dayIndex, setDayIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(DIGEST_DAYS[0].hero.category);
+  const scrollRef = useRef(null);
+  const sectionRefs = useRef({});
+  const day = DIGEST_DAYS[dayIndex];
+
+  const groups = useMemo(() => {
+    const map = {};
+    day.items.forEach(item => { (map[item.category] = map[item.category] || []).push(item); });
+    return CATEGORY_ORDER.filter(c => map[c]).map(c => ({ category: c, label: CATEGORY_META[c].label, color: CATEGORY_META[c].dot, items: map[c] }));
+  }, [day]);
+
+  useEffect(() => {
+    setActiveCategory(day.hero.category);
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+  }, [dayIndex]);
+
+  useEffect(() => { if (shareSignal) setTab("search"); }, [shareSignal]);
+
+  const goToDay = (delta) => {
+    setLoading(true);
+    setTimeout(() => {
+      setDayIndex(i => Math.min(Math.max(i + delta, 0), DIGEST_DAYS.length - 1));
+      setLoading(false);
+    }, 420);
+  };
+
+  const handleRoundsScroll = () => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const top = container.scrollTop;
+    let current = day.hero.category;
+    Object.keys(sectionRefs.current).forEach(cat => {
+      const el = sectionRefs.current[cat];
+      if (el && el.offsetTop - 12 <= top) current = cat;
+    });
+    setActiveCategory(current);
+  };
+
+  const jumpTo = (cat) => {
+    if (tab !== "rounds") setTab("rounds");
+    if (!cat) { if (scrollRef.current) scrollRef.current.scrollTo({ top: 0, behavior: "smooth" }); return; }
+    const el = sectionRefs.current[cat];
+    if (el && scrollRef.current) scrollRef.current.scrollTo({ top: el.offsetTop - 8, behavior: "smooth" });
+  };
+
+  const handleDiscTap = () => {
+    if (tab === "rounds") jumpTo(null);
+    else setTab("rounds");
+  };
+
+  const notifySaved = () => {
+    setPulseVisible(true);
+    clearTimeout(pulseTimer.current);
+    pulseTimer.current = setTimeout(() => setPulseVisible(false), 1600);
+  };
+
+  return (
+    <div className="r-sim-phone" role="img" aria-label={label}>
+      <div className="r-sim-screen">
+        <div className="r-phone-notch" />
+        <div className="r-sim-status-bar" />
+        <div className="r-sim-content">
+          {tab === "search" && (
+            <SearchScreen saved={saved} setSaved={setSaved} onOpenReader={setReaderItem} onSaved={notifySaved} shareSignal={shareSignal} />
+          )}
+          {tab === "library" && <LibraryScreen saved={saved} />}
+          {tab === "rounds" && (
+            <RoundsScreen
+              day={day} groups={groups} dayIndex={dayIndex} loading={loading} activeCategory={activeCategory}
+              scrollRef={scrollRef} sectionRefs={sectionRefs} onScroll={handleRoundsScroll} goTo={goToDay}
+              saved={saved} setSaved={setSaved} onOpenReader={setReaderItem} onSaved={notifySaved}
+            />
+          )}
+        </div>
+        <SimTabBar tab={tab} setTab={setTab} groups={groups} activeCategory={activeCategory} onJump={jumpTo} onDiscTap={handleDiscTap} libraryPulse={pulseVisible} />
+        {readerItem && <ArticleReaderSheet item={readerItem} onClose={() => setReaderItem(null)} />}
+      </div>
+    </div>
+  );
+}
+
+/* ============================== Try-chip (copy to clipboard) ============================== */
+
+function TryChip({ label, value }) {
+  const [copied, setCopied] = useState(false);
+  const handle = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+    } catch (e) {
+      const ta = document.createElement("textarea");
+      ta.value = value;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand("copy"); } catch (_) {}
+      document.body.removeChild(ta);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1400);
+  };
+  return (
+    <button className="r-try-chip" onClick={handle} type="button">
+      <span className="r-try-chip-text">
+        <span className="r-try-chip-label">{label}</span>
+        <span className="r-try-chip-value">{value}</span>
+      </span>
+      <span className="r-try-chip-action">{copied ? "Copied" : "Copy"}</span>
+    </button>
+  );
+}
+
+/* ============================== Hero ============================== */
+
+function Hero({ saved, setSaved }) {
+  return (
+    <section className="r-hero">
+      <div className="r-container r-hero-grid">
+        <div>
+          <p className="r-eyebrow">For orthopaedic surgeons, residents &amp; researchers</p>
+          <h1 className="r-hero-title">Everything relevant.<br />Nothing else.</h1>
+          <p className="r-hero-sub">
+            Rounds gathers the orthopaedic literature that matters to you each day, and resolves any paper you search
+            to full text through your institution. Sign in once, read it in full.
+          </p>
+          <div className="r-hero-actions">
+            <button className="r-btn-primary" onClick={() => document.getElementById('cta').scrollIntoView({ behavior: 'smooth' })}>Get early access</button>
+            <button className="r-btn-secondary" onClick={() => document.getElementById('search-demo').scrollIntoView({ behavior: 'smooth' })}>Try the demo below</button>
+          </div>
+        </div>
+        <div className="r-phone-wrap">
+          <AppSimulator defaultTab="rounds" saved={saved} setSaved={setSaved} label="Rounds app — fully interactive preview" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================== Search + Save demo (merged) ============================== */
+
+function SearchDemoSection({ saved, setSaved }) {
+  return (
+    <section className="r-section" id="search-demo">
+      <div className="r-container">
+        <div className="r-section-head">
+          <p className="r-eyebrow">Interactive demo</p>
+          <h2>Search, save, and it's already in your Library</h2>
+          <p>
+            This is one continuous phone — the same tab bar and the same saved state you'd get in the real app.
+            Copy an example on the right and try the full loop yourself.
+          </p>
+        </div>
+        <div className="r-demo-grid">
+          <div>
+            <div className="r-step-list">
+              <div className="r-step"><span className="r-step-num">1</span><p><strong>Paste a query and tap Search.</strong> Try one of the examples on the right — a DOI, a title, even a publisher link.</p></div>
+              <div className="r-step"><span className="r-step-num">2</span><p><strong>Tap the bookmark</strong> on the result to save it. Watch the Library icon in the tab bar — it pulses to show you something changed.</p></div>
+              <div className="r-step"><span className="r-step-num">3</span><p><strong>Tap Library</strong> in the same tab bar. Your saved paper is right there — same phone, same session.</p></div>
+              <div className="r-step"><span className="r-step-num">4</span><p><strong>Tap Read now.</strong> Rounds never downloads or stores a file — it opens a link, which is what that button shows you here too.</p></div>
+            </div>
+          </div>
+          <div className="r-demo-visual r-demo-visual--wide">
+            <div className="r-demo-visual-row">
+              <AppSimulator defaultTab="search" saved={saved} setSaved={setSaved} label="Rounds Search tab, interactive demo" />
+              <div className="r-try-panel" style={{ maxWidth: 260 }}>
+                <h3>Try these</h3>
+                <p>Copy one, then paste it into the phone's search field.</p>
+                <div className="r-try-list">
+                  {SEARCH_EXAMPLES.map(ex => <TryChip key={ex.value} {...ex} />)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================== Share extension demo ============================== */
+
+const SHARE_SOURCES = [
+  { id: "browser", label: "Browser" },
+  { id: "messages", label: "Text message" },
+  { id: "mail", label: "Email" },
+  { id: "social", label: "Social post" },
+];
+
+function ShareExtensionDemo({ saved, setSaved }) {
+  const [source, setSource] = useState("browser");
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [shareSignal, setShareSignal] = useState(null);
+  const targetPaper = SEARCH_PAPERS.find(p => p.doi === "10.9999/rd.2026.0203");
+
+  const chooseRounds = () => {
+    setSheetOpen(false);
+    setShareSignal({ doi: targetPaper.doi, nonce: Date.now() });
+  };
+
+  return (
+    <section className="r-section" id="share-demo">
+      <div className="r-container">
+        <div className="r-section-head">
+          <p className="r-eyebrow">Interactive demo</p>
+          <h2>Skip the screenshot habit</h2>
+          <p>
+            The Share Extension works wherever a paper actually shows up — a browser tab, a colleague's text, an
+            email, a post. Highlight it, hit Share, no typing required.
+          </p>
+        </div>
+        <div className="r-demo-grid">
+          <div>
+            <div className="r-before-after">
+              <div className="r-before-after-row">
+                <span className="r-before-after-tag r-before-after-tag--before">Before</span>
+                <span>Screenshot the article, drop it in Photos or Notes, and hope you remember it's there next week.</span>
+              </div>
+              <div className="r-before-after-row">
+                <span className="r-before-after-tag r-before-after-tag--after">With Rounds</span>
+                <span>Tap Share from anywhere, choose Rounds, and it's already resolved — full text, saved library, no detour.</span>
+              </div>
+            </div>
+            <p style={{ fontSize: 13.5, color: 'var(--r-text-muted)', marginTop: 16, lineHeight: 1.5 }}>
+              Try it on the right: switch between a browser, text, email, or social post — the source doesn't matter,
+              the flow is the same. Tap Share, then choose Rounds.
+            </p>
+          </div>
+          <div className="r-demo-visual">
+            <div className="r-share-source-tabs">
+              {SHARE_SOURCES.map(s => (
+                <button key={s.id} className="r-share-source-tab" data-active={source === s.id} onClick={() => setSource(s.id)}>{s.label}</button>
+              ))}
+            </div>
+            <div className="r-share-browser">
+              {source === "browser" && (
+                <>
+                  <div className="r-share-browser-bar"><span>🔒</span><span>foot-ankle-journal-demo.org</span></div>
+                  <div className="r-share-article">
+                    <div className="r-share-article-kicker">ARTICLE</div>
+                    <div className="r-share-article-title">{targetPaper.title}</div>
+                    <div className="r-share-article-byline">{targetPaper.authors}</div>
+                  </div>
+                </>
+              )}
+              {source === "messages" && (
+                <div className="r-share-context">
+                  <div className="r-share-context-label">Messages · Dr. Bianchi</div>
+                  <div className="r-share-bubble">
+                    Have you read this yet — <mark className="r-share-highlight">{targetPaper.title}</mark>? Worth a look before Friday.
+                  </div>
+                </div>
+              )}
+              {source === "mail" && (
+                <div className="r-share-context">
+                  <div className="r-share-context-label">Mail · From Dr. Priya Nair</div>
+                  <div className="r-share-mail-subject">Subject: Worth a read before rounds</div>
+                  <div className="r-share-bubble r-share-bubble--mail">
+                    Thought this was relevant to your case this week — <mark className="r-share-highlight">{targetPaper.title}</mark>. Citation below.
+                  </div>
+                </div>
+              )}
+              {source === "social" && (
+                <div className="r-share-context">
+                  <div className="r-share-context-label">@ortho_updates · 2h</div>
+                  <div className="r-share-bubble r-share-bubble--social">
+                    New in Foot &amp; Ankle — <mark className="r-share-highlight">{targetPaper.title}</mark>. Full text linked below.
+                  </div>
+                </div>
+              )}
+              <button className="r-share-btn" onClick={() => setSheetOpen(true)}><Icons.upload /> Share</button>
+
+              {sheetOpen && (
+                <div className="r-share-sheet-backdrop" onClick={() => setSheetOpen(false)}>
+                  <div className="r-share-sheet" onClick={e => e.stopPropagation()}>
+                    <div className="r-share-grabber" />
+                    <div className="r-share-apps">
+                      <div className="r-share-app"><span className="r-share-app-generic-icon" />Messages</div>
+                      <div className="r-share-app"><span className="r-share-app-generic-icon" />Mail</div>
+                      <div className="r-share-app"><span className="r-share-app-generic-icon" />Notes</div>
+                      <button className="r-share-app r-share-app--rounds" onClick={chooseRounds}>
+                        <span className="r-share-app-icon"><SegmentedOMark size={22} lineWidth={2.2} color="#fff" /></span>
+                        Rounds
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="r-share-arrow" aria-hidden="true">↓</div>
+            <AppSimulator defaultTab="search" saved={saved} setSaved={setSaved} shareSignal={shareSignal} label="Rounds Search tab, opened via the Share Extension" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================== Daily Rounds edition demo ============================== */
+
+function DigestDemoSection({ saved, setSaved }) {
+  return (
+    <section className="r-section" id="digest-demo">
+      <div className="r-container">
+        <div className="r-section-head">
+          <p className="r-eyebrow">Interactive demo</p>
+          <h2>The daily Rounds edition</h2>
+          <p>A frozen daily edition, not a rolling feed. Every entry below is fictional, standing in for a real day's curated content.</p>
+        </div>
+        <div className="r-demo-grid">
+          <div>
+            <div className="r-step-list">
+              <div className="r-step"><span className="r-step-num">1</span><p>Scroll the edition — the dot and the colored bar under the masthead track your section as you read.</p></div>
+              <div className="r-step"><span className="r-step-num">2</span><p>Tap the teal circle in the tab bar. That's the same Rounds button as the real app, and the small dots arced above it are the real per-section orbit — tap one to jump straight there.</p></div>
+              <div className="r-step"><span className="r-step-num">3</span><p>Use the arrows next to the date to step to an older edition, or tap the teal circle again to jump back to the top.</p></div>
+              <div className="r-step"><span className="r-step-num">4</span><p>Tap Read or Watch on any card to confirm it actually opens something.</p></div>
+            </div>
+          </div>
+          <div className="r-demo-visual">
+            <AppSimulator defaultTab="rounds" saved={saved} setSaved={setSaved} label="Rounds daily edition tab, interactive demo" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================== Feature grid ============================== */
+
+function FeatureGrid() {
+  return (
+    <section className="r-section">
+      <div className="r-container">
+        <div className="r-section-head">
+          <p className="r-eyebrow">Everything else</p>
+          <h2>Built around one reading habit</h2>
+          <p>The rest of Rounds supports the same habit: open a paper, read it in full, keep what matters.</p>
+        </div>
+        <div className="r-feature-grid" style={{ marginTop: 32 }}>
+          {FEATURES.map(f => {
+            const Icon = Icons[f.icon];
+            return (
+              <div className="r-card r-feature-card" key={f.title}>
+                <div className="r-feature-icon"><Icon /></div>
+                <h3>{f.title}</h3>
+                <p>{f.body}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================== Taxonomy explorer ============================== */
+
+function TaxonomyExplorer() {
+  const [open, setOpen] = useState("Arthroplasty and Reconstruction");
+  const detail = open ? TAXONOMY[open] : null;
+  return (
+    <div>
+      <div className="r-subspecialty-wrap">
+        {SUBSPECIALTIES.map(s => (
+          <button key={s} className="r-chip" data-active={open === s} onClick={() => setOpen(open === s ? null : s)}>{s}</button>
+        ))}
+      </div>
+      {detail && (
+        <div className="r-taxonomy-detail">
+          <div className="r-taxonomy-row">
+            <span className="r-taxonomy-axis">Pathology</span>
+            <div className="r-taxonomy-leaves">{detail.pathology.map(p => <span className="r-leaf-chip" key={p}>{p}</span>)}</div>
+          </div>
+          {detail.joints && (
+            <div className="r-taxonomy-row">
+              <span className="r-taxonomy-axis">Joint</span>
+              <div className="r-taxonomy-leaves">{detail.joints.map(j => <span className="r-leaf-chip r-leaf-chip--alt" key={j}>{j}</span>)}</div>
+            </div>
+          )}
+          {detail.levels && (
+            <div className="r-taxonomy-row">
+              <span className="r-taxonomy-axis">Level</span>
+              <div className="r-taxonomy-leaves">{detail.levels.map(l => <span className="r-leaf-chip r-leaf-chip--alt" key={l}>{l}</span>)}</div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================== Audience ============================== */
+
+function Audience() {
+  return (
+    <section className="r-section">
+      <div className="r-container">
+        <div className="r-section-head">
+          <p className="r-eyebrow">Who Rounds is for</p>
+          <h2>Built for orthopaedic practice, not general medicine</h2>
+        </div>
+        <div className="r-audience-grid" style={{ marginTop: 32 }}>
+          <div className="r-audience-list">
+            {AUDIENCE.map(a => (
+              <div className="r-audience-item" key={a.title}>
+                <div style={{ marginTop: 3 }}><SegmentedOMark size={18} lineWidth={2.4} /></div>
+                <p><strong>{a.title}.</strong> {a.body}</p>
+              </div>
+            ))}
+          </div>
+          <div>
+            <p style={{ fontSize: 13.5, color: 'var(--r-text-muted)', marginBottom: 12 }}>
+              Tap a subspecialty to see the actual classification depth behind it.
+            </p>
+            <TaxonomyExplorer />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================== CTA + footer ============================== */
+
+function CtaSection() {
+  return (
+    <section className="r-cta-section" id="cta">
+      <div className="r-container">
+        <h2 className="r-serif">Rounds is in early access</h2>
+        <p>The app is built and in testing with a small group of institutions. Store availability is next.</p>
+        <div className="r-store-row">
+          <span className="r-store-badge" aria-disabled="true">
+            <SegmentedOMark size={22} />
+            <span><strong>App Store</strong>Coming soon</span>
+          </span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer>
+      <div className="r-container r-footer-inner">
+        <div className="r-footer-top">
+          <RoundsWordmark height={16} />
+          <div className="r-footer-links"><a href="mailto:hello@rounds.app">Contact</a></div>
+        </div>
+        <p className="r-disclaimer">
+          All papers, digest entries, names, and figures shown on this page are fictional demonstrations of Rounds'
+          interface and are not real studies, publications, or clinical data. Rounds and this website do not provide
+          medical advice, and nothing here should be used to inform a clinical decision.
+        </p>
+      </div>
+    </footer>
+  );
+}
+
+/* ============================== App ============================== */
+
+function App() {
+  const [saved, setSaved] = useState([]);
+  return (
+    <React.Fragment>
+      <Header />
+      <Hero saved={saved} setSaved={setSaved} />
+      <SearchDemoSection saved={saved} setSaved={setSaved} />
+      <ShareExtensionDemo saved={saved} setSaved={setSaved} />
+      <DigestDemoSection saved={saved} setSaved={setSaved} />
+      <FeatureGrid />
+      <Audience />
+      <CtaSection />
+      <Footer />
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+<script>
+(function () {
+  var source = document.getElementById('app-source').textContent;
+  var compiled = Babel.transform(source, {
+    presets: [["react", { runtime: "classic" }]],
+    filename: "app.jsx"
+  }).code;
+  (0, eval)(compiled);
+})();
+</script>
+</body>
+</html>
