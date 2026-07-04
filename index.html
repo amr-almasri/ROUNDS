@@ -201,6 +201,14 @@
     margin-bottom: 32px;
   }
 
+  .r-brand-ring-wrap { position: relative; display: flex; align-items: center; justify-content: center; margin: 32px auto 24px; }
+  .r-brand-ring-label {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center;
+    padding: 0 22%; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; line-height: 1.35;
+    color: var(--r-text-faint); transition: color var(--fast) var(--ease), font-size var(--fast) var(--ease); pointer-events: none;
+  }
+  .r-brand-ring-label.is-active { color: var(--r-text-primary); font-size: 18px; font-weight: 700; }
+
   .r-hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
   .r-phone-wrap { display: flex; justify-content: center; }
   .r-hero-phone-holder { position: relative; display: inline-block; }
@@ -563,8 +571,12 @@
   .r-share-col--right { grid-area: right; align-items: flex-start; }
   .r-share-phone-slot { grid-area: phone; }
   @media (max-width: 1000px) {
-    .r-share-radial { grid-template-columns: 1fr; grid-template-areas: "phone" "left" "right"; row-gap: 20px; }
+    .r-share-radial { grid-template-columns: 1fr; grid-template-areas: "left" "right" "phone"; row-gap: 24px; }
     .r-share-col--left, .r-share-col--right { align-items: center; }
+    /* The arrows only make sense pointing sideways into a phone that sits beside them;
+       once everything stacks in one column, drop the arrow and normalize row direction. */
+    .r-share-source-row--right { flex-direction: row; }
+    .r-share-source-arrow-svg { display: none; }
   }
 
   .r-share-source-row { display: flex; align-items: center; gap: 6px; }
@@ -698,6 +710,7 @@
     .r-section { padding: 64px 0; }
     .r-sim-phone { width: 260px; height: 610px; }
     .r-cta-section h2 { font-size: 26px; }
+    .r-share-source-btn { width: 40px; height: 40px; }
   }
 </style>
 </head>
@@ -755,6 +768,50 @@ function RotatingOMark({ size = 40, lineWidth = 3, color = "var(--r-teal)" }) {
         );
       })}
     </svg>
+  );
+}
+
+// The colorful segmented ring from the app icon — one arc per content type. Hover (or tap) an arc to
+// see what it represents; matches rLogoRingColors in RoundsLogo.swift, top-down, clockwise.
+const BRAND_RING_SEGMENTS = [
+  { label: "Industry updates", color: "var(--r-industry)" },
+  { label: "Society updates", color: "var(--r-society)" },
+  { label: "Podcasts", color: "var(--r-provincial)" },
+  { label: "Literature", color: "var(--r-teal)" },
+  { label: "Technique videos", color: "var(--r-surgical)" },
+  { label: "Regulatory notices", color: "var(--r-regulatory)" },
+];
+
+function BrandRingLogo({ size = 100 }) {
+  const [hovered, setHovered] = useState(null);
+  const segments = BRAND_RING_SEGMENTS.length;
+  const lineWidth = size * 0.085;
+  const r = (size - lineWidth) / 2;
+  const c = 2 * Math.PI * r;
+  const period = c / segments;
+  const dash = period * 0.74;
+  const gap = period - dash;
+
+  const rendered = `min(${size}px, 68vw)`;
+  return (
+    <div className="r-brand-ring-wrap" style={{ width: rendered, height: rendered }}>
+      <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} role="img" aria-label="Rounds content categories — hover an arc to see what it represents">
+        {BRAND_RING_SEGMENTS.map((seg, i) => (
+          <circle
+            key={seg.label}
+            cx={size / 2} cy={size / 2} r={r} fill="none" stroke={seg.color}
+            strokeWidth={lineWidth} strokeLinecap="round"
+            strokeDasharray={`${dash} ${c - dash}`} strokeDashoffset={gap / 2 - i * period}
+            transform={`rotate(-90 ${size / 2} ${size / 2})`}
+            style={{ cursor: "pointer", opacity: hovered && hovered !== seg.label ? 0.35 : 1, transition: "opacity var(--fast) var(--ease)" }}
+            onMouseEnter={() => setHovered(seg.label)}
+            onMouseLeave={() => setHovered(null)}
+            onClick={() => setHovered(h => h === seg.label ? null : seg.label)}
+          />
+        ))}
+      </svg>
+      <div className={"r-brand-ring-label" + (hovered ? " is-active" : "")}>{hovered || "Hover a colour to see our sources"}</div>
+    </div>
   );
 }
 
@@ -1800,6 +1857,7 @@ function DigestDemoSection({ saved, setSaved }) {
               <div className="r-step"><span className="r-step-num">3</span><p>Use the arrows next to the date to step to an older edition, or tap the teal circle again to jump back to the top.</p></div>
               <div className="r-step"><span className="r-step-num">4</span><p>Tap Read or Watch on any card to confirm it actually opens something.</p></div>
             </div>
+            <BrandRingLogo size={300} />
           </div>
           <div className="r-demo-visual">
             <AppSimulator defaultTab="rounds" saved={saved} setSaved={setSaved} label="Rounds daily edition tab, interactive demo" />
