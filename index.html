@@ -1030,6 +1030,7 @@ function ArticleReaderSheet({ item, onClose }) {
         </p>
         <p className="r-reader-p">
           Rounds never downloads or stores the file — it only ever opens a link, the same way tapping it in Safari would.
+          Want it later without a connection? Save a copy to your phone from here; Rounds itself doesn't keep one.
         </p>
         <p className="r-reader-note">Demo content — not a real article.</p>
       </div>
@@ -1565,10 +1566,10 @@ function Hero({ saved, setSaved }) {
       <div className="r-container r-hero-grid">
         <div>
           <p className="r-eyebrow">For orthopaedic surgeons, residents &amp; researchers</p>
-          <h1 className="r-hero-title">Everything relevant.<br />Nothing else.</h1>
+          <h1 className="r-hero-title">Everything you need.<br />One place.</h1>
           <p className="r-hero-sub">
             Rounds gathers the orthopaedic literature that matters to you each day, and resolves any paper you search
-            to full text through your institution. Sign in once, read it in full.
+            to full text using your institutional access. Sign in once and access any full text within just a couple of taps.
           </p>
           <div className="r-hero-actions">
             <button className="r-btn-primary" onClick={() => document.getElementById('cta').scrollIntoView({ behavior: 'smooth' })}>Get early access</button>
@@ -1605,7 +1606,7 @@ function SearchDemoSection({ saved, setSaved }) {
               <div className="r-step"><span className="r-step-num">1</span><p><strong>Paste a query and tap Search.</strong> Try one of the examples on the right — a DOI, a title, even a publisher link.</p></div>
               <div className="r-step"><span className="r-step-num">2</span><p><strong>Tap the bookmark</strong> on the result to save it. Watch the Library icon in the tab bar — it pulses to show you something changed.</p></div>
               <div className="r-step"><span className="r-step-num">3</span><p><strong>Tap Library</strong> in the same tab bar. Your saved paper is right there — same phone, same session.</p></div>
-              <div className="r-step"><span className="r-step-num">4</span><p><strong>Tap Read now.</strong> Rounds never downloads or stores a file — it opens a link, which is what that button shows you here too.</p></div>
+              <div className="r-step"><span className="r-step-num">4</span><p><strong>Tap Read now.</strong> Rounds opens a link rather than storing a file — which is what that button shows you here too. If you'd like an offline copy, you can save one to your phone from there; Rounds itself never keeps it.</p></div>
             </div>
           </div>
           <div className="r-demo-visual r-demo-visual--wide">
@@ -1940,7 +1941,7 @@ function Audience() {
       <div className="r-container">
         <div className="r-section-head">
           <p className="r-eyebrow">Who Rounds is for</p>
-          <h2>Built for orthopaedic practice, not general medicine</h2>
+          <h2>Built specifically for orthopaedic practice</h2>
         </div>
         <div className="r-audience-grid" style={{ marginTop: 32 }}>
           <div className="r-audience-list">
