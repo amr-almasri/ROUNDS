@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Terms of Use — Rounds</title>
+  <meta name="description" content="Terms governing use of the Rounds orthopaedic literature app and website." />
+  <link rel="canonical" href="https://getrounds.ca/terms/" />
+  <link rel="stylesheet" href="../legal.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../" aria-label="Rounds home"><img class="brand-wordmark" src="../rounds-wordmark.svg" alt="Rounds" /></a>
+      <nav class="header-nav" aria-label="Legal and support"><a href="../privacy/">Privacy</a><a href="../terms/" aria-current="page">Terms</a><a href="../community-guidelines/">Community</a><a class="keep-mobile" href="../support/">Support</a></nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="legal-hero">
+      <div class="header-inner" style="display:block">
+        <p class="eyebrow">Terms of Use</p>
+        <h1>Read critically. Participate professionally.</h1>
+        <p class="hero-summary">These terms set the rules for using Rounds, including its evidence-scored digest, article resolver, saved library, and professional discussion features.</p>
+        <span class="updated">Effective July 10, 2026</span>
+      </div>
+    </div>
+
+    <div class="page-shell">
+      <aside class="toc" aria-label="On this page"><strong>On this page</strong><nav>
+        <a href="#agreement">Agreement</a><a href="#service">The service</a><a href="#eligibility">Accounts</a><a href="#clinical">No medical advice</a><a href="#access">Institutional access</a><a href="#community">User content</a><a href="#acceptable-use">Acceptable use</a><a href="#ip">Intellectual property</a><a href="#third-party">Third parties</a><a href="#termination">Termination</a><a href="#disclaimers">Disclaimers</a><a href="#general">General terms</a>
+      </nav></aside>
+
+      <article class="legal-content">
+        <section id="agreement">
+          <h2>1. Agreement to these terms</h2>
+          <p>These Terms of Use ("Terms") are an agreement between you and Rounds ("Rounds," "we," "us," or "our") governing your access to the Rounds iOS app, Share Extension, website, and related services (collectively, the "Service").</p>
+          <p>By creating an account or using the Service, you agree to these Terms, our <a href="../privacy/">Privacy Policy</a>, and our <a href="../community-guidelines/">Community Guidelines</a>. If you do not agree, do not use the Service.</p>
+        </section>
+
+        <section id="service">
+          <h2>2. What Rounds provides</h2>
+          <p>Rounds helps orthopaedic professionals discover literature, view evidence-priority signals, resolve article links through open-access or institutional pathways, save references locally, keep local notes, and discuss papers with other members.</p>
+          <p>The Service may change as sources, publishers, institutions, laws, and product requirements change. Features may be added, limited, suspended, or removed.</p>
+          <div class="plain-language"><strong>The Rounds Evidence Score is a reading-priority signal</strong><p>It is based on information a paper reports, including design, journal standing, sample and effect signals, outcomes, and integrity notices. It is not peer review, a guarantee of validity, or a verdict on clinical quality.</p></div>
+        </section>
+
+        <section id="eligibility">
+          <h2>3. Eligibility and accounts</h2>
+          <ul>
+            <li>You must be at least 18 and legally capable of agreeing to these Terms.</li>
+            <li>You must provide accurate account information and keep your sign-in methods secure.</li>
+            <li>You may not share passwords, verification codes, session tokens, or institutional credentials.</li>
+            <li>You are responsible for activity performed through your account unless you promptly report unauthorized use.</li>
+            <li>Profession and institution fields are self-reported unless the Service explicitly labels them as verified. Do not misrepresent credentials, affiliation, training, or authority.</li>
+          </ul>
+          <p>Administrative status and subscription tier are assigned only by Rounds and do not establish professional credentials.</p>
+        </section>
+
+        <section id="clinical">
+          <h2>4. Educational use only — no medical advice</h2>
+          <div class="warning"><strong>Do not use Rounds as the sole basis for patient care.</strong><p>Rounds does not provide diagnosis, treatment, prescribing, medical advice, or a clinician-patient relationship. Evidence scores, summaries, discussion, links, and notifications require independent professional judgment and review of the original source.</p></div>
+          <p>You are responsible for verifying accuracy, currency, applicability, conflicts, retractions, corrections, local standards, patient factors, and licensing requirements before relying on any information.</p>
+          <p>The Service is not designed for emergencies or time-critical clinical communication.</p>
+        </section>
+
+        <section id="access">
+          <h2>5. Institutional and publisher access</h2>
+          <p>Rounds can direct you to publishers, open-access files, or your selected institution’s access system. Rounds does not grant a subscription, copyright licence, or right to obtain content beyond the rights provided by the publisher, author, institution, or applicable law.</p>
+          <ul>
+            <li>Use institutional access only if you are authorized under your institution’s terms.</li>
+            <li>Do not automate bulk downloads, scrape publishers, evade access controls, or share proxy access.</li>
+            <li>Publisher and institutional availability may change without notice.</li>
+            <li>Rounds never prefetches or stores paywalled PDFs. Open-access PDFs may be temporarily cached.</li>
+          </ul>
+          <p>When you download a PDF through the Files picker, you choose where it is stored and are responsible for using it lawfully. Deleting the Rounds reference does not delete your file.</p>
+        </section>
+
+        <section id="community">
+          <h2>6. User content and professional discussion</h2>
+          <p>You retain ownership of comments and other content you submit ("User Content"). You grant Rounds a non-exclusive, worldwide, royalty-free licence to host, reproduce, display, format, moderate, and distribute User Content only as needed to operate, secure, and improve the Service.</p>
+          <p>You represent that you have the rights needed to submit your User Content and that it complies with law and these Terms. Never submit patient-identifying information, confidential institutional information, copyrighted full text you lack permission to share, or another person’s personal information without authority.</p>
+          <p>Other members may copy or preserve information they can see. Account deletion erases your content from Rounds, but we cannot control copies independently made by other people before deletion.</p>
+          <p>Our <a href="../community-guidelines/">Community Guidelines</a> explain reporting, blocking, automated safeguards, human review, and enforcement.</p>
+        </section>
+
+        <section id="acceptable-use">
+          <h2>7. Acceptable use</h2>
+          <p>You must not:</p>
+          <ul>
+            <li>break the law, infringe rights, or encourage unlawful conduct;</li>
+            <li>harass, threaten, impersonate, deceive, discriminate against, or expose another person;</li>
+            <li>post patient identifiers, passwords, access tokens, private keys, malware, or spam;</li>
+            <li>interfere with security, rate limits, authentication, moderation, or service availability;</li>
+            <li>reverse engineer or probe the Service except where applicable law expressly permits it;</li>
+            <li>use automated means to create accounts, post content, report users, or extract data without written permission;</li>
+            <li>use Rounds or its outputs to train a competing model or service without written permission; or</li>
+            <li>misrepresent the source, strength, endorsement, or clinical meaning of a Rounds Evidence Score.</li>
+          </ul>
+        </section>
+
+        <section id="ip">
+          <h2>8. Rounds intellectual property</h2>
+          <p>The Service, brand, interface, taxonomy, scoring presentation, software, and original editorial material are owned by or licensed to Rounds and protected by applicable intellectual-property laws. Article metadata, abstracts, publisher content, and third-party marks remain the property of their respective owners.</p>
+          <p>Subject to these Terms, Rounds gives you a limited, personal, revocable, non-exclusive, non-transferable licence to use the Service for professional educational purposes.</p>
+          <p>Feedback you voluntarily provide may be used to improve the Service without obligation to compensate you, provided we handle personal information under the Privacy Policy.</p>
+        </section>
+
+        <section id="third-party">
+          <h2>9. Third-party services and links</h2>
+          <p>The Service depends on external identity providers, libraries, publishers, metadata sources, hosting providers, and websites. Their terms and privacy practices apply to their services. Rounds does not control and is not responsible for third-party availability, content, security, or decisions.</p>
+          <p>A link, score, citation, or inclusion in a digest is not an endorsement of an author, journal, institution, product, procedure, or conclusion.</p>
+        </section>
+
+        <section id="termination">
+          <h2>10. Suspension, termination, and deletion</h2>
+          <p>You may stop using Rounds or permanently delete your account in the app at any time. We may restrict, suspend, or terminate access when reasonably necessary to protect users, institutions, publishers, the Service, or legal rights; investigate misconduct; enforce these Terms; or comply with law.</p>
+          <p>Where appropriate, enforcement may begin with a warning, content hold, removal, or feature restriction. Serious or repeated violations may result in immediate suspension or termination.</p>
+          <p>Sections that by their nature should survive termination—including ownership, disclaimers, limitations, and general legal terms—continue to apply.</p>
+        </section>
+
+        <section id="disclaimers">
+          <h2>11. Disclaimers and limitation of liability</h2>
+          <p>To the maximum extent permitted by law, the Service is provided “as is” and “as available.” Rounds does not guarantee uninterrupted availability, complete coverage, successful full-text access, error-free metadata, or that scores, summaries, notices, comments, or links are accurate, complete, or current.</p>
+          <p>To the maximum extent permitted by law, Rounds and its operators will not be liable for indirect, incidental, special, consequential, exemplary, or punitive damages; loss of data, access, revenue, or opportunity; or clinical, professional, institutional, or publisher decisions arising from use of or inability to use the Service.</p>
+          <p>Nothing in these Terms excludes liability that cannot legally be excluded. Consumer-protection rights that apply to you are not waived.</p>
+        </section>
+
+        <section id="general">
+          <h2>12. General terms</h2>
+          <h3>Changes</h3><p>We may update these Terms. Material changes will be communicated through the Service or another reasonable channel. Continued use after the effective date means you accept the updated Terms.</p>
+          <h3>Governing law</h3><p>These Terms are governed by the laws of Ontario and the federal laws of Canada applicable there, without regard to conflict-of-law rules. Courts located in Ontario will have jurisdiction, subject to rights you may have under mandatory local law.</p>
+          <h3>Severability and waiver</h3><p>If a provision is unenforceable, the remaining provisions continue in effect. Failure to enforce a provision is not a waiver.</p>
+          <h3>Assignment</h3><p>You may not assign these Terms without our consent. Rounds may assign them as part of a reorganization, financing, merger, acquisition, or transfer of the Service.</p>
+          <h3>Entire agreement</h3><p>These Terms, the Privacy Policy, and Community Guidelines are the entire agreement concerning the Service unless another written agreement expressly applies.</p>
+          <div class="contact-card"><h2>Questions about these terms?</h2><p>Contact Rounds and include “Terms” in the subject line.</p><div class="contact-actions"><a class="button-primary" href="mailto:hello@rounds.app?subject=Terms%20question">Email Rounds</a><a class="button-secondary" href="../support/">Visit Support</a></div></div>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer"><div class="footer-inner"><div class="footer-top"><a class="brand" href="../"><img class="brand-wordmark" src="../rounds-wordmark.svg" alt="Rounds" /></a><nav class="footer-links" aria-label="Footer"><a href="../privacy/">Privacy</a><a href="../terms/">Terms</a><a href="../community-guidelines/">Community Guidelines</a><a href="../support/">Support</a></nav></div><p class="footer-note">Rounds is an educational literature-discovery service. It does not provide medical advice and should not be used as the sole basis for a clinical decision.</p></div></footer>
+</body>
+</html>
