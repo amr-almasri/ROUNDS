@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Rounds — The orthopaedic literature that matters to you</title>
-<meta name="description" content="Rounds is a daily digest and full-text resolver for orthopaedic surgeons, residents, and researchers. Search any paper, save it for later, and read a curated edition each day." />
+<meta name="description" content="Rounds is an evidence-scored digest and full-text resolver for orthopaedic surgeons, residents, and researchers. Every paper carries a Rounds Evidence Score, sorted best-evidence-first, delivered at the cadence you choose." />
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap');
@@ -30,6 +30,11 @@
     --r-cme: #1D4ED8;
     --r-provincial: #5B21B6;
     --r-literature: #15803D;
+
+    /* Rounds Evidence Score tiers */
+    --r-tier-key: #0D7A6B;
+    --r-tier-notable: #D97706;
+    --r-tier-background: #64748B;
 
     --space-xs: 4px;
     --space-s: 8px;
@@ -387,12 +392,12 @@
 
   .r-sim-read-btn {
     flex: 1; background: var(--r-teal); color: #fff; border: none; border-radius: var(--radius-control);
-    font-size: 12.5px; font-weight: 600; padding: 10px 12px;
+    font-size: 11.5px; font-weight: 600; padding: 9px 12px;
     display: flex; align-items: center; justify-content: center; gap: 6px;
     transition: transform var(--fast) var(--ease), background var(--fast) var(--ease);
   }
   .r-sim-read-btn:active { transform: scale(0.97); }
-  .r-sim-read-btn--sm { font-size: 11.5px; padding: 8px 10px; }
+  .r-sim-read-btn--sm { font-size: 11px; padding: 8px 10px; }
 
   .r-sim-save-btn {
     width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--r-border); background: #fff;
@@ -401,6 +406,15 @@
   }
   .r-sim-save-btn:active { transform: scale(0.9); }
   .r-sim-save-btn.is-saved { background: var(--r-teal); border-color: var(--r-teal); }
+
+  .r-sim-icon-btn {
+    height: 32px; padding: 0 10px; border-radius: var(--radius-control); border: 1px solid var(--r-border); background: #fff;
+    display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; color: var(--r-text-muted);
+    transition: border-color var(--fast) var(--ease), color var(--fast) var(--ease), transform var(--fast) var(--ease);
+  }
+  .r-sim-icon-btn:active { transform: scale(0.92); }
+  .r-sim-icon-btn.is-set { color: var(--r-teal); border-color: color-mix(in srgb, var(--r-teal) 45%, white); }
+  .r-sim-club-date { font-size: 11px; font-weight: 700; }
 
   .r-sim-not-this-one {
     width: calc(100% - 26px); margin: 0 13px 13px; background: none; border: 1px solid var(--r-teal);
@@ -469,11 +483,14 @@
 
   /* Rounds screen */
   .r-sim-rounds-masthead { display: flex; align-items: flex-start; justify-content: space-between; padding: 14px 16px 10px; flex-shrink: 0; }
-  .r-sim-greeting { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+  .r-sim-greeting { font-family: 'Playfair Display', Georgia, serif; font-size: 15.5px; font-weight: 600; margin-bottom: 6px; }
   .r-sim-edition-row { display: flex; align-items: center; gap: 6px; }
   .r-sim-chev { background: none; border: none; color: var(--r-text-muted); width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; padding: 0; }
   .r-sim-chev:disabled { color: var(--r-text-faint); opacity: 0.5; }
-  .r-sim-edition-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-muted); }
+  .r-sim-edition-label { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-muted); }
+  .r-sim-scope { font-size: 11px; color: var(--r-text-muted); margin-top: 6px; }
+  .r-sim-goal-chip { display: inline-flex; align-items: center; gap: 5px; margin-top: 7px; font-size: 10px; font-weight: 700; color: var(--r-teal); background: var(--r-teal-faint); padding: 4px 9px; border-radius: 999px; }
+  .r-sim-goal-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--r-teal); flex-shrink: 0; }
 
   .r-sim-double-rule { flex-shrink: 0; margin: 0 16px; }
   .r-sim-double-rule .r1 { height: 1px; background: var(--r-border); }
@@ -481,9 +498,9 @@
 
   .r-sim-status-row { display: flex; align-items: center; gap: 7px; padding: 10px 16px 8px; flex-shrink: 0; }
   .r-sim-status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .r-sim-status-label { font-size: 11.5px; font-weight: 700; color: var(--r-text-soft); }
+  .r-sim-status-label { font-size: 11px; font-weight: 700; color: var(--r-text-soft); }
   .r-sim-status-spacer { flex: 1; }
-  .r-sim-status-read { font-size: 10.5px; color: var(--r-text-faint); }
+  .r-sim-status-read { font-size: 10px; color: var(--r-text-faint); }
 
   .r-sim-progress { display: flex; gap: 3px; padding: 0 16px 14px; flex-shrink: 0; }
   .r-sim-progress-seg { height: 5px; border: none; border-radius: 999px; padding: 0; transition: height var(--fast) var(--ease), opacity var(--fast) var(--ease); }
@@ -496,25 +513,45 @@
     border-radius: var(--radius-card); box-shadow: 0 8px 10px -6px rgba(0,0,0,0.08);
     padding: 16px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px;
   }
-  .r-sim-hero-card h5 { font-family: 'Playfair Display', Georgia, serif; font-size: 16.5px; font-weight: 600; line-height: 1.32; margin: 0; }
+  .r-sim-hero-card h5 { font-family: 'Playfair Display', Georgia, serif; font-size: 15px; font-weight: 600; line-height: 1.3; margin: 0; }
 
   .r-sim-badge-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .r-sim-cat-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-soft); padding: 3px 8px; border-radius: 999px; }
   .r-sim-cat-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
   .r-sim-top-label { font-size: 8.5px; font-weight: 700; letter-spacing: 0.5px; color: var(--r-text-faint); text-transform: uppercase; white-space: nowrap; }
 
-  .r-sim-summary { font-size: 12px; color: var(--r-text-soft); line-height: 1.5; }
-  .r-sim-meta { font-size: 10px; color: var(--r-text-faint); }
+  .r-sim-summary { font-size: 11px; color: var(--r-text-soft); line-height: 1.5; }
+  .r-sim-meta { font-size: 9.5px; color: var(--r-text-faint); }
+  .r-sim-readtime { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 600; color: var(--r-text-muted); }
+
+  /* Digest cover mark — segmented ring + per-source count chips */
+  .r-sim-cover { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 6px 0 18px; }
+  .r-sim-cover-ring { position: relative; flex-shrink: 0; }
+  .r-sim-cover-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
+  .r-sim-cover-num { font-family: 'Playfair Display', Georgia, serif; font-size: 23px; font-weight: 600; color: var(--r-text-primary); }
+  .r-sim-cover-sub { font-size: 8px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: var(--r-text-faint); margin-top: 3px; }
+  .r-sim-cover-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
+  .r-sim-cover-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 9.5px; font-weight: 600; color: var(--r-text-soft); border: 1px solid var(--r-border); border-radius: 999px; padding: 3px 8px; cursor: pointer; }
+  .r-sim-cover-chip strong { font-weight: 800; color: var(--r-text-primary); }
+  .r-sim-cover-chip-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  /* In-card Rounds Evidence Score row — teal ring + name, tier pill on the right */
+  .r-sim-res { display: flex; align-items: center; gap: 6px; align-self: stretch; }
+  .r-sim-res-ring { position: relative; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .r-sim-res-num { position: absolute; font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .r-sim-res-name { font-size: 10px; font-weight: 700; color: var(--r-teal); line-height: 1.2; flex: 1 1 auto; min-width: 0; }
+  .r-sim-res-spacer { display: none; }
+  .r-sim-res-pill { font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
 
   .r-sim-section { margin-bottom: 6px; }
-  .r-sim-section-rule { display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-muted); padding: 10px 0 8px; }
+  .r-sim-section-rule { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-muted); padding: 10px 0 8px; }
 
   .r-sim-digest-card {
     background: var(--r-card); border: 1px solid var(--r-border); border-left: 3px solid transparent;
     border-radius: var(--radius-card); box-shadow: 0 4px 6px -4px rgba(0,0,0,0.05);
     padding: 13px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px;
   }
-  .r-sim-digest-card h6 { font-family: 'Playfair Display', Georgia, serif; font-size: 13.5px; font-weight: 600; line-height: 1.32; margin: 0; }
+  .r-sim-digest-card h6 { font-family: 'Playfair Display', Georgia, serif; font-size: 12.5px; font-weight: 600; line-height: 1.3; margin: 0; }
   .r-sim-digest-card .r-sim-action-row, .r-sim-digest-card .r-sim-hairline { margin-left: -13px; margin-right: -13px; }
   .r-sim-digest-card .r-sim-action-row { padding-left: 13px; padding-right: 13px; }
   .r-sim-hero-card .r-sim-action-row, .r-sim-hero-card .r-sim-hairline { margin-left: -16px; margin-right: -16px; }
@@ -668,6 +705,47 @@
   .r-feature-card h3 { font-family: 'DM Sans', sans-serif; font-size: 15.5px; font-weight: 700; }
   .r-feature-card p { font-size: 13.5px; color: var(--r-text-soft); line-height: 1.55; }
 
+  /* ---------- Hero brand mark ---------- */
+  .r-hero-brand { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .r-hero-brand-text { font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--r-text-faint); }
+
+  /* ---------- Evidence score section ---------- */
+  .r-res-how { margin-top: 30px; }
+  .r-res-how-label { font-size: 14px; font-weight: 700; color: var(--r-text-primary); margin-bottom: 14px; }
+  .r-res-how-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 700px) { .r-res-how-steps { grid-template-columns: 1fr; } }
+  .r-res-how-step { display: flex; gap: 12px; align-items: flex-start; }
+  .r-res-how-num { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--r-teal-faint); color: var(--r-teal); font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .r-res-how-step h4 { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; margin: 2px 0 4px; }
+  .r-res-how-step p { font-size: 13px; color: var(--r-text-soft); line-height: 1.55; }
+  .r-res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 32px; }
+  @media (max-width: 820px) { .r-res-grid { grid-template-columns: 1fr; } }
+  .r-res-card { padding: 22px; display: flex; flex-direction: column; gap: 12px; border-top: 3px solid var(--tier); }
+  .r-res-card-head { display: flex; align-items: center; gap: 14px; }
+  .r-res-ring { position: relative; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .r-res-ring-num { position: absolute; font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--tier); }
+  .r-res-tier-name { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 600; }
+  .r-res-range { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--tier); margin-top: 2px; }
+  .r-res-card p { font-size: 13.5px; color: var(--r-text-soft); line-height: 1.55; }
+  .r-res-weighs { margin-top: 36px; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: start; }
+  @media (max-width: 820px) { .r-res-weighs { grid-template-columns: 1fr; gap: 24px; } }
+  .r-res-chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .r-res-chip { font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: var(--r-teal-faint); color: var(--r-teal); }
+  .r-res-note { background: #fff; border: 1px solid var(--r-border); border-left: 3px solid var(--r-teal); border-radius: var(--radius-card); padding: 18px 20px; }
+  .r-res-note h3 { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .r-res-note p { font-size: 13.5px; color: var(--r-text-soft); line-height: 1.6; }
+
+  /* ---------- Cadence section ---------- */
+  .r-cadence-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 32px; }
+  @media (max-width: 820px) { .r-cadence-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 440px) { .r-cadence-grid { grid-template-columns: 1fr; } }
+  .r-cadence-card { padding: 20px 18px; display: flex; flex-direction: column; gap: 6px; text-align: left; transition: border-color var(--fast) var(--ease), background var(--fast) var(--ease); }
+  .r-cadence-card[data-active="true"] { border-color: var(--r-teal); background: var(--r-teal-faint); }
+  .r-cadence-when { font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 600; }
+  .r-cadence-sub { font-size: 12.5px; color: var(--r-text-muted); line-height: 1.45; }
+  .r-cadence-badge { align-self: flex-start; margin-top: 4px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-teal); background: #fff; border: 1px solid var(--r-teal); border-radius: 999px; padding: 2px 8px; }
+  .r-cadence-foot { margin-top: 20px; font-size: 13.5px; color: var(--r-text-muted); line-height: 1.6; max-width: 60ch; }
+
   /* ---------- Audience ---------- */
   .r-audience-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: start; }
   .r-audience-list { display: flex; flex-direction: column; gap: 16px; }
@@ -687,7 +765,7 @@
   footer { border-top: 1px solid var(--r-border); padding: 40px 0; }
   .r-footer-inner { display: flex; flex-direction: column; gap: 16px; }
   .r-footer-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-  .r-footer-links { display: flex; gap: 20px; font-size: 13px; color: var(--r-text-muted); }
+  .r-footer-links { display: flex; flex-wrap: wrap; gap: 14px 20px; font-size: 13px; color: var(--r-text-muted); }
   .r-disclaimer { font-size: 12px; color: var(--r-text-muted); line-height: 1.6; max-width: 80ch; }
 
   @media (prefers-reduced-motion: reduce) {
@@ -708,7 +786,7 @@
     .r-hero { padding: 56px 0 64px; }
     .r-hero-title { font-size: 32px; }
     .r-section { padding: 64px 0; }
-    .r-sim-phone { width: 260px; height: 610px; }
+    .r-sim-phone { width: 280px; height: 640px; }
     .r-cta-section h2 { font-size: 26px; }
     .r-share-source-btn { width: 40px; height: 40px; }
   }
@@ -729,6 +807,15 @@ const { useState, useMemo, useRef, useEffect } = React;
 // The real wordmark asset (rounds-wordmark.svg) — same file the app ships.
 function RoundsWordmark({ height = 20, style = {} }) {
   return <img src="rounds-wordmark.svg" alt="Rounds" className="r-logo-img" style={{ height, ...style }} />;
+}
+
+// Apple logo for the App Store badge — official glyph outline.
+function AppleLogo({ size = 22, color = "var(--r-text-muted)" }) {
+  return (
+    <svg width={size * 0.86} height={size} viewBox="0 0 842 1000" fill={color} role="img" aria-label="Apple">
+      <path d="M824 730c-15 35-33 67-54 96-29 40-53 68-71 84-28 26-58 39-90 40-23 0-51-7-83-20-33-13-63-20-90-20-29 0-59 7-92 20-33 13-59 20-79 21-31 1-62-12-91-40-19-17-43-45-73-86-32-43-59-93-80-150-22-61-33-121-33-179 0-66 14-124 43-172 23-38 53-68 91-90 38-22 79-33 123-34 24 0 56 8 96 23 40 15 65 23 76 23 8 0 36-9 84-27 45-16 83-23 114-20 84 7 148 40 190 100-75 46-113 110-112 193 1 64 24 118 71 160 21 20 45 35 71 46-6 16-12 32-19 47zM631 20c0 49-18 95-54 137-43 50-95 79-152 74-1-6-1-12-1-18 0-47 21-97 57-138 18-21 42-38 70-52 28-13 55-21 80-22 1 6 1 12 1 19z"/>
+    </svg>
+  );
 }
 
 function SegmentedOMark({ size = 40, lineWidth = 3, color = "var(--r-teal)" }) {
@@ -773,13 +860,16 @@ function RotatingOMark({ size = 40, lineWidth = 3, color = "var(--r-teal)" }) {
 
 // The colorful segmented ring from the app icon — one arc per content type. Hover (or tap) an arc to
 // see what it represents; matches rLogoRingColors in RoundsLogo.swift, top-down, clockwise.
+// Arc order matches the app icon exactly (rLogoRingColors in RoundsLogo.swift):
+// Society first after the top gap, running clockwise, so every brand ring on the
+// site reads as the icon.
 const BRAND_RING_SEGMENTS = [
-  { label: "Industry updates", color: "var(--r-industry)" },
   { label: "Society updates", color: "var(--r-society)" },
   { label: "Podcasts", color: "var(--r-provincial)" },
   { label: "Literature", color: "var(--r-teal)" },
   { label: "Technique videos", color: "var(--r-surgical)" },
   { label: "Regulatory notices", color: "var(--r-regulatory)" },
+  { label: "Industry updates", color: "var(--r-industry)" },
 ];
 
 function BrandRingLogo({ size = 100 }) {
@@ -815,6 +905,116 @@ function BrandRingLogo({ size = 100 }) {
   );
 }
 
+// Static multi-colour segmented-O — the app icon / digest cover mark, one arc per source.
+function BrandOMark({ size = 44, lineWidth }) {
+  const lw = lineWidth || size * 0.11;
+  const segments = BRAND_RING_SEGMENTS.length;
+  const r = (size - lw) / 2;
+  const c = 2 * Math.PI * r;
+  const period = c / segments;
+  const dash = period * 0.72;
+  const gap = period - dash;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label="Rounds segmented-O mark">
+      {BRAND_RING_SEGMENTS.map((seg, i) => (
+        <circle key={seg.label} cx={size / 2} cy={size / 2} r={r} fill="none" stroke={seg.color}
+          strokeWidth={lw} strokeLinecap="round"
+          strokeDasharray={`${dash} ${c - dash}`} strokeDashoffset={gap / 2 - i * period}
+          transform={`rotate(-90 ${size / 2} ${size / 2})`} />
+      ))}
+    </svg>
+  );
+}
+
+/* ============================== Rounds Evidence Score ============================== */
+/* Mirrors the app: every peer-reviewed paper carries a 0–100 Rounds Evidence Score,
+   sorted into three tiers. Scores here are demo values, derived deterministically from
+   the title so each card is stable — the same "within-tier spread" idea the app uses. */
+
+const RES_TIERS = {
+  key:        { name: "Key reading",  range: "82–98", color: "var(--r-tier-key)",        blurb: "Strong, well-run evidence on a question that can change how you practise. This is where to start." },
+  notable:    { name: "Worth a look", range: "62–80", color: "var(--r-tier-notable)",    blurb: "Solid, useful findings that add to the picture without demanding a decision today." },
+  background: { name: "Background",    range: "40–58", color: "var(--r-tier-background)", blurb: "Context and incremental updates. Present when you want them, tucked below the fold by default." },
+};
+
+function resForLiterature(title, forceKey) {
+  let h = 2166136261;
+  for (let i = 0; i < title.length; i++) { h = Math.imul(h ^ title.charCodeAt(i), 16777619); }
+  h = h >>> 0;
+  const tier = (forceKey || h % 100 < 30) ? "key" : "notable";
+  const base = tier === "key" ? 82 : 62;
+  const span = tier === "key" ? 16 : 18;
+  return { tier, score: base + (Math.floor(h / 128) % (span + 1)) };
+}
+
+// Segmented-O ring with the score centered inside it — the app's ScoreBadge mark.
+function ResScoreRing({ score, color, size = 30, lineWidth = 2.6, numClass = "r-sim-res-num" }) {
+  return (
+    <span className="r-sim-res-ring" style={{ width: size, height: size }}>
+      <SegmentedOMark size={size} lineWidth={lineWidth} color={color} />
+      <span className={numClass} style={{ color }}>{score}</span>
+    </span>
+  );
+}
+
+// The app's ScoreBadge: a teal segmented-O ring with the 0–100 score inside,
+// the "Rounds Evidence Score" name in teal (the brand signal is always teal),
+// and the tier — "Key reading" / "Worth a look" / "Background" — as a pill on
+// the right, taking the tier's colour. Sits at the top of every literature card.
+function ResScoreBadge({ res }) {
+  const t = RES_TIERS[res.tier];
+  return (
+    <div className="r-sim-res">
+      <ResScoreRing score={res.score} color="var(--r-teal)" size={30} lineWidth={2.4} numClass="r-sim-res-num" />
+      <span className="r-sim-res-name">Rounds Evidence Score</span>
+      <span className="r-sim-res-spacer" />
+      <span className="r-sim-res-pill" style={{ color: t.color, background: `color-mix(in srgb, ${t.color} 13%, white)` }}>{t.name}</span>
+    </div>
+  );
+}
+
+// The digest cover mark: the segmented-O ring, one arc per content type present,
+// with the total item count centred and a count chip per source below — the app's
+// WeeklyCoverMark. Tapping a chip jumps to that section.
+function SimCoverMark({ groups, total, onJump }) {
+  const size = 92, lw = 7;
+  const r = (size - lw) / 2;
+  const circ = 2 * Math.PI * r;
+  const n = Math.max(1, groups.length);
+  const period = circ / n;
+  const dash = n === 1 ? circ : period * 0.72;
+  const gap = period - dash;
+  // Arcs follow the brand-ring order so the ring reads as the logo; the count
+  // chips below stay in reading order (Literature first).
+  const arcGroups = groups.slice().sort((a, b) => brandRank(a.category) - brandRank(b.category));
+  return (
+    <div className="r-sim-cover">
+      <div className="r-sim-cover-ring" style={{ width: size, height: size }}>
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
+          {arcGroups.map((g, i) => (
+            <circle key={g.category} cx={size / 2} cy={size / 2} r={r} fill="none" stroke={g.color}
+              strokeWidth={lw} strokeLinecap="round"
+              strokeDasharray={n === 1 ? "none" : `${dash} ${circ - dash}`} strokeDashoffset={gap / 2 - i * period}
+              transform={`rotate(-90 ${size / 2} ${size / 2})`} />
+          ))}
+        </svg>
+        <div className="r-sim-cover-center">
+          <span className="r-sim-cover-num">{total}</span>
+          <span className="r-sim-cover-sub">this week</span>
+        </div>
+      </div>
+      <div className="r-sim-cover-chips">
+        {groups.map(g => (
+          <button key={g.category} className="r-sim-cover-chip" style={{ background: `color-mix(in srgb, ${g.color} 9%, white)` }} onClick={() => onJump(g.category)}>
+            <span className="r-sim-cover-chip-dot" style={{ background: g.color }} />
+            {g.label} <strong>{g.count}</strong>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ============================== Icons ============================== */
 
 const iconProps = { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: "var(--r-teal)", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" };
@@ -827,6 +1027,7 @@ const Icons = {
   discussion: () => (<svg {...iconProps} aria-hidden="true"><path d="M4 5h16v10H9l-5 4V5Z" /></svg>),
   account: () => (<svg {...iconProps} aria-hidden="true"><circle cx="12" cy="8" r="3.4" /><path d="M5 19c1.4-3.4 4-5 7-5s5.6 1.6 7 5" /></svg>),
   layers: () => (<svg {...iconProps} aria-hidden="true"><path d="M12 3.5 20.5 8 12 12.5 3.5 8 12 3.5Z" /><path d="M3.5 12 12 16.5 20.5 12" /><path d="M3.5 16 12 20.5 20.5 16" /></svg>),
+  journalClub: () => (<svg {...iconProps} aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2" /><path d="M3.5 9.5h17M8 3v4M16 3v4" /><path d="m9.5 14.5 2 2 3.5-3.5" /></svg>),
   bookmarkOutline: () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--r-text-faint)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 4h12v16l-6-4-6 4V4Z" /></svg>),
   bookmarkFilled: () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M6 4h12v16l-6-4-6 4V4Z" /></svg>),
   chevronLeft: () => (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>),
@@ -834,6 +1035,9 @@ const Icons = {
   chevronRightSmall: () => (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--r-text-faint)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>),
   search: () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--r-text-faint)" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>),
   upload: () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3v12" /><path d="m7 8 5-5 5 5" /><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" /></svg>),
+  calendarPlus: ({ set }) => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 9h18M8 3v4M16 3v4" />{!set && <path d="M12 13v4M10 15h4" />}</svg>),
+  bubble: () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 4H4v13h5v3l4-3h7V4Z" /></svg>),
+  clock: () => (<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></svg>),
 };
 
 /* ============================== Fictional demo data ============================== */
@@ -868,6 +1072,13 @@ const CATEGORY_META = {
   provincial_news: { label: "Podcast", dot: "var(--r-provincial)", stripe: "var(--r-provincial)" },
 };
 const CATEGORY_ORDER = Object.keys(CATEGORY_META);
+
+// The fixed clockwise colour sequence of the brand ring / app icon
+// (matches BRAND_RING_SEGMENTS and rLogoRingColors in the app), so the digest
+// cover mark's segmented O reads as the logo rather than in digest order. CME is
+// not one of the brand-ring arcs, so it trails.
+const BRAND_RING_ORDER = ["society_update", "provincial_news", "peer_reviewed_literature", "surgical_technique_video", "regulatory_update", "industry_update", "cme_opportunity"];
+const brandRank = (cat) => { const i = BRAND_RING_ORDER.indexOf(cat); return i < 0 ? 99 : i; };
 
 const DIGEST_DAYS = [
   {
@@ -920,16 +1131,19 @@ const AUDIENCE = [
   { title: "Researchers", body: "Related-paper suggestions on every result, so a single citation opens into the surrounding literature." },
 ];
 
-const SUBSPECIALTIES = ["Sports Medicine", "Arthroplasty and Reconstruction", "Trauma", "Foot & Ankle", "Hand & Upper Extremity", "Spine", "Musculoskeletal Oncology", "Paediatric Orthopaedics"];
+const SUBSPECIALTIES = ["Sports Medicine", "Arthroplasty and Reconstruction", "Trauma", "Foot & Ankle", "Hand", "Upper Extremity", "Spine", "Musculoskeletal Oncology", "Paediatric Orthopaedics"];
 
 // Authoritative taxonomy leaves — pulled directly from db_utils.PATHOLOGY_VOCAB /
-// ARTHROPLASTY_JOINTS / SPINE_LEVELS in the rounds-pipeline repo, not invented.
+// ARTHROPLASTY_JOINTS / SPINE_LEVELS in the rounds-pipeline repo (v6), not invented.
+// v6: Hand/Upper Extremity split; Arthroplasty is hip/knee only (shoulder/elbow
+// arthroplasty -> Upper Extremity, ankle arthroplasty -> Foot & Ankle).
 const TAXONOMY = {
   "Sports Medicine": { pathology: ["ACL/Multiligament Knee", "Meniscus", "Cartilage/Osteochondral", "Rotator Cuff", "Shoulder Instability", "Hip Preservation/FAI", "Elbow (UCL)", "Ankle Ligament Instability", "Return to Sport/Rehab"] },
-  "Arthroplasty and Reconstruction": { pathology: ["Primary", "Revision and Complex Primary", "Periprosthetic Fracture", "Periprosthetic Joint Infection", "Unicompartmental/Partial"], joints: ["Hip", "Knee", "Shoulder", "Elbow", "Ankle"] },
+  "Arthroplasty and Reconstruction": { pathology: ["Primary", "Revision and Complex Primary", "Periprosthetic Fracture", "Periprosthetic Joint Infection", "Unicompartmental/Partial"], joints: ["Hip", "Knee"] },
   "Trauma": { pathology: ["Pelvic and Acetabular", "Lower Extremity Fractures", "Upper Extremity Fractures", "Polytrauma and Open Fractures", "Nonunion/Malunion"] },
-  "Foot & Ankle": { pathology: ["Bunion/Forefoot", "Flatfoot Deformity", "Ankle Arthritis", "Achilles", "Diabetic Foot/Charcot"] },
-  "Hand & Upper Extremity": { pathology: ["Carpal Tunnel/Nerve Compression", "Wrist Arthritis", "Dupuytren's", "Forearm"] },
+  "Foot & Ankle": { pathology: ["Bunion/Forefoot", "Flatfoot Deformity", "Ankle Arthritis/Arthroplasty", "Achilles", "Diabetic Foot/Charcot"] },
+  "Hand": { pathology: ["Carpal Tunnel/Nerve Compression", "Wrist Arthritis", "Dupuytren's", "Thumb CMC Arthritis"] },
+  "Upper Extremity": { pathology: ["Shoulder Arthritis/Arthroplasty", "Elbow Arthritis/Arthroplasty", "Forearm"] },
   "Spine": { pathology: ["Degenerative/Disc Disease", "Spine Deformity", "Spine Tumour", "Spine Infection", "Minimally Invasive Technique"], levels: ["Cervical", "Thoracic", "Lumbar", "Sacral"] },
   "Musculoskeletal Oncology": { pathology: ["Bone Tumour", "Soft Tissue Tumour", "Metastatic Disease", "Reconstruction after Resection", "Benign Tumour/Cyst"] },
   "Paediatric Orthopaedics": { pathology: ["Hip Dysplasia/Perthes/SCFE", "Lower Extremity Deformity", "Congenital Upper Extremity", "Neuromuscular", "Paediatric Sports"] },
@@ -941,6 +1155,7 @@ const FEATURES = [
   { icon: "filter", title: "Subspecialty preferences", body: "Choose the subspecialties you follow. The daily edition narrows immediately, with no reload." },
   { icon: "layers", title: "More than journal articles", body: "Society updates, industry news, regulatory notices, technique videos, and CME — not just peer-reviewed papers." },
   { icon: "discussion", title: "Discussion", body: "Read what colleagues are saying under a paper, or add your own note under a verified profile." },
+  { icon: "journalClub", title: "Journal club", body: "Set a date on any paper and Rounds reminds you the evening before — the reading it schedules becomes the journal club it prepares you for." },
   { icon: "account", title: "One account, your data", body: "Sign in with Apple, Google, or email. Your saved library and preferences follow your account, not your device." },
 ];
 
@@ -1242,19 +1457,63 @@ function LibraryScreen({ saved }) {
 
 /* ============================== Rounds screen (presentational — state lives in AppSimulator) ============================== */
 
+function estMinutes(text) {
+  const words = (text || "").trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 45));
+}
+
+// A single card's action row: Read/Watch, Save, Set journal-club date, and —
+// for literature — join the discussion. Mirrors the app's WeeklyCard actions.
+function SimCardActions({ item, isVideo, small, saved, onSave, onRead, hasDiscussion, clubDate, onClub }) {
+  return (
+    <div className="r-sim-action-row">
+      <button className={"r-sim-read-btn" + (small ? " r-sim-read-btn--sm" : "")} onClick={onRead}>{item.actionLabel}</button>
+      <button className={"r-sim-save-btn" + (saved ? " is-saved" : "")} onClick={onSave} aria-label="Save">
+        {saved ? <Icons.bookmarkFilled /> : <Icons.bookmarkOutline />}
+      </button>
+      <button className={"r-sim-icon-btn" + (clubDate ? " is-set" : "")} onClick={onClub} aria-label={clubDate ? "Change journal club date" : "Save for journal club"}>
+        <Icons.calendarPlus set={!!clubDate} />
+        {clubDate && <span className="r-sim-club-date">{clubDate}</span>}
+      </button>
+      {hasDiscussion && (
+        <button className="r-sim-icon-btn" onClick={onRead} aria-label="Open the discussion"><Icons.bubble /></button>
+      )}
+    </div>
+  );
+}
+
 function RoundsScreen({ day, groups, dayIndex, loading, activeCategory, scrollRef, sectionRefs, onScroll, goTo, saved, setSaved, onOpenReader, onSaved }) {
+  const [clubDates, setClubDates] = useState({});
   const isSavedDigest = (id) => saved.some(s => s.doi === id);
   const toggleSaveDigest = (item, id) => {
     const already = saved.some(s => s.doi === id);
     setSaved(prev => already ? prev.filter(s => s.doi !== id) : [{ doi: id, title: item.title, openAccess: false, savedAt: new Date() }, ...prev]);
     if (!already && onSaved) onSaved();
   };
+  // Journal club: sets a demo date a week out, and saves the paper if it wasn't already.
+  const toggleClub = (item, id) => {
+    setClubDates(prev => {
+      if (prev[id]) { const next = { ...prev }; delete next[id]; return next; }
+      const d = new Date(); d.setDate(d.getDate() + 7);
+      return { ...prev, [id]: d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) };
+    });
+    if (!saved.some(s => s.doi === id)) toggleSaveDigest(item, id);
+  };
   const openReader = (item, isVideo) => onOpenReader && onOpenReader({ title: item.title, source: item.source, kind: isVideo ? "video" : "article" });
+  const jumpToSection = (cat) => { const el = sectionRefs.current[cat]; if (el && scrollRef.current) scrollRef.current.scrollTo({ top: el.offsetTop - 8, behavior: "smooth" }); };
 
   const heroId = "hero-" + dayIndex;
   const activeMeta = CATEGORY_META[activeCategory];
   const activeColor = activeMeta ? activeMeta.dot : "var(--r-teal)";
   const activeLabel = activeMeta ? activeMeta.label : "";
+
+  // Per-source counts for the cover mark — the hero is a literature item, so it
+  // folds into that count. Total is every item in the window.
+  const coverGroups = groups.map(g => ({
+    ...g,
+    count: g.items.length + (g.category === day.hero.category ? 1 : 0),
+  }));
+  const coverTotal = day.items.length + 1;
 
   return (
     <div className="r-sim-screen-content">
@@ -1263,9 +1522,11 @@ function RoundsScreen({ day, groups, dayIndex, loading, activeCategory, scrollRe
           <div className="r-sim-greeting">{greeting()}</div>
           <div className="r-sim-edition-row">
             <button className="r-sim-chev" disabled={dayIndex === DIGEST_DAYS.length - 1} onClick={() => goTo(1)} aria-label="Older edition"><Icons.chevronLeft /></button>
-            <span className="r-sim-edition-label">{dayIndex === 0 ? "Today's Rounds" : "Rounds"} · {formatEditionDate(dayIndex)}</span>
+            <span className="r-sim-edition-label">{formatEditionDate(dayIndex)}</span>
             <button className="r-sim-chev" disabled={dayIndex === 0} onClick={() => goTo(-1)} aria-label="Newer edition"><Icons.chevronRight /></button>
           </div>
+          <div className="r-sim-scope">All orthopaedics</div>
+          <span className="r-sim-goal-chip"><span className="r-sim-goal-dot" />2 of 3 papers this week</span>
         </div>
         <div className="r-sim-avatar" />
       </div>
@@ -1283,7 +1544,7 @@ function RoundsScreen({ day, groups, dayIndex, loading, activeCategory, scrollRe
             key={g.category}
             className={"r-sim-progress-seg" + (activeCategory === g.category ? " is-active" : "")}
             style={{ flexGrow: g.items.length, background: g.color, opacity: activeCategory === g.category ? 1 : 0.5 }}
-            onClick={() => { const el = sectionRefs.current[g.category]; if (el && scrollRef.current) scrollRef.current.scrollTo({ top: el.offsetTop - 8, behavior: "smooth" }); }}
+            onClick={() => jumpToSection(g.category)}
             aria-label={`Jump to ${g.label}`}
           />
         ))}
@@ -1293,53 +1554,54 @@ function RoundsScreen({ day, groups, dayIndex, loading, activeCategory, scrollRe
         <div className="r-sim-loading"><RotatingOMark size={40} /><span>Loading today's Rounds</span></div>
       ) : (
         <div className="r-sim-scroll" ref={scrollRef} onScroll={onScroll}>
+          <SimCoverMark groups={coverGroups} total={coverTotal} onJump={jumpToSection} />
+
           <article className="r-sim-hero-card">
-            <div className="r-sim-badge-row">
-              <span className="r-sim-cat-badge" style={{ background: `color-mix(in srgb, ${CATEGORY_META[day.hero.category].dot} 12%, white)` }}>
-                <span className="r-sim-cat-dot" style={{ background: CATEGORY_META[day.hero.category].dot }} />
-                {CATEGORY_META[day.hero.category].label}
-              </span>
-              <span className="r-sim-top-label">Top of your Rounds</span>
-            </div>
+            {day.hero.category === "peer_reviewed_literature" && <ResScoreBadge res={resForLiterature(day.hero.title, true)} />}
             <h5>{day.hero.title}</h5>
             <p className="r-sim-summary">{day.hero.summary}</p>
             <div className="r-sim-meta">{day.hero.source} · {formatEditionDate(dayIndex)}</div>
+            <div className="r-sim-readtime"><Icons.clock /><span>~{estMinutes(day.hero.summary)} min read</span></div>
             <div className="r-sim-hairline" />
-            <div className="r-sim-action-row">
-              <button className="r-sim-read-btn" onClick={() => openReader(day.hero, false)}>{day.hero.actionLabel}</button>
-              <button className={"r-sim-save-btn" + (isSavedDigest(heroId) ? " is-saved" : "")} onClick={() => toggleSaveDigest(day.hero, heroId)} aria-label="Save">
-                {isSavedDigest(heroId) ? <Icons.bookmarkFilled /> : <Icons.bookmarkOutline />}
-              </button>
-            </div>
+            <SimCardActions
+              item={day.hero} isVideo={false} saved={isSavedDigest(heroId)}
+              onSave={() => toggleSaveDigest(day.hero, heroId)} onRead={() => openReader(day.hero, false)}
+              hasDiscussion={true} clubDate={clubDates[heroId]} onClub={() => toggleClub(day.hero, heroId)}
+            />
           </article>
 
           {groups.map(g => {
             const meta = CATEGORY_META[g.category];
+            const isLit = g.category === "peer_reviewed_literature";
             return (
               <div className="r-sim-section" key={g.category} ref={el => { sectionRefs.current[g.category] = el; }}>
                 <div className="r-sim-section-rule">
                   <span className="r-sim-cat-dot" style={{ background: meta.dot }} />
-                  <span>{meta.label} · {g.items.length}</span>
+                  <span>{meta.label} · {g.count}</span>
                 </div>
                 {g.items.map((item, idx) => {
                   const id = `${g.category}-${dayIndex}-${idx}`;
                   const isVideo = item.actionLabel === "Watch";
                   return (
                     <article className="r-sim-digest-card" style={meta.stripe ? { borderLeftColor: meta.stripe } : {}} key={id}>
-                      <span className="r-sim-cat-badge" style={{ background: `color-mix(in srgb, ${meta.dot} 12%, white)`, alignSelf: "flex-start" }}>
-                        <span className="r-sim-cat-dot" style={{ background: meta.dot }} />
-                        {meta.label}
-                      </span>
+                      {isLit ? (
+                        <ResScoreBadge res={resForLiterature(item.title)} />
+                      ) : (
+                        <span className="r-sim-cat-badge" style={{ background: `color-mix(in srgb, ${meta.dot} 12%, white)`, alignSelf: "flex-start" }}>
+                          <span className="r-sim-cat-dot" style={{ background: meta.dot }} />
+                          {meta.label}
+                        </span>
+                      )}
                       <h6>{item.title}</h6>
                       <p className="r-sim-summary">{item.summary}</p>
                       <div className="r-sim-meta">{item.source}</div>
+                      <div className="r-sim-readtime"><Icons.clock /><span>~{estMinutes(item.summary)} min read</span></div>
                       <div className="r-sim-hairline" />
-                      <div className="r-sim-action-row">
-                        <button className="r-sim-read-btn r-sim-read-btn--sm" onClick={() => openReader(item, isVideo)}>{item.actionLabel}</button>
-                        <button className={"r-sim-save-btn" + (isSavedDigest(id) ? " is-saved" : "")} onClick={() => toggleSaveDigest(item, id)} aria-label="Save">
-                          {isSavedDigest(id) ? <Icons.bookmarkFilled /> : <Icons.bookmarkOutline />}
-                        </button>
-                      </div>
+                      <SimCardActions
+                        item={item} isVideo={isVideo} small saved={isSavedDigest(id)}
+                        onSave={() => toggleSaveDigest(item, id)} onRead={() => openReader(item, isVideo)}
+                        hasDiscussion={isLit} clubDate={clubDates[id]} onClub={() => toggleClub(item, id)}
+                      />
                     </article>
                   );
                 })}
@@ -1394,7 +1656,7 @@ function SimTabBar({ tab, setTab, groups, activeCategory, onJump, onDiscTap, lib
         onClick={onDiscTap}
         aria-label="Rounds"
       >
-        <SegmentedOMark size={26} lineWidth={2.6} color="#fff" />
+        <SegmentedOMark size={26} lineWidth={3.6} color="#fff" />
       </button>
       {showOrbit && (
         <div className="r-simbar-orbit">
@@ -1565,11 +1827,16 @@ function Hero({ saved, setSaved }) {
     <section className="r-hero">
       <div className="r-container r-hero-grid">
         <div>
+          <div className="r-hero-brand">
+            <BrandOMark size={46} />
+            <span className="r-hero-brand-text">The evidence-scored digest</span>
+          </div>
           <p className="r-eyebrow">For orthopaedic surgeons, residents &amp; researchers</p>
           <h1 className="r-hero-title">Everything you need.<br />One place.</h1>
           <p className="r-hero-sub">
-            Rounds gathers the orthopaedic literature that matters to you each day, and resolves any paper you search
-            to full text using your institutional access. Sign in once and access any full text within just a couple of taps.
+            Rounds gathers the orthopaedic literature that matters to you, scores every paper for evidence, and
+            resolves any article you search to full text through your institutional access. You choose how often it
+            arrives — sign in once and full text is a couple of taps away.
           </p>
           <div className="r-hero-actions">
             <button className="r-btn-primary" onClick={() => document.getElementById('cta').scrollIntoView({ behavior: 'smooth' })}>Get early access</button>
@@ -1847,16 +2114,15 @@ function DigestDemoSection({ saved, setSaved }) {
     <section className="r-section" id="digest-demo">
       <div className="r-container">
         <div className="r-section-head">
-          <h2>The daily Rounds edition</h2>
-          <p>A frozen daily edition, not a rolling feed. Every entry below is fictional, standing in for a real day's curated content.</p>
+          <h2>Your Rounds, scored and sorted</h2>
+          <p>One edition scoped to your subspecialties, with every paper carried at a Rounds Evidence Score and the strongest reading up top. Every entry below is fictional, standing in for a real day's curated content.</p>
         </div>
         <div className="r-demo-grid">
           <div>
             <div className="r-step-list">
-              <div className="r-step"><span className="r-step-num">1</span><p>Scroll the edition — the dot and the colored bar under the masthead track your section as you read.</p></div>
-              <div className="r-step"><span className="r-step-num">2</span><p>Tap the teal circle in the tab bar. That's the same Rounds button as the real app, and the small dots arced above it are the real per-section orbit — tap one to jump straight there.</p></div>
-              <div className="r-step"><span className="r-step-num">3</span><p>Use the arrows next to the date to step to an older edition, or tap the teal circle again to jump back to the top.</p></div>
-              <div className="r-step"><span className="r-step-num">4</span><p>Tap Read or Watch on any card to confirm it actually opens something.</p></div>
+              <div className="r-step"><span className="r-step-num">1</span><p><strong>See the whole edition at a glance.</strong> The segmented ring up top counts everything waiting for you, one arc per source — tap a count chip to jump straight to that section. A weekly reading goal keeps the habit honest.</p></div>
+              <div className="r-step"><span className="r-step-num">2</span><p><strong>Every paper is scored.</strong> Each literature card leads with its Rounds Evidence Score and a tier tag — Key reading, Worth a look, or Background — so the strongest evidence always sits at the top.</p></div>
+              <div className="r-step"><span className="r-step-num">3</span><p><strong>Read, save, or schedule.</strong> Read or Watch opens the real link; the bookmark sends it to your Library; the calendar sets a journal-club date; and the bubble opens the discussion under the paper.</p></div>
             </div>
             <BrandRingLogo size={300} />
           </div>
@@ -1864,6 +2130,114 @@ function DigestDemoSection({ saved, setSaved }) {
             <AppSimulator defaultTab="rounds" saved={saved} setSaved={setSaved} label="Rounds daily edition tab, interactive demo" />
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================== Evidence score section ============================== */
+
+const RES_WEIGHS = ["Study design & evidence level", "Journal standing", "Sample size & effect", "Reported outcomes", "Integrity signals"];
+
+const RES_HOW = [
+  { title: "Read", body: "Each paper's abstract is parsed for the signals that matter — study design, cohort size, effect, and outcomes." },
+  { title: "Weigh", body: "Those signals run through our scoring model, checked against journal standing and the integrity record." },
+  { title: "Score & sort", body: "The result is a single 0–100 number and a tier, so the strongest reading always rises to the top of your Rounds." },
+];
+
+function EvidenceScoreSection() {
+  const demo = { key: 94, notable: 71, background: 49 };
+  return (
+    <section className="r-section" id="evidence-score">
+      <div className="r-container">
+        <div className="r-section-head">
+          <p className="r-eyebrow">The defining feature</p>
+          <h2>The Rounds Evidence Score</h2>
+          <p>Our own measure of how much a paper is worth your time. Every peer-reviewed study is read from its abstract and scored out of 100, then sorted into three tiers — so you can tell at a glance where to spend your reading time.</p>
+        </div>
+
+        <div className="r-res-how">
+          <p className="r-res-how-label">How it's calculated</p>
+          <div className="r-res-how-steps">
+            {RES_HOW.map((s, i) => (
+              <div className="r-res-how-step" key={s.title}>
+                <span className="r-res-how-num">{i + 1}</span>
+                <div>
+                  <h4>{s.title}</h4>
+                  <p>{s.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="r-res-grid">
+          {["key", "notable", "background"].map(k => {
+            const t = RES_TIERS[k];
+            return (
+              <div className="r-card r-res-card" key={k} style={{ "--tier": t.color }}>
+                <div className="r-res-card-head">
+                  <ResScoreRing score={demo[k]} color={t.color} size={52} lineWidth={3.4} numClass="r-res-ring-num" />
+                  <div>
+                    <div className="r-res-tier-name">{t.name}</div>
+                    <div className="r-res-range">Scores {t.range}</div>
+                  </div>
+                </div>
+                <p>{t.blurb}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="r-res-weighs">
+          <div>
+            <h3 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15.5, fontWeight: 700, marginBottom: 6 }}>What the score weighs</h3>
+            <p style={{ fontSize: 14, color: "var(--r-text-soft)", lineHeight: 1.6, maxWidth: "52ch" }}>
+              The score reads the same signals a careful reader would — the strength of the study design, the standing
+              of the journal, the size and clarity of the effect, and the integrity of the record.
+            </p>
+            <div className="r-res-chip-row">
+              {RES_WEIGHS.map(w => <span className="r-res-chip" key={w}>{w}</span>)}
+            </div>
+          </div>
+          <div className="r-res-note">
+            <h3>Scored, not judged</h3>
+            <p>The score is built from what a paper actually reports. Missing detail can only lower a tier, never inflate one — so a strong number is one you can trust. You stay the judge of the medicine.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================== Cadence section ============================== */
+
+const CADENCE = [
+  { when: "Daily", sub: "A fresh, focused edition every morning.", badge: "Default", active: true },
+  { when: "Every 2 days", sub: "A fuller edition, half as often." },
+  { when: "Every 4 days", sub: "Roughly twice a week." },
+  { when: "Weekly", sub: "One considered read across the whole week." },
+];
+
+function CadenceSection() {
+  return (
+    <section className="r-section" id="cadence">
+      <div className="r-container">
+        <div className="r-section-head">
+          <p className="r-eyebrow">On your schedule</p>
+          <h2>Choose how often you want it</h2>
+          <p>Rounds meets your reading habit instead of fighting it. Pick a rhythm at sign-up, change it anytime, and the edition window adjusts to match.</p>
+        </div>
+        <div className="r-cadence-grid">
+          {CADENCE.map(c => (
+            <div className="r-card r-cadence-card" key={c.when} data-active={c.active ? "true" : "false"}>
+              <span className="r-cadence-when">{c.when}</span>
+              <span className="r-cadence-sub">{c.sub}</span>
+              {c.badge && <span className="r-cadence-badge">{c.badge}</span>}
+            </div>
+          ))}
+        </div>
+        <p className="r-cadence-foot">A gentle reminder nudges you when a new edition is ready — never a notification storm. Whatever cadence you choose, papers are always scored and sorted the same way.</p>
       </div>
     </section>
   );
@@ -1974,7 +2348,7 @@ function CtaSection() {
         <p>The app is built and in testing with a small group of institutions. Store availability is next.</p>
         <div className="r-store-row">
           <span className="r-store-badge" aria-disabled="true">
-            <SegmentedOMark size={22} />
+            <AppleLogo size={22} />
             <span><strong>App Store</strong>Coming soon</span>
           </span>
         </div>
@@ -1989,13 +2363,12 @@ function Footer() {
       <div className="r-container r-footer-inner">
         <div className="r-footer-top">
           <RoundsWordmark height={16} />
-          <div className="r-footer-links">
+          <nav className="r-footer-links" aria-label="Legal and support">
             <a href="/privacy/">Privacy</a>
             <a href="/terms/">Terms</a>
             <a href="/community-guidelines/">Community Guidelines</a>
             <a href="/support/">Support</a>
-            <a href="mailto:hello@rounds.app">Contact</a>
-          </div>
+          </nav>
         </div>
         <p className="r-disclaimer">
           All papers, digest entries, names, and figures shown on this page are fictional demonstrations of Rounds'
@@ -2015,9 +2388,11 @@ function App() {
     <React.Fragment>
       <Header />
       <Hero saved={saved} setSaved={setSaved} />
+      <EvidenceScoreSection />
+      <CadenceSection />
+      <DigestDemoSection saved={saved} setSaved={setSaved} />
       <SearchDemoSection saved={saved} setSaved={setSaved} />
       <ShareExtensionDemo saved={saved} setSaved={setSaved} />
-      <DigestDemoSection saved={saved} setSaved={setSaved} />
       <FeatureGrid />
       <Audience />
       <CtaSection />
