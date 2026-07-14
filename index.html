@@ -219,6 +219,7 @@
   .r-hero-phone-holder { position: relative; display: inline-block; }
   .r-try-arrow { position: absolute; top: -58px; right: -78px; display: flex; flex-direction: column; align-items: flex-end; pointer-events: none; z-index: 5; }
   .r-try-arrow-label { font-family: 'Caveat', cursive; font-size: 24px; font-weight: 700; color: var(--r-teal); transform: rotate(-4deg); margin-bottom: -6px; white-space: nowrap; }
+  .r-try-arrow-sub { font-family: 'Caveat', cursive; font-size: 17px; font-weight: 700; color: var(--r-teal); transform: rotate(-4deg); white-space: nowrap; opacity: 0.85; }
   @media (max-width: 560px) { .r-try-arrow { display: none; } }
 
   /* ---------- Sections ---------- */
@@ -305,7 +306,7 @@
     z-index: 5;
   }
 
-  .r-sim-status-bar { height: 34px; flex-shrink: 0; }
+  .r-sim-status-bar { height: 30px; flex-shrink: 0; }
 
   .r-sim-content {
     flex: 1;
@@ -358,7 +359,9 @@
   }
   .r-sim-search-btn:disabled { background: var(--r-teal-faint); color: var(--r-teal); }
 
-  .r-sim-scroll { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 16px 16px; }
+  /* position: relative makes section offsetTop content-relative, so the scrollspy
+     (active title, progress bar, orbit dots) lines up with what's actually on screen */
+  .r-sim-scroll { position: relative; flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 16px 48px; }
 
   .r-sim-empty {
     margin-top: 56px;
@@ -482,27 +485,29 @@
   .r-sim-chevron { color: var(--r-text-faint); flex-shrink: 0; margin-top: 4px; }
 
   /* Rounds screen */
-  .r-sim-rounds-masthead { display: flex; align-items: flex-start; justify-content: space-between; padding: 14px 16px 10px; flex-shrink: 0; }
-  .r-sim-greeting { font-family: 'Playfair Display', Georgia, serif; font-size: 15.5px; font-weight: 600; margin-bottom: 6px; }
-  .r-sim-edition-row { display: flex; align-items: center; gap: 6px; }
+  .r-sim-rounds-masthead { padding: 8px 16px 6px; flex-shrink: 0; }
+  .r-sim-masthead-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+  .r-sim-greeting { font-family: 'Playfair Display', Georgia, serif; font-size: 14.5px; font-weight: 600; }
+  .r-sim-edition-row { display: flex; align-items: center; gap: 4px; }
+  .r-sim-edition-row .r-sim-goal-chip { margin-left: auto; }
   .r-sim-chev { background: none; border: none; color: var(--r-text-muted); width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; padding: 0; }
   .r-sim-chev:disabled { color: var(--r-text-faint); opacity: 0.5; }
   .r-sim-edition-label { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-muted); }
-  .r-sim-scope { font-size: 11px; color: var(--r-text-muted); margin-top: 6px; }
-  .r-sim-goal-chip { display: inline-flex; align-items: center; gap: 5px; margin-top: 7px; font-size: 10px; font-weight: 700; color: var(--r-teal); background: var(--r-teal-faint); padding: 4px 9px; border-radius: 999px; }
+  .r-sim-goal-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 9.5px; font-weight: 700; color: var(--r-teal); background: var(--r-teal-faint); padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
   .r-sim-goal-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--r-teal); flex-shrink: 0; }
 
   .r-sim-double-rule { flex-shrink: 0; margin: 0 16px; }
   .r-sim-double-rule .r1 { height: 1px; background: var(--r-border); }
   .r-sim-double-rule .r2 { height: 1px; background: var(--r-hairline); margin-top: 3px; }
 
-  .r-sim-status-row { display: flex; align-items: center; gap: 7px; padding: 10px 16px 8px; flex-shrink: 0; }
+  .r-sim-statusblock { flex-shrink: 0; animation: r-fade-in var(--base) var(--ease) both; }
+  .r-sim-status-row { display: flex; align-items: center; gap: 7px; padding: 7px 16px 6px; flex-shrink: 0; }
   .r-sim-status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .r-sim-status-label { font-size: 11px; font-weight: 700; color: var(--r-text-soft); }
   .r-sim-status-spacer { flex: 1; }
   .r-sim-status-read { font-size: 10px; color: var(--r-text-faint); }
 
-  .r-sim-progress { display: flex; gap: 3px; padding: 0 16px 14px; flex-shrink: 0; }
+  .r-sim-progress { display: flex; gap: 3px; padding: 0 16px 9px; flex-shrink: 0; }
   .r-sim-progress-seg { height: 5px; border: none; border-radius: 999px; padding: 0; transition: height var(--fast) var(--ease), opacity var(--fast) var(--ease); }
   .r-sim-progress-seg.is-active { height: 7px; }
 
@@ -511,27 +516,28 @@
   .r-sim-hero-card {
     background: var(--r-card); border: 1px solid var(--r-border); border-left: 4px solid var(--r-teal);
     border-radius: var(--radius-card); box-shadow: 0 8px 10px -6px rgba(0,0,0,0.08);
-    padding: 16px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px;
+    padding: 14px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 7px;
   }
-  .r-sim-hero-card h5 { font-family: 'Playfair Display', Georgia, serif; font-size: 15px; font-weight: 600; line-height: 1.3; margin: 0; }
+  .r-sim-hero-card h5 { font-family: 'Playfair Display', Georgia, serif; font-size: 14px; font-weight: 600; line-height: 1.3; margin: 0; }
 
   .r-sim-badge-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .r-sim-cat-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-soft); padding: 3px 8px; border-radius: 999px; }
   .r-sim-cat-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
   .r-sim-top-label { font-size: 8.5px; font-weight: 700; letter-spacing: 0.5px; color: var(--r-text-faint); text-transform: uppercase; white-space: nowrap; }
 
-  .r-sim-summary { font-size: 11px; color: var(--r-text-soft); line-height: 1.5; }
+  .r-sim-summary { font-size: 10.5px; color: var(--r-text-soft); line-height: 1.45; }
   .r-sim-meta { font-size: 9.5px; color: var(--r-text-faint); }
   .r-sim-readtime { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 600; color: var(--r-text-muted); }
 
   /* Digest cover mark — segmented ring + per-source count chips */
-  .r-sim-cover { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 6px 0 18px; }
+  /* Ring left, count chips beside it — one compact row instead of ring-above-chips */
+  .r-sim-cover { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 8px 0 12px; }
   .r-sim-cover-ring { position: relative; flex-shrink: 0; }
   .r-sim-cover-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
   .r-sim-cover-num { font-family: 'Playfair Display', Georgia, serif; font-size: 23px; font-weight: 600; color: var(--r-text-primary); }
   .r-sim-cover-sub { font-size: 8px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: var(--r-text-faint); margin-top: 3px; }
-  .r-sim-cover-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
-  .r-sim-cover-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 9.5px; font-weight: 600; color: var(--r-text-soft); border: 1px solid var(--r-border); border-radius: 999px; padding: 3px 8px; cursor: pointer; }
+  .r-sim-cover-chips { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+  .r-sim-cover-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 9.5px; font-weight: 600; color: var(--r-text-soft); border: none; background: none; padding: 1px 2px; cursor: pointer; }
   .r-sim-cover-chip strong { font-weight: 800; color: var(--r-text-primary); }
   .r-sim-cover-chip-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 
@@ -544,18 +550,18 @@
   .r-sim-res-pill { font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
 
   .r-sim-section { margin-bottom: 6px; }
-  .r-sim-section-rule { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-muted); padding: 10px 0 8px; }
+  .r-sim-section-rule { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-muted); padding: 8px 0 7px; }
 
   .r-sim-digest-card {
     background: var(--r-card); border: 1px solid var(--r-border); border-left: 3px solid transparent;
     border-radius: var(--radius-card); box-shadow: 0 4px 6px -4px rgba(0,0,0,0.05);
-    padding: 13px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px;
+    padding: 12px; margin-bottom: 9px; display: flex; flex-direction: column; gap: 5px;
   }
-  .r-sim-digest-card h6 { font-family: 'Playfair Display', Georgia, serif; font-size: 12.5px; font-weight: 600; line-height: 1.3; margin: 0; }
-  .r-sim-digest-card .r-sim-action-row, .r-sim-digest-card .r-sim-hairline { margin-left: -13px; margin-right: -13px; }
-  .r-sim-digest-card .r-sim-action-row { padding-left: 13px; padding-right: 13px; }
-  .r-sim-hero-card .r-sim-action-row, .r-sim-hero-card .r-sim-hairline { margin-left: -16px; margin-right: -16px; }
-  .r-sim-hero-card .r-sim-action-row { padding-left: 16px; padding-right: 16px; }
+  .r-sim-digest-card h6 { font-family: 'Playfair Display', Georgia, serif; font-size: 12px; font-weight: 600; line-height: 1.3; margin: 0; }
+  .r-sim-digest-card .r-sim-action-row, .r-sim-digest-card .r-sim-hairline { margin-left: -12px; margin-right: -12px; }
+  .r-sim-digest-card .r-sim-action-row { padding-left: 12px; padding-right: 12px; }
+  .r-sim-hero-card .r-sim-action-row, .r-sim-hero-card .r-sim-hairline { margin-left: -14px; margin-right: -14px; }
+  .r-sim-hero-card .r-sim-action-row { padding-left: 14px; padding-right: 14px; }
 
   .r-spin { animation: r-rotate 1.05s linear infinite; transform-origin: 50% 50%; }
   @keyframes r-rotate { to { transform: rotate(360deg); } }
@@ -580,9 +586,11 @@
   .r-reader-note { font-size: 11px; color: var(--r-text-faint); font-style: italic; margin-top: 8px; }
 
   /* Tab bar — notched shape + floating disc + Rounds-tab orbit dots */
-  .r-simbar { position: relative; flex-shrink: 0; }
+  /* The bar reserves only its own height in layout; the orbit headroom above it is a
+     transparent overlay, so digest content scrolls through it (matches the app). */
+  .r-simbar { position: relative; flex-shrink: 0; pointer-events: none; }
   .r-simbar-shape { position: absolute; left: 0; bottom: 0; display: block; }
-  .r-simbar-row { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; padding-bottom: 8px; }
+  .r-simbar-row { position: absolute; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; padding-bottom: 8px; pointer-events: auto; }
   .r-simbar-item { flex: 1; background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 3px; padding-bottom: 2px; }
   .r-simbar-item span { font-size: 10px; font-weight: 600; }
   .r-simbar-oslot { flex: 1; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 5px; }
@@ -590,11 +598,17 @@
   .r-simbar-icon-wrap { position: relative; }
   .r-simbar-ping { position: absolute; top: -3px; right: -6px; width: 8px; height: 8px; border-radius: 50%; background: var(--r-teal); animation: r-ping 1.6s var(--ease) both; }
   @keyframes r-ping { 0% { transform: scale(0.6); opacity: 0; } 15% { transform: scale(1.2); opacity: 1; } 30% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
-  .r-simbar-disc { position: absolute; border-radius: 50%; background: var(--r-teal); border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 10px -3px rgba(17,24,39,0.35); transition: transform var(--fast) var(--ease); }
+  .r-simbar-disc { position: absolute; border-radius: 50%; background: var(--r-teal); border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 10px -3px rgba(17,24,39,0.35); transition: transform var(--fast) var(--ease); pointer-events: auto; }
   .r-simbar-disc:active { transform: scale(0.93); }
   .r-simbar-orbit { position: absolute; inset: 0; pointer-events: none; }
   .r-simbar-dot { position: absolute; border-radius: 50%; border: 1.5px solid #fff; transform: translate(-50%, -50%); padding: 0; pointer-events: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.18); transition: width var(--fast) var(--ease), height var(--fast) var(--ease); }
-  .r-simbar-orbit-label { position: absolute; top: 4px; left: 0; right: 0; text-align: center; font-size: 8.5px; font-weight: 700; letter-spacing: 0.5px; }
+  .r-simbar-orbit-label {
+    position: absolute; top: 3px; left: 50%; transform: translateX(-50%);
+    font-size: 8.5px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap;
+    padding: 2px 8px; border-radius: 999px;
+    background: color-mix(in srgb, var(--r-bg) 80%, transparent);
+    backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+  }
 
   /* Share extension demo — sources split left / right, each arrowing into the phone */
   .r-share-radial-wrap { position: relative; }
@@ -976,7 +990,7 @@ function ResScoreBadge({ res }) {
 // The digest cover mark: the segmented-O ring, one arc per content type present,
 // with the total item count centred and a count chip per source below — the app's
 // WeeklyCoverMark. Tapping a chip jumps to that section.
-function SimCoverMark({ groups, total, onJump }) {
+function SimCoverMark({ groups, total, onJump, coverRef }) {
   const size = 92, lw = 7;
   const r = (size - lw) / 2;
   const circ = 2 * Math.PI * r;
@@ -988,7 +1002,7 @@ function SimCoverMark({ groups, total, onJump }) {
   // chips below stay in reading order (Literature first).
   const arcGroups = groups.slice().sort((a, b) => brandRank(a.category) - brandRank(b.category));
   return (
-    <div className="r-sim-cover">
+    <div className="r-sim-cover" ref={coverRef}>
       <div className="r-sim-cover-ring" style={{ width: size, height: size }}>
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
           {arcGroups.map((g, i) => (
@@ -1005,7 +1019,7 @@ function SimCoverMark({ groups, total, onJump }) {
       </div>
       <div className="r-sim-cover-chips">
         {groups.map(g => (
-          <button key={g.category} className="r-sim-cover-chip" style={{ background: `color-mix(in srgb, ${g.color} 9%, white)` }} onClick={() => onJump(g.category)}>
+          <button key={g.category} className="r-sim-cover-chip" onClick={() => onJump(g.category)}>
             <span className="r-sim-cover-chip-dot" style={{ background: g.color }} />
             {g.label} <strong>{g.count}</strong>
           </button>
@@ -1152,7 +1166,6 @@ const TAXONOMY = {
 const FEATURES = [
   { icon: "institution", title: "Institutional access", body: "Sign in once through your library. Rounds carries that session so full text opens without signing in again." },
   { icon: "related", title: "Related papers", body: "Every result surfaces similar literature beneath it, so one citation leads to the surrounding evidence." },
-  { icon: "filter", title: "Subspecialty preferences", body: "Choose the subspecialties you follow. The daily edition narrows immediately, with no reload." },
   { icon: "layers", title: "More than journal articles", body: "Society updates, industry news, regulatory notices, technique videos, and CME — not just peer-reviewed papers." },
   { icon: "discussion", title: "Discussion", body: "Read what colleagues are saying under a paper, or add your own note under a verified profile." },
   { icon: "journalClub", title: "Journal club", body: "Set a date on any paper and Rounds reminds you the evening before — the reading it schedules becomes the journal club it prepares you for." },
@@ -1161,13 +1174,9 @@ const FEATURES = [
 
 /* ============================== Helpers ============================== */
 
+// Fixed (not time-of-day) so marketing screenshots are reproducible.
 function greeting() {
-  const h = new Date().getHours();
-  const name = "Dr. Smith";
-  if (h >= 5 && h < 12) return `Good morning, ${name}`;
-  if (h >= 12 && h < 17) return `Good afternoon, ${name}`;
-  if (h >= 17 && h < 21) return `Good evening, ${name}`;
-  return `Welcome back, ${name}`;
+  return "Good morning, Dr. Smith";
 }
 
 function formatEditionDate(daysAgo) {
@@ -1482,7 +1491,7 @@ function SimCardActions({ item, isVideo, small, saved, onSave, onRead, hasDiscus
   );
 }
 
-function RoundsScreen({ day, groups, dayIndex, loading, activeCategory, scrollRef, sectionRefs, onScroll, goTo, saved, setSaved, onOpenReader, onSaved }) {
+function RoundsScreen({ day, groups, dayIndex, loading, activeCategory, scrollRef, sectionRefs, onScroll, goTo, saved, setSaved, onOpenReader, onSaved, coverRef, coverGone }) {
   const [clubDates, setClubDates] = useState({});
   const isSavedDigest = (id) => saved.some(s => s.doi === id);
   const toggleSaveDigest = (item, id) => {
@@ -1518,43 +1527,48 @@ function RoundsScreen({ day, groups, dayIndex, loading, activeCategory, scrollRe
   return (
     <div className="r-sim-screen-content">
       <div className="r-sim-rounds-masthead">
-        <div>
+        <div className="r-sim-masthead-top">
           <div className="r-sim-greeting">{greeting()}</div>
-          <div className="r-sim-edition-row">
-            <button className="r-sim-chev" disabled={dayIndex === DIGEST_DAYS.length - 1} onClick={() => goTo(1)} aria-label="Older edition"><Icons.chevronLeft /></button>
-            <span className="r-sim-edition-label">{formatEditionDate(dayIndex)}</span>
-            <button className="r-sim-chev" disabled={dayIndex === 0} onClick={() => goTo(-1)} aria-label="Newer edition"><Icons.chevronRight /></button>
-          </div>
-          <div className="r-sim-scope">All orthopaedics</div>
-          <span className="r-sim-goal-chip"><span className="r-sim-goal-dot" />2 of 3 papers this week</span>
+          <div className="r-sim-avatar" />
         </div>
-        <div className="r-sim-avatar" />
+        <div className="r-sim-edition-row">
+          <button className="r-sim-chev" disabled={dayIndex === DIGEST_DAYS.length - 1} onClick={() => goTo(1)} aria-label="Older edition"><Icons.chevronLeft /></button>
+          <span className="r-sim-edition-label">{formatEditionDate(dayIndex)}</span>
+          <button className="r-sim-chev" disabled={dayIndex === 0} onClick={() => goTo(-1)} aria-label="Newer edition"><Icons.chevronRight /></button>
+          <span className="r-sim-goal-chip"><span className="r-sim-goal-dot" />2 of 3 this week</span>
+        </div>
       </div>
       <div className="r-sim-double-rule"><div className="r1" /><div className="r2" /></div>
 
-      <div className="r-sim-status-row">
-        <span className="r-sim-status-dot" style={{ background: activeColor }} />
-        <span className="r-sim-status-label">{activeLabel}</span>
-        <span className="r-sim-status-spacer" />
-        <span className="r-sim-status-read">{readEstimate(day)}</span>
-      </div>
-      <div className="r-sim-progress">
-        {groups.map(g => (
-          <button
-            key={g.category}
-            className={"r-sim-progress-seg" + (activeCategory === g.category ? " is-active" : "")}
-            style={{ flexGrow: g.items.length, background: g.color, opacity: activeCategory === g.category ? 1 : 0.5 }}
-            onClick={() => jumpToSection(g.category)}
-            aria-label={`Jump to ${g.label}`}
-          />
-        ))}
-      </div>
+      {/* Scrollspy status + progress only once the cover ring has scrolled away —
+          while the cover is on screen it already tells the same story. */}
+      {coverGone && !loading && (
+        <div className="r-sim-statusblock">
+          <div className="r-sim-status-row">
+            <span className="r-sim-status-dot" style={{ background: activeColor }} />
+            <span className="r-sim-status-label">{activeLabel}</span>
+            <span className="r-sim-status-spacer" />
+            <span className="r-sim-status-read">{readEstimate(day)}</span>
+          </div>
+          <div className="r-sim-progress">
+            {groups.map(g => (
+              <button
+                key={g.category}
+                className={"r-sim-progress-seg" + (activeCategory === g.category ? " is-active" : "")}
+                style={{ flexGrow: g.items.length, background: g.color, opacity: activeCategory === g.category ? 1 : 0.5 }}
+                onClick={() => jumpToSection(g.category)}
+                aria-label={`Jump to ${g.label}`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="r-sim-loading"><RotatingOMark size={40} /><span>Loading today's Rounds</span></div>
       ) : (
         <div className="r-sim-scroll" ref={scrollRef} onScroll={onScroll}>
-          <SimCoverMark groups={coverGroups} total={coverTotal} onJump={jumpToSection} />
+          <SimCoverMark groups={coverGroups} total={coverTotal} onJump={jumpToSection} coverRef={coverRef} />
 
           <article className="r-sim-hero-card">
             {day.hero.category === "peer_reviewed_literature" && <ResScoreBadge res={resForLiterature(day.hero.title, true)} />}
@@ -1620,7 +1634,7 @@ function RoundsScreen({ day, groups, dayIndex, loading, activeCategory, scrollRe
    per content-type section arcs above the disc — the real "orbit" the app actually has. */
 
 function SimTabBar({ tab, setTab, groups, activeCategory, onJump, onDiscTap, libraryPulse }) {
-  const barHeight = 54, discSize = 44, discRise = 8, orbitHeadroom = 40, orbitGap = 8;
+  const barHeight = 54, discSize = 40, discRise = 7, orbitHeadroom = 30, orbitGap = 8;
   const discRadius = discSize / 2;
   const totalHeight = barHeight + discRise + discRadius + orbitHeadroom;
   const cyTop = orbitHeadroom + discRadius;
@@ -1630,7 +1644,7 @@ function SimTabBar({ tab, setTab, groups, activeCategory, onJump, onDiscTap, lib
   const notchPath = "M0,0 L26.8,0 C35.5,0 41,18 50,18 C59,18 64.5,0 73.2,0 L100,0 L100,54 L0,54 Z";
 
   return (
-    <div className="r-simbar" style={{ height: totalHeight }}>
+    <div className="r-simbar" style={{ height: totalHeight, marginTop: -(totalHeight - barHeight) }}>
       <svg className="r-simbar-shape" width="100%" height={barHeight} viewBox="0 0 100 54" preserveAspectRatio="none">
         <path d={notchPath} fill="var(--r-card)" stroke="var(--r-border)" strokeWidth="0.6" vectorEffect="non-scaling-stroke" />
       </svg>
@@ -1656,7 +1670,7 @@ function SimTabBar({ tab, setTab, groups, activeCategory, onJump, onDiscTap, lib
         onClick={onDiscTap}
         aria-label="Rounds"
       >
-        <SegmentedOMark size={26} lineWidth={3.6} color="#fff" />
+        <SegmentedOMark size={23} lineWidth={3.4} color="#fff" />
       </button>
       {showOrbit && (
         <div className="r-simbar-orbit">
@@ -1667,7 +1681,7 @@ function SimTabBar({ tab, setTab, groups, activeCategory, onJump, onDiscTap, lib
             const dx = orbitR * Math.cos(angleRad);
             const dy = orbitR * Math.sin(angleRad);
             const isActive = activeCategory === g.category;
-            const size = isActive ? 13 : 9;
+            const size = isActive ? 12 : 8;
             return (
               <button
                 key={g.category}
@@ -1696,8 +1710,10 @@ function AppSimulator({ defaultTab = "search", saved, setSaved, shareSignal, lab
   const [dayIndex, setDayIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [activeCategory, setActiveCategory] = useState(DIGEST_DAYS[0].hero.category);
+  const [coverGone, setCoverGone] = useState(false);
   const scrollRef = useRef(null);
   const sectionRefs = useRef({});
+  const coverRef = useRef(null);
   const day = DIGEST_DAYS[dayIndex];
 
   const groups = useMemo(() => {
@@ -1708,6 +1724,7 @@ function AppSimulator({ defaultTab = "search", saved, setSaved, shareSignal, lab
 
   useEffect(() => {
     setActiveCategory(day.hero.category);
+    setCoverGone(false);
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
   }, [dayIndex]);
 
@@ -1730,7 +1747,13 @@ function AppSimulator({ defaultTab = "search", saved, setSaved, shareSignal, lab
       const el = sectionRefs.current[cat];
       if (el && el.offsetTop - 12 <= top) current = cat;
     });
+    // The last section may be too short to ever reach the top — at the bottom, it wins.
+    if (groups.length && top + container.clientHeight >= container.scrollHeight - 4) {
+      current = groups[groups.length - 1].category;
+    }
     setActiveCategory(current);
+    const cov = coverRef.current;
+    if (cov) setCoverGone(cov.getBoundingClientRect().bottom <= container.getBoundingClientRect().top + 4);
   };
 
   const jumpTo = (cat) => {
@@ -1766,6 +1789,7 @@ function AppSimulator({ defaultTab = "search", saved, setSaved, shareSignal, lab
               day={day} groups={groups} dayIndex={dayIndex} loading={loading} activeCategory={activeCategory}
               scrollRef={scrollRef} sectionRefs={sectionRefs} onScroll={handleRoundsScroll} goTo={goToDay}
               saved={saved} setSaved={setSaved} onOpenReader={setReaderItem} onSaved={notifySaved}
+              coverRef={coverRef} coverGone={coverGone}
             />
           )}
         </div>
@@ -1814,6 +1838,7 @@ function TryMeArrow() {
   return (
     <div className="r-try-arrow" aria-hidden="true">
       <span className="r-try-arrow-label">Try me!</span>
+      <span className="r-try-arrow-sub">Scroll down!</span>
       <svg width="78" height="64" viewBox="0 0 78 64" fill="none">
         <path d="M68 6 C 72 30, 50 50, 24 46" stroke="var(--r-teal)" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="1 7" />
         <path d="M33 38 L22 47 L36 53" stroke="var(--r-teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
