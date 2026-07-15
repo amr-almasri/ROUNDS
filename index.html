@@ -776,6 +776,34 @@
   .r-store-badge { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: var(--radius-control); border: 1px solid var(--r-border); background: #fff; color: var(--r-text-faint); font-size: 13px; cursor: default; }
   .r-store-badge strong { display: block; font-size: 15px; color: var(--r-text-muted); }
 
+  .r-waitlist-form { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 0 auto 12px; max-width: 480px; }
+  .r-waitlist-input {
+    flex: 1 1 240px;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--r-text-primary);
+    background: #fff;
+    border: 1px solid var(--r-border);
+    border-radius: var(--radius-control);
+    outline: none;
+    transition: border-color var(--base) var(--ease), box-shadow var(--base) var(--ease);
+  }
+  .r-waitlist-input::placeholder { color: var(--r-text-faint); }
+  .r-waitlist-input:focus { border-color: var(--r-teal); box-shadow: 0 0 0 3px var(--r-teal-faint); }
+  .r-waitlist-note { font-size: 13px; color: var(--r-text-faint); margin: 0 0 36px; }
+  .r-waitlist-error { font-size: 13px; color: var(--r-warning); margin: 0 0 36px; }
+  .r-waitlist-done {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    color: var(--r-teal);
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 36px;
+  }
+
   footer { border-top: 1px solid var(--r-border); padding: 40px 0; }
   .r-footer-inner { display: flex; flex-direction: column; gap: 16px; }
   .r-footer-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
@@ -2365,12 +2393,75 @@ function Audience() {
 
 /* ============================== CTA + footer ============================== */
 
+const WAITLIST_ENDPOINT = 'https://roundsapp.onrender.com/waitlist';
+
 function CtaSection() {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState('idle'); // idle | sending | done | error
+  const [error, setError] = useState('');
+
+  const submit = async (e) => {
+    e.preventDefault();
+    const trimmed = email.trim();
+    if (!trimmed || !trimmed.includes('@') || trimmed.length < 5) {
+      setStatus('error');
+      setError('Enter a valid email address.');
+      return;
+    }
+    setStatus('sending');
+    setError('');
+    try {
+      const res = await fetch(WAITLIST_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: trimmed, source: 'website' }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setStatus('done');
+    } catch (err) {
+      setStatus('error');
+      setError('Something went wrong. Please try again in a moment.');
+    }
+  };
+
   return (
     <section className="r-cta-section" id="cta">
       <div className="r-container">
         <h2 className="r-serif">Rounds is in early access</h2>
-        <p>The app is built and in testing with a small group of institutions. Store availability is next.</p>
+        <p>The app is built and in testing with a small group of institutions. Store availability is next. Join the waitlist and you will hear first.</p>
+        {status === 'done' ? (
+          <div className="r-waitlist-done" role="status">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.6" />
+              <path d="M6 10.2l2.6 2.6L14 7.4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            You are on the list. We will be in touch when Rounds reaches the App Store.
+          </div>
+        ) : (
+          <React.Fragment>
+            <form className="r-waitlist-form" onSubmit={submit} noValidate>
+              <input
+                className="r-waitlist-input"
+                type="email"
+                name="email"
+                autoComplete="email"
+                placeholder="you@institution.ca"
+                aria-label="Email address"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); if (status === 'error') { setStatus('idle'); setError(''); } }}
+                disabled={status === 'sending'}
+              />
+              <button className="r-btn-primary" type="submit" disabled={status === 'sending'}>
+                {status === 'sending' ? 'Joining…' : 'Get early access'}
+              </button>
+            </form>
+            {status === 'error' ? (
+              <p className="r-waitlist-error" role="alert">{error}</p>
+            ) : (
+              <p className="r-waitlist-note">One email when Rounds reaches the App Store. Nothing else.</p>
+            )}
+          </React.Fragment>
+        )}
         <div className="r-store-row">
           <span className="r-store-badge" aria-disabled="true">
             <AppleLogo size={22} />
