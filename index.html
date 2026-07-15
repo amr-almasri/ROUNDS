@@ -772,7 +772,7 @@
   .r-cta-section { padding: 96px 0; text-align: center; border-top: 1px solid var(--r-hairline); }
   .r-cta-section h2 { font-size: 32px; font-weight: 600; margin-bottom: 14px; }
   .r-cta-section p { color: var(--r-text-soft); font-size: 16px; max-width: 50ch; margin: 0 auto 32px; line-height: 1.6; }
-  .r-store-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .r-store-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
   .r-store-badge { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: var(--radius-control); border: 1px solid var(--r-border); background: #fff; color: var(--r-text-faint); font-size: 13px; cursor: default; }
   .r-store-badge strong { display: block; font-size: 15px; color: var(--r-text-muted); }
 
@@ -791,8 +791,7 @@
   }
   .r-waitlist-input::placeholder { color: var(--r-text-faint); }
   .r-waitlist-input:focus { border-color: var(--r-teal); box-shadow: 0 0 0 3px var(--r-teal-faint); }
-  .r-waitlist-note { font-size: 13px; color: var(--r-text-faint); margin: 0 0 36px; }
-  .r-waitlist-error { font-size: 13px; color: var(--r-warning); margin: 0 0 36px; }
+  .r-waitlist-error { font-size: 13px; color: var(--r-warning); margin: 0; }
   .r-waitlist-done {
     display: flex;
     align-items: center;
@@ -801,7 +800,7 @@
     color: var(--r-teal);
     font-weight: 600;
     font-size: 15px;
-    margin: 0 0 36px;
+    margin: 0;
   }
 
   footer { border-top: 1px solid var(--r-border); padding: 40px 0; }
@@ -2428,14 +2427,14 @@ function CtaSection() {
     <section className="r-cta-section" id="cta">
       <div className="r-container">
         <h2 className="r-serif">Rounds is in early access</h2>
-        <p>The app is built and in testing with a small group of institutions. Store availability is next. Join the waitlist and you will hear first.</p>
+        <p>The app is built and in testing with a small group of institutions. Join the waitlist and you will hear first.</p>
         {status === 'done' ? (
           <div className="r-waitlist-done" role="status">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.6" />
               <path d="M6 10.2l2.6 2.6L14 7.4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            You are on the list. We will be in touch when Rounds reaches the App Store.
+            You are on the list.
           </div>
         ) : (
           <React.Fragment>
@@ -2455,10 +2454,8 @@ function CtaSection() {
                 {status === 'sending' ? 'Joining…' : 'Get early access'}
               </button>
             </form>
-            {status === 'error' ? (
+            {status === 'error' && (
               <p className="r-waitlist-error" role="alert">{error}</p>
-            ) : (
-              <p className="r-waitlist-note">One email when Rounds reaches the App Store. Nothing else.</p>
             )}
           </React.Fragment>
         )}
