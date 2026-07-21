@@ -836,9 +836,22 @@
 <body>
 <div id="root"></div>
 
-<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<!-- Pinned to exact versions with subresource-integrity hashes. A floating tag
+     (react@18, @babel/standalone) lets whatever unpkg serves that day execute on
+     this origin — the same origin as the waitlist form below. With `integrity`
+     the browser refuses any byte that does not match, so a compromised CDN or
+     package breaks the page instead of silently exfiltrating what people type.
+     Changing a version means recomputing its hash:
+       curl -sL <url> | openssl dgst -sha384 -binary | openssl base64 -A -->
+<script crossorigin="anonymous"
+        integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z"
+        src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1"
+        src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-bdF7m0Y1IFKt9Q6xC8X9qkXn0OBriQWKyWwZKYsN05zF6P/g9OakjjL0G2Sd4pB4"
+        src="https://unpkg.com/@babel/standalone@8.0.4/babel.min.js"></script>
 
 <script type="text/babel-source" id="app-source">
 const { useState, useMemo, useRef, useEffect } = React;
