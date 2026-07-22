@@ -527,7 +527,6 @@
 
   .r-sim-summary { font-size: 10.5px; color: var(--r-text-soft); line-height: 1.45; }
   .r-sim-meta { font-size: 9.5px; color: var(--r-text-faint); }
-  .r-sim-readtime { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 600; color: var(--r-text-muted); }
 
   /* Digest cover mark — segmented ring + per-source count chips */
   /* Ring left, count chips beside it — one compact row instead of ring-above-chips */
@@ -542,12 +541,26 @@
   .r-sim-cover-chip-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
 
   /* In-card Rounds Evidence Score row — teal ring + name, tier pill on the right */
-  .r-sim-res { display: flex; align-items: center; gap: 6px; align-self: stretch; }
+  .r-sim-res { display: flex; align-items: center; gap: 5px; align-self: stretch; min-width: 0; }
   .r-sim-res-ring { position: relative; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
   .r-sim-res-num { position: absolute; font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; }
-  .r-sim-res-name { font-size: 10px; font-weight: 700; color: var(--r-teal); line-height: 1.2; flex: 1 1 auto; min-width: 0; }
-  .r-sim-res-spacer { display: none; }
-  .r-sim-res-pill { font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
+  /* One line, and allowed to shrink. Without min-width/overflow the nowrap name
+     cannot give ground, so the row overflows its box and the tier pill lands on
+     top of the bookmark beside it. */
+  .r-sim-res-name { font-size: 9px; font-weight: 700; color: var(--r-teal); line-height: 1.2; white-space: nowrap; flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .r-sim-res-spacer { display: block; flex: 1 1 auto; min-width: 4px; }
+  /* The bookmark is pinned to the card's top-right corner rather than sitting in
+     the score row's flex flow. In this phone mockup the row is only ~190px wide,
+     and ring + "Rounds Evidence Score" + tier pill + bookmark needs ~255px — in
+     flow, something had to wrap or ellipsize. Out of flow, the score row gets
+     the full width and stays on one line. */
+  .r-sim-card-top { display: flex; align-items: center; gap: 6px; padding-right: 34px; }
+  .r-sim-card-top .r-sim-res { flex: 1 1 auto; min-width: 0; }
+  .r-sim-card-top--bare { justify-content: flex-end; }
+  .r-sim-hero-card, .r-sim-digest-card { position: relative; }
+  .r-sim-card-bookmark { position: absolute; top: 9px; right: 9px; z-index: 2; }
+  .r-sim-meta-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .r-sim-res-pill { font-size: 8px; font-weight: 700; padding: 2px 6px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
 
   .r-sim-section { margin-bottom: 6px; }
   .r-sim-section-rule { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--r-text-muted); padding: 8px 0 7px; }
@@ -1016,14 +1029,20 @@ function ResScoreRing({ score, color, size = 30, lineWidth = 2.6, numClass = "r-
 // and the tier — "Key reading" / "Worth a look" / "Background" — as a pill on
 // the right, taking the tier's colour. Sits at the top of every literature card.
 function ResScoreBadge({ res }) {
-  const t = RES_TIERS[res.tier];
   return (
     <div className="r-sim-res">
-      <ResScoreRing score={res.score} color="var(--r-teal)" size={30} lineWidth={2.4} numClass="r-sim-res-num" />
+      <ResScoreRing score={res.score} color="var(--r-teal)" size={26} lineWidth={2.4} numClass="r-sim-res-num" />
       <span className="r-sim-res-name">Rounds Evidence Score</span>
-      <span className="r-sim-res-spacer" />
-      <span className="r-sim-res-pill" style={{ color: t.color, background: `color-mix(in srgb, ${t.color} 13%, white)` }}>{t.name}</span>
     </div>
+  );
+}
+
+// The tier, shown on the card's meta line. See ResScoreBadge for why it is not
+// on the score row in this mockup.
+function ResTierPill({ res }) {
+  const t = RES_TIERS[res.tier];
+  return (
+    <span className="r-sim-res-pill" style={{ color: t.color, background: `color-mix(in srgb, ${t.color} 13%, white)` }}>{t.name}</span>
   );
 }
 
@@ -1078,7 +1097,7 @@ const Icons = {
   share: () => (<svg {...iconProps} aria-hidden="true"><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="6" r="2.4" /><circle cx="18" cy="18" r="2.4" /><path d="M8.1 10.8 15.9 7.2M8.1 13.2l7.8 3.6" /></svg>),
   related: () => (<svg {...iconProps} aria-hidden="true"><circle cx="8" cy="8" r="3.2" /><circle cx="17" cy="8" r="3.2" /><circle cx="12.5" cy="17" r="3.2" /><path d="M10.7 9.6 14.7 15M9.3 9.6 5.3 15" /></svg>),
   filter: () => (<svg {...iconProps} aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" /></svg>),
-  discussion: () => (<svg {...iconProps} aria-hidden="true"><path d="M4 5h16v10H9l-5 4V5Z" /></svg>),
+  download: () => (<svg {...iconProps} aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14" /></svg>),
   account: () => (<svg {...iconProps} aria-hidden="true"><circle cx="12" cy="8" r="3.4" /><path d="M5 19c1.4-3.4 4-5 7-5s5.6 1.6 7 5" /></svg>),
   layers: () => (<svg {...iconProps} aria-hidden="true"><path d="M12 3.5 20.5 8 12 12.5 3.5 8 12 3.5Z" /><path d="M3.5 12 12 16.5 20.5 12" /><path d="M3.5 16 12 20.5 20.5 16" /></svg>),
   journalClub: () => (<svg {...iconProps} aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2" /><path d="M3.5 9.5h17M8 3v4M16 3v4" /><path d="m9.5 14.5 2 2 3.5-3.5" /></svg>),
@@ -1090,8 +1109,6 @@ const Icons = {
   search: () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--r-text-faint)" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>),
   upload: () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3v12" /><path d="m7 8 5-5 5 5" /><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" /></svg>),
   calendarPlus: ({ set }) => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 9h18M8 3v4M16 3v4" />{!set && <path d="M12 13v4M10 15h4" />}</svg>),
-  bubble: () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 4H4v13h5v3l4-3h7V4Z" /></svg>),
-  clock: () => (<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></svg>),
 };
 
 /* ============================== Fictional demo data ============================== */
@@ -1207,7 +1224,7 @@ const FEATURES = [
   { icon: "institution", title: "Institutional access", body: "Sign in once through your library. Rounds carries that session so full text opens without signing in again." },
   { icon: "related", title: "Related papers", body: "Every result surfaces similar literature beneath it, so one citation leads to the surrounding evidence." },
   { icon: "layers", title: "More than journal articles", body: "Society updates, industry news, regulatory notices, technique videos, and CME — not just peer-reviewed papers." },
-  { icon: "discussion", title: "Discussion", body: "Read what colleagues are saying under a paper, or add your own note under a verified profile." },
+  { icon: "download", title: "Keep your own copy", body: "Save a paper's PDF straight into your Files — On My iPhone or iCloud Drive. It stays yours, and it opens without a network." },
   { icon: "journalClub", title: "Journal club", body: "Set a date on any paper and Rounds reminds you the evening before — the reading it schedules becomes the journal club it prepares you for." },
   { icon: "account", title: "One account, your data", body: "Sign in with Apple, Google, or email. Your saved library and preferences follow your account, not your device." },
 ];
@@ -1506,28 +1523,37 @@ function LibraryScreen({ saved }) {
 
 /* ============================== Rounds screen (presentational — state lives in AppSimulator) ============================== */
 
-function estMinutes(text) {
-  const words = (text || "").trim().split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.round(words / 45));
-}
-
-// A single card's action row: Read/Watch, Save, Set journal-club date, and —
-// for literature — join the discussion. Mirrors the app's WeeklyCard actions.
-function SimCardActions({ item, isVideo, small, saved, onSave, onRead, hasDiscussion, clubDate, onClub }) {
+// A single card's action row, mirroring the app's WeeklyCard: Read/Watch and the
+// journal-club date. The bookmark moved to the card's top line, and the
+// discussion button went with the comment feature itself.
+function SimCardActions({ item, small, onRead, clubDate, onClub }) {
   return (
     <div className="r-sim-action-row">
       <button className={"r-sim-read-btn" + (small ? " r-sim-read-btn--sm" : "")} onClick={onRead}>{item.actionLabel}</button>
-      <button className={"r-sim-save-btn" + (saved ? " is-saved" : "")} onClick={onSave} aria-label="Save">
-        {saved ? <Icons.bookmarkFilled /> : <Icons.bookmarkOutline />}
-      </button>
       <button className={"r-sim-icon-btn" + (clubDate ? " is-set" : "")} onClick={onClub} aria-label={clubDate ? "Change journal club date" : "Save for journal club"}>
         <Icons.calendarPlus set={!!clubDate} />
         {clubDate && <span className="r-sim-club-date">{clubDate}</span>}
       </button>
-      {hasDiscussion && (
-        <button className="r-sim-icon-btn" onClick={onRead} aria-label="Open the discussion"><Icons.bubble /></button>
-      )}
     </div>
+  );
+}
+
+// The bookmark, pinned to the card's top-right corner.
+function SimCardBookmark({ saved, onSave }) {
+  return (
+    <button className={"r-sim-card-bookmark r-sim-save-btn" + (saved ? " is-saved" : "")} onClick={onSave} aria-label="Save">
+      {saved ? <Icons.bookmarkFilled /> : <Icons.bookmarkOutline />}
+    </button>
+  );
+}
+
+// The card's top line: the score, on one line, clear of the corner bookmark.
+function SimCardTop({ res, saved, onSave }) {
+  return (
+    <React.Fragment>
+      <SimCardBookmark saved={saved} onSave={onSave} />
+      {res && <div className="r-sim-card-top"><ResScoreBadge res={res} /></div>}
+    </React.Fragment>
   );
 }
 
@@ -1611,16 +1637,20 @@ function RoundsScreen({ day, groups, dayIndex, loading, activeCategory, scrollRe
           <SimCoverMark groups={coverGroups} total={coverTotal} onJump={jumpToSection} coverRef={coverRef} />
 
           <article className="r-sim-hero-card">
-            {day.hero.category === "peer_reviewed_literature" && <ResScoreBadge res={resForLiterature(day.hero.title, true)} />}
+            <SimCardTop
+              res={day.hero.category === "peer_reviewed_literature" ? resForLiterature(day.hero.title, true) : null}
+              saved={isSavedDigest(heroId)} onSave={() => toggleSaveDigest(day.hero, heroId)}
+            />
             <h5>{day.hero.title}</h5>
             <p className="r-sim-summary">{day.hero.summary}</p>
-            <div className="r-sim-meta">{day.hero.source} · {formatEditionDate(dayIndex)}</div>
-            <div className="r-sim-readtime"><Icons.clock /><span>~{estMinutes(day.hero.summary)} min read</span></div>
+            <div className="r-sim-meta-row">
+              {day.hero.category === "peer_reviewed_literature" && <ResTierPill res={resForLiterature(day.hero.title, true)} />}
+              <span className="r-sim-meta">{day.hero.source} · {formatEditionDate(dayIndex)}</span>
+            </div>
             <div className="r-sim-hairline" />
             <SimCardActions
-              item={day.hero} isVideo={false} saved={isSavedDigest(heroId)}
-              onSave={() => toggleSaveDigest(day.hero, heroId)} onRead={() => openReader(day.hero, false)}
-              hasDiscussion={true} clubDate={clubDates[heroId]} onClub={() => toggleClub(day.hero, heroId)}
+              item={day.hero} onRead={() => openReader(day.hero, false)}
+              clubDate={clubDates[heroId]} onClub={() => toggleClub(day.hero, heroId)}
             />
           </article>
 
@@ -1639,22 +1669,31 @@ function RoundsScreen({ day, groups, dayIndex, loading, activeCategory, scrollRe
                   return (
                     <article className="r-sim-digest-card" style={meta.stripe ? { borderLeftColor: meta.stripe } : {}} key={id}>
                       {isLit ? (
-                        <ResScoreBadge res={resForLiterature(item.title)} />
+                        <SimCardTop
+                          res={resForLiterature(item.title)}
+                          saved={isSavedDigest(id)} onSave={() => toggleSaveDigest(item, id)}
+                        />
                       ) : (
-                        <span className="r-sim-cat-badge" style={{ background: `color-mix(in srgb, ${meta.dot} 12%, white)`, alignSelf: "flex-start" }}>
-                          <span className="r-sim-cat-dot" style={{ background: meta.dot }} />
-                          {meta.label}
-                        </span>
+                        <React.Fragment>
+                          <SimCardBookmark saved={isSavedDigest(id)} onSave={() => toggleSaveDigest(item, id)} />
+                          <div className="r-sim-card-top">
+                            <span className="r-sim-cat-badge" style={{ background: `color-mix(in srgb, ${meta.dot} 12%, white)` }}>
+                              <span className="r-sim-cat-dot" style={{ background: meta.dot }} />
+                              {meta.label}
+                            </span>
+                          </div>
+                        </React.Fragment>
                       )}
                       <h6>{item.title}</h6>
                       <p className="r-sim-summary">{item.summary}</p>
-                      <div className="r-sim-meta">{item.source}</div>
-                      <div className="r-sim-readtime"><Icons.clock /><span>~{estMinutes(item.summary)} min read</span></div>
+                      <div className="r-sim-meta-row">
+                        {isLit && <ResTierPill res={resForLiterature(item.title)} />}
+                        <span className="r-sim-meta">{item.source}</span>
+                      </div>
                       <div className="r-sim-hairline" />
                       <SimCardActions
-                        item={item} isVideo={isVideo} small saved={isSavedDigest(id)}
-                        onSave={() => toggleSaveDigest(item, id)} onRead={() => openReader(item, isVideo)}
-                        hasDiscussion={isLit} clubDate={clubDates[id]} onClub={() => toggleClub(item, id)}
+                        item={item} small onRead={() => openReader(item, isVideo)}
+                        clubDate={clubDates[id]} onClub={() => toggleClub(item, id)}
                       />
                     </article>
                   );
@@ -2187,7 +2226,7 @@ function DigestDemoSection({ saved, setSaved }) {
             <div className="r-step-list">
               <div className="r-step"><span className="r-step-num">1</span><p><strong>See the whole edition at a glance.</strong> The segmented ring up top counts everything waiting for you, one arc per source — tap a count chip to jump straight to that section. A weekly reading goal keeps the habit honest.</p></div>
               <div className="r-step"><span className="r-step-num">2</span><p><strong>Every paper is scored.</strong> Each literature card leads with its Rounds Evidence Score and a tier tag — Key reading, Worth a look, or Background — so the strongest evidence always sits at the top.</p></div>
-              <div className="r-step"><span className="r-step-num">3</span><p><strong>Read, save, or schedule.</strong> Read or Watch opens the real link; the bookmark sends it to your Library; the calendar sets a journal-club date; and the bubble opens the discussion under the paper.</p></div>
+              <div className="r-step"><span className="r-step-num">3</span><p><strong>Read, save, or schedule.</strong> Read or Watch opens the real link; the bookmark sends it to your Library; and the calendar sets a journal-club date.</p></div>
             </div>
             <BrandRingLogo size={300} />
           </div>
