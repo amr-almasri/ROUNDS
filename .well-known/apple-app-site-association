@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["BP8BF645X5.getrounds.ROUNDSAPP"],
+        "components": [
+          { "/": "/a", "comment": "Shared article handoff into Rounds" },
+          { "/": "/a/*", "comment": "Shared article handoff into Rounds" }
+        ]
+      }
+    ]
+  }
+}

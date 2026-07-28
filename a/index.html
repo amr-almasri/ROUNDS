@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>A paper shared with you · Rounds</title>
+<meta name="description" content="Someone shared an orthopaedic paper with you through Rounds. Open it in the app, or read it through your institution." />
+<meta name="robots" content="noindex" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+  :root {
+    --r-teal: #0D7A6B;
+    --r-teal-pressed: #0A5E55;
+    --r-teal-faint: #E6F5F2;
+    --r-text-primary: #111827;
+    --r-text-soft: #374151;
+    --r-text-muted: #6B7280;
+    --r-text-faint: #9CA3AF;
+    --r-border: #E5E7EB;
+    --r-bg: #F9FAFB;
+    --r-card: #FFFFFF;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--r-bg);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--r-text-primary); -webkit-font-smoothing: antialiased; }
+  .wrap { min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 28px 20px; }
+  .card { width: 100%; max-width: 460px; background: var(--r-card);
+    border: 1px solid var(--r-border); border-radius: 14px; padding: 28px 24px;
+    box-shadow: 0 6px 24px rgba(17,24,39,0.06); }
+  .brand { margin-bottom: 20px; }
+  .brand-mark { display: block; height: 30px; width: auto; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
+    color: var(--r-teal); margin-bottom: 10px; }
+  h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 21px; font-weight: 600;
+    line-height: 1.32; margin: 0 0 6px; }
+  .meta { font-size: 13px; color: var(--r-text-muted); line-height: 1.5; margin: 4px 0 0; }
+  .doi { font-size: 12px; color: var(--r-text-faint); word-break: break-all; margin-top: 10px; }
+  .actions { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
+  .btn { display: block; width: 100%; text-align: center; text-decoration: none;
+    font-size: 15px; font-weight: 600; padding: 14px 16px; border-radius: 10px;
+    transition: background 0.15s, border-color 0.15s; }
+  .btn-primary { background: var(--r-teal); color: #fff; }
+  .btn-primary:active { background: var(--r-teal-pressed); }
+  .btn-secondary { background: transparent; color: var(--r-teal);
+    border: 1px solid var(--r-teal); }
+  .note { font-size: 12px; color: var(--r-text-faint); line-height: 1.55; margin-top: 18px;
+    text-align: center; }
+  .foot { margin-top: 22px; font-size: 12px; color: var(--r-text-muted); text-align: center; }
+  .foot a { color: var(--r-teal); text-decoration: none; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="brand"><img class="brand-mark" src="../rounds-wordmark.svg" alt="Rounds" /></div>
+      <div class="eyebrow" id="eyebrow">A paper shared with you</div>
+      <h1 id="title">Loading the paper…</h1>
+      <p class="meta" id="meta"></p>
+      <p class="doi" id="doi"></p>
+
+      <div class="actions">
+        <a class="btn btn-primary" id="open-rounds" href="#">Open in Rounds</a>
+        <a class="btn btn-secondary" id="read-doi" href="#" target="_blank" rel="noopener">Read via your institution</a>
+      </div>
+
+      <p class="note">Rounds will provide you the full text through your institution's access via the Rounds app.</p>
+      <p class="foot">Don't have Rounds yet? <a href="/">Learn more</a></p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var doi = (params.get('doi') || '').trim();
+      var q = (params.get('q') || '').trim();
+
+      var titleEl = document.getElementById('title');
+      var metaEl = document.getElementById('meta');
+      var doiEl = document.getElementById('doi');
+      var openEl = document.getElementById('open-rounds');
+      var readEl = document.getElementById('read-doi');
+
+      // Deep link back into the app (works if Rounds is installed; the Universal
+      // Link itself normally intercepts before this page even loads, so this is
+      // the manual button for the browser fallback case).
+      var deepLink = doi
+        ? 'rounds://search?doi=' + encodeURIComponent(doi)
+        : (q ? 'rounds://search?q=' + encodeURIComponent(q) : 'rounds://search');
+      openEl.setAttribute('href', deepLink);
+
+      if (doi) {
+        doiEl.textContent = 'DOI: ' + doi;
+        readEl.setAttribute('href', 'https://doi.org/' + encodeURIComponent(doi));
+        // Crossref is public + CORS-enabled: enrich the title/authors when we can,
+        // but the page is fully usable before (and if) it answers.
+        titleEl.textContent = 'Open this paper in Rounds';
+        fetch('https://api.crossref.org/works/' + encodeURIComponent(doi))
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (data) {
+            if (!data || !data.message) return;
+            var m = data.message;
+            if (m.title && m.title.length) { titleEl.textContent = m.title[0]; }
+            var bits = [];
+            if (m.author && m.author.length) {
+              var a = m.author[0];
+              var name = [a.given, a.family].filter(Boolean).join(' ');
+              if (name) { bits.push(m.author.length > 1 ? name + ' et al.' : name); }
+            }
+            var journal = (m['container-title'] && m['container-title'][0]) || '';
+            if (journal) { bits.push(journal); }
+            var year = m.issued && m.issued['date-parts'] && m.issued['date-parts'][0]
+              && m.issued['date-parts'][0][0];
+            if (year) { bits.push(String(year)); }
+            metaEl.textContent = bits.join(' · ');
+          })
+          .catch(function () { /* offline / blocked — the DOI + buttons still work */ });
+      } else if (q) {
+        titleEl.textContent = q;
+        metaEl.textContent = 'Open this paper in Rounds to read it through your institution.';
+        readEl.style.display = 'none';
+      } else {
+        document.getElementById('eyebrow').textContent = 'Rounds';
+        titleEl.textContent = 'Open Rounds';
+        readEl.style.display = 'none';
+      }
+    })();
+  </script>
+</body>
+</html>
