@@ -125,7 +125,7 @@
   .scale.nps button { padding: 11px 0; font-size: 13.5px; }
   .scale-anchors {
     display: flex; justify-content: space-between; margin-top: 8px;
-    font-size: 11.5px; color: var(--r-text-faint);
+    font-size: 12.5px; font-weight: 500; color: var(--r-text-soft);
   }
 
   /* ---------- chips / options ---------- */
@@ -135,14 +135,24 @@
     color: var(--r-text-soft); background: var(--r-card);
     border: 1px solid var(--r-border); border-radius: 999px;
     padding: 9px 15px; cursor: pointer; transition: all var(--fast) var(--ease);
-    display: inline-flex; align-items: center; gap: 7px;
+    display: inline-flex; align-items: center; gap: 0;
   }
   .opts button:hover { border-color: var(--r-teal); color: var(--r-teal); }
   .opts button[aria-pressed="true"] {
     background: var(--r-teal); border-color: var(--r-teal); color: #fff;
   }
-  .opts button[aria-pressed="true"] .tick { opacity: 1; }
-  .tick { opacity: 0; transition: opacity var(--fast) var(--ease); }
+  /* The tick collapses to zero width when unselected, so an unselected label
+     sits centred instead of shifted off-centre by a reserved slot. */
+  .tick {
+    width: 0; opacity: 0; flex-shrink: 0; overflow: hidden;
+    transition: width var(--fast) var(--ease), opacity var(--fast) var(--ease),
+                margin-right var(--fast) var(--ease);
+  }
+  .opts button[aria-pressed="true"] .tick { width: 13px; opacity: 1; margin-right: 7px; }
+  /* Full-width rows keep every label on the same left edge, so the tick moves
+     to the trailing end rather than indenting the one that is selected. */
+  .opts.stack .tick { order: 2; }
+  .opts.stack button[aria-pressed="true"] .tick { margin-right: 0; margin-left: auto; }
 
   .opts.stack { flex-direction: column; }
   .opts.stack button {
@@ -238,7 +248,9 @@
   .m-score {
     display: flex; align-items: center; gap: 8px;
   }
-  .m-score-num { font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 600; color: var(--r-tier-key); line-height: 1; }
+  .m-score-num { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; font-weight: 600; color: var(--r-tier-key); line-height: 1; }
+  .m-score-ring { position: relative; width: 42px; height: 42px; flex-shrink: 0; display: grid; place-items: center; }
+  .m-score-ring svg { position: absolute; inset: 0; }
   .m-notice {
     background: var(--r-card); border: 1px solid var(--r-border); border-radius: 8px;
     padding: 7px 8px; display: flex; gap: 6px; align-items: center;
@@ -428,7 +440,7 @@
       '<div class="m-meta" style="margin-top:3px">SOCIETY UPDATE</div></div></div>',
     score:
       '<div class="m-card" style="gap:8px"><div class="m-score">' +
-      '<div class="m-score-num">88</div>' +
+      '<div class="m-score-ring">' + segmentedO(42, 2.6) + '<span class="m-score-num">88</span></div>' +
       '<div><div class="m-pill m-pill-teal">KEY READING</div>' +
       '<div class="m-meta" style="margin-top:3px">ROUNDS EVIDENCE SCORE</div></div></div>' +
       '<div style="display:flex;flex-direction:column;gap:4px">' +
@@ -507,7 +519,8 @@
       id: cfg.id + "_comment", type: "text", label: "Anything you'd change about it?",
       optional: true, placeholder: "Optional — a sentence is plenty.", maxLength: 1000
     });
-    return { id: cfg.id, eyebrow: cfg.eyebrow || "Feature", title: cfg.title, intro: cfg.blurb, mock: cfg.mock, questions: qs };
+    return { id: cfg.id, isFeature: true, title: cfg.title, intro: cfg.blurb,
+             mock: cfg.mock, questions: qs };
   }
 
   var STEPS = [
@@ -515,7 +528,6 @@
 
     {
       id: "you", eyebrow: "Section 1", title: "About you",
-      intro: "Two quick ones, so your answers can be read in context.",
       questions: [
         {
           id: "role", type: "choice", label: "What best describes you?", required: true,
@@ -546,7 +558,6 @@
 
     {
       id: "overall", eyebrow: "Section 2", title: "Rounds overall",
-      intro: "Before the feature-by-feature part — your gut read.",
       questions: [
         {
           id: "nps", type: "scale", min: 0, max: 10, low: "Not at all likely", high: "Extremely likely",
@@ -557,9 +568,9 @@
           label: "“Rounds saved me time getting to the literature I care about.”", required: true
         },
         {
-          id: "core_job", type: "choice", required: true,
+          id: "core_job", type: "multi", required: true,
           label: "Which of these did Rounds do best for you?",
-          help: "The one thing you'd actually keep it for.",
+          help: "Pick as many as apply.",
           options: [
             { v: "find", label: "Finding a specific paper I already knew about" },
             { v: "access", label: "Getting me past the paywall to full text" },
@@ -573,7 +584,7 @@
     },
 
     feature({
-      id: "search", eyebrow: "Section 3 · Feature 1", short: "search",
+      id: "search", short: "search",
       title: "Finding a paper", mock: "search",
       blurb: "Search by title, DOI, or a link you paste in — Rounds identifies the paper and opens it.",
       ratingLabel: "How well did search find what you were after?",
@@ -601,9 +612,8 @@
     }),
 
     feature({
-      id: "access", eyebrow: "Section 3 · Feature 2", short: "full-text access through your library",
+      id: "access", short: "full-text access through your library",
       title: "Getting the full text", mock: "access",
-      blurb: "Connect your institution once, then tapping Read opens the paper through your library's access instead of a paywall.",
       gateLabel: "Did you connect your institution and open a full paper?",
       ratingLabel: "How reliably did it get you to the actual paper?",
       followUps: [
@@ -636,7 +646,7 @@
     }),
 
     feature({
-      id: "pdf", eyebrow: "Section 3 · Feature 3", short: "Save PDF",
+      id: "pdf", short: "Save PDF",
       title: "Saving the PDF", mock: "pdf",
       blurb: "Save PDF puts the document in a folder you choose on your own phone — Rounds keeps only a pointer to it.",
       ratingLabel: "How well did saving a PDF work?",
@@ -665,9 +675,8 @@
     }),
 
     feature({
-      id: "digest", eyebrow: "Section 3 · Feature 4", short: "the Rounds tab",
+      id: "digest", short: "the Rounds tab",
       title: "Your Rounds digest", mock: "digest",
-      blurb: "The centre tab: what came out in your subspecialties over your chosen window — papers, society and regulatory updates, technique videos.",
       ratingLabel: "How useful was the digest to you?",
       followUps: [
         {
@@ -699,9 +708,8 @@
     }),
 
     feature({
-      id: "score", eyebrow: "Section 3 · Feature 5", short: "the Rounds Evidence Score",
+      id: "score", short: "the Rounds Evidence Score",
       title: "The Evidence Score", mock: "score",
-      blurb: "A 0–100 score on each paper — study design, methods, outcome, size, journal — sorted into Key reading, Worth a look, and Background.",
       gateLabel: "Did you notice and use the score?",
       ratingLabel: "How useful was the score for deciding what to read?",
       followUps: [
@@ -732,9 +740,8 @@
     }),
 
     feature({
-      id: "library", eyebrow: "Section 3 · Feature 6", short: "the Library",
+      id: "library", short: "the Library",
       title: "Library and notes", mock: "library",
-      blurb: "Bookmarked papers, downloaded PDFs, and your own notes — filterable, searchable, and openable straight back into full text.",
       ratingLabel: "How well did the Library work for you?",
       followUps: [
         {
@@ -755,8 +762,7 @@
     }),
 
     {
-      id: "extras", eyebrow: "Section 3 · Feature 7", title: "The smaller pieces",
-      intro: "Two quick ones — the share sheet and the morning reminder.",
+      id: "extras", eyebrow: "Section 3", title: "Others",
       mock: "share",
       questions: [
         {
@@ -806,8 +812,7 @@
     },
 
     {
-      id: "friction", eyebrow: "Section 4", title: "Where it got in your way",
-      intro: "The honest part. This is the most useful page in the survey.",
+      id: "friction", eyebrow: "Section 4", title: "Bad experiences",
       questions: [
         {
           id: "friction_points", type: "multi", required: true,
@@ -892,8 +897,17 @@
   // =====================================================================
   // TESTER SIDE
   // =====================================================================
+  // The short variant asks the same survey minus two feature sections.
+  var SHORT_OMITS = ["pdf", "library"];
+
+  function stepsForVariant(variant) {
+    if (variant !== "short") return STEPS;
+    return STEPS.filter(function (s) { return SHORT_OMITS.indexOf(s.id) === -1; });
+  }
+
   function runSurvey(token) {
     var storeKey = "rounds_beta_v1_" + token;
+    var steps = STEPS;
     var answers = {};
     var stepIndex = 0;
     var startedAt = Date.now();
@@ -912,27 +926,15 @@
       return (step.questions || []).filter(function (q) { return !q.showIf || q.showIf(answers); });
     }
 
-    function answered(q) {
-      var v = answers[q.id];
-      if (q.optional) return true;
-      if (q.type === "multi") return Array.isArray(v) && v.length > 0;
-      if (q.type === "text") return typeof v === "string" && v.trim().length > 0;
-      return v !== undefined && v !== null && v !== "";
-    }
-
-    function stepComplete(step) {
-      return visibleQuestions(step).every(answered);
-    }
-
     root.innerHTML = masthead("Beta feedback") + '<div class="wrap"><div id="stage"></div></div>';
     var stage = document.getElementById("stage");
 
     function setProgress() {
-      var pct = Math.round((stepIndex / (STEPS.length - 1)) * 100);
+      var pct = Math.round((stepIndex / (steps.length - 1)) * 100);
       document.getElementById("progress-fill").style.width = pct + "%";
       var meta = document.getElementById("progress-meta");
-      if (stepIndex === 0 || stepIndex >= STEPS.length) { meta.innerHTML = ""; return; }
-      meta.innerHTML = '<span>Step <strong>' + stepIndex + '</strong> of ' + (STEPS.length - 1) + '</span>' +
+      if (stepIndex === 0 || stepIndex >= steps.length) { meta.innerHTML = ""; return; }
+      meta.innerHTML = '<span>Step <strong>' + stepIndex + '</strong> of ' + (steps.length - 1) + '</span>' +
         '<span>' + pct + '% complete · saved on this device</span>';
     }
 
@@ -940,7 +942,7 @@
     function renderQuestion(q) {
       var wrap = el('<div class="q"></div>');
       var label = '<div class="q-label">' + esc(q.label) +
-        (q.optional ? '<span class="q-optional">optional</span>' : "") + '</div>';
+        '</div>';
       wrap.insertAdjacentHTML("beforeend", label);
       if (q.help) wrap.insertAdjacentHTML("beforeend", '<div class="q-help">' + esc(q.help) + '</div>');
 
@@ -1005,7 +1007,6 @@
           answers[q.id] = ta.value;
           count.textContent = ta.value.length + " / " + max;
           persist();
-          syncNav();
         });
         wrap.appendChild(ta);
         wrap.appendChild(count);
@@ -1015,29 +1016,23 @@
     }
 
     var navNext = null;
-    function syncNav() {
-      if (!navNext) return;
-      navNext.disabled = !stepComplete(STEPS[stepIndex]);
-    }
 
     // ----- screens -----
     function renderIntro() {
       // Whatever the admin typed, in full — splitting on the first word greets
       // half the testers as "Dr".
       var name = (intro && intro.name) || "";
+      var minutes = steps.length > 10 ? "About ten minutes." : "About seven minutes.";
       stage.innerHTML = "";
       var c = el('<div class="card fade-in"></div>');
       c.innerHTML =
         '<div class="center" style="margin-bottom:18px">' + segmentedO(46, 3.4) + '</div>' +
         '<h1 class="step-title center" style="font-size:31px">' +
         (name ? "Thank you, " + esc(name) + "." : "Thank you.") + '</h1>' +
-        '<p class="step-intro center" style="margin:0 auto 22px">You have used Rounds through the beta. ' +
-        'These questions are how we work out what to build next, what to fix, and what to drop.</p>' +
-        '<div class="callout"><strong>About ten minutes.</strong> Mostly taps — there are five short boxes to type in, ' +
-        'and two of them are optional. Your progress saves on this device as you go, so you can stop and come back to ' +
-        'the same link. Nothing is sent until you press submit at the end.</div>' +
-        '<p class="muted" style="margin-top:18px">Answers go to the Rounds team only, tied to your name so we can follow up. ' +
-        'We never ask what you searched for.</p>';
+        '<div class="callout"><strong>' + esc(minutes) + '</strong> Mostly taps, and every question is optional — ' +
+        'skip anything you have no view on. Your progress saves on this device as you go, so you can stop and come ' +
+        'back to the same link. Nothing is sent until you press submit at the end.</div>' +
+        '<p class="muted" style="margin-top:18px">Answers go to the Rounds team only.</p>';
       var nav = el('<div class="nav"><span class="spacer"></span></div>');
       var b = el('<button class="btn btn-primary">Start</button>');
       b.addEventListener("click", function () { stepIndex = 1; persist(); render(); });
@@ -1049,8 +1044,16 @@
     function renderStep(step) {
       stage.innerHTML = "";
       var c = el('<div class="card fade-in"></div>');
+      // Feature blocks are numbered by their place in *this* survey, so the
+      // short variant reads 1,2,3… rather than showing gaps where a section was
+      // left out.
+      var eyebrow = step.eyebrow || "";
+      if (step.isFeature) {
+        var n = steps.filter(function (s, i) { return s.isFeature && i <= stepIndex; }).length;
+        eyebrow = "Section 3 · Feature " + n;
+      }
       var headHTML =
-        '<div class="step-eyebrow">' + esc(step.eyebrow || "") + '</div>' +
+        '<div class="step-eyebrow">' + esc(eyebrow) + '</div>' +
         '<h2 class="step-title">' + esc(step.title) + '</h2>' +
         (step.intro ? '<p class="step-intro">' + esc(step.intro) + '</p>' : "");
 
@@ -1071,20 +1074,25 @@
       nav.appendChild(back);
       nav.appendChild(el('<span class="spacer"></span>'));
 
-      var last = stepIndex === STEPS.length - 1;
+      var last = stepIndex === steps.length - 1;
       navNext = el('<button class="btn btn-primary">' + (last ? "Submit" : "Next") + '</button>');
       navNext.addEventListener("click", function () {
-        if (!stepComplete(step)) return;
         if (last) { submit(); return; }
         stepIndex++; persist(); render(); window.scrollTo(0, 0);
       });
       nav.appendChild(navNext);
       c.appendChild(nav);
-      c.insertAdjacentHTML("beforeend",
-        '<div class="nav-hint" style="margin-top:10px">' +
-        (stepComplete(step) ? "" : "Answer the questions above to continue.") + '</div>');
+
+      // Wipe the draft and go back to the start — mostly for testing a link,
+      // but also for anyone who wants to answer again from scratch.
+      var reset = el('<button class="btn btn-ghost btn-sm" style="margin-top:14px;border:none;padding:0;' +
+        'color:var(--r-text-faint);font-weight:400">Clear my answers and start over</button>');
+      reset.addEventListener("click", function () {
+        if (!window.confirm("Clear every answer you have given so far and start again?")) return;
+        answers = {}; stepIndex = 0; persist(); render(); window.scrollTo(0, 0);
+      });
+      c.appendChild(reset);
       stage.appendChild(c);
-      syncNav();
     }
 
     function submit() {
@@ -1115,10 +1123,9 @@
       c.innerHTML =
         '<div style="margin-bottom:18px">' + segmentedO(46, 3.4) + '</div>' +
         '<h1 class="step-title" style="font-size:29px">That is everything.</h1>' +
-        '<p class="step-intro" style="margin:0 auto">Thank you — genuinely. Every answer here gets read, and the ' +
-        'friction page gets read twice.</p>' +
-        '<p class="muted" style="margin-top:18px">You can close this tab. If you said we could follow up, ' +
-        'you may hear from us once.</p>';
+        '<p class="step-intro" style="margin:0 auto">Thank you. Every answer here gets read.</p>' +
+        '<p class="muted" style="margin-top:18px">You can close this tab. Anything else to add, or a problem you ' +
+        'would rather describe in person — write to <a href="mailto:hello@getrounds.ca">hello@getrounds.ca</a>.</p>';
       stage.appendChild(c);
     }
 
@@ -1136,13 +1143,15 @@
     function render() {
       setProgress();
       if (stepIndex === 0) renderIntro();
-      else renderStep(STEPS[stepIndex]);
+      else renderStep(steps[stepIndex]);
     }
 
     stage.innerHTML = '<div class="card center muted">Opening your survey…</div>';
     api("/beta/survey/" + encodeURIComponent(token))
       .then(function (data) {
         intro = data;
+        steps = stepsForVariant(data.variant);
+        if (stepIndex >= steps.length) stepIndex = steps.length - 1;
         if (data.status === "submitted") { renderClosed("You have already sent this one in."); return; }
         render();
       })
@@ -1306,7 +1315,12 @@
         '<label>Name<input type="text" name="name" required placeholder="Dr Sarah Chen" /></label>' +
         '<label>Email <span style="font-weight:400;color:var(--r-text-faint)">(so you can send it)</span>' +
         '<input type="email" name="email" placeholder="optional" /></label>' +
-        '<label>Note<input type="text" name="note" placeholder="e.g. PGY-4, sports" /></label>';
+        '<label>Note<input type="text" name="note" placeholder="e.g. PGY-4, sports" /></label>' +
+        '<label>Length<select name="variant" style="width:100%;font-family:inherit;font-size:14.5px;' +
+        'margin-top:6px;padding:12px 14px;border:1px solid var(--r-border);border-radius:var(--radius-control);' +
+        'background:var(--r-card);color:var(--r-text-primary)">' +
+        '<option value="full">Full — every section</option>' +
+        '<option value="short">Short — no Save PDF or Library</option></select></label>';
       var btn = el('<button class="btn btn-primary btn-sm" type="submit" style="padding:12px 20px">Create link</button>');
       form.appendChild(btn);
       form.addEventListener("submit", function (e) {
@@ -1317,7 +1331,8 @@
           body: {
             name: form.name.value.trim(),
             email: form.email.value.trim() || null,
-            note: form.note.value.trim() || null
+            note: form.note.value.trim() || null,
+            variant: form.variant.value
           }
         }).then(function () { load(); })
           .catch(function (err) {
@@ -1346,7 +1361,9 @@
         tr.innerHTML =
           '<td><div style="font-weight:600">' + esc(t.name) + '</div>' +
           (t.email ? '<div style="font-size:11.5px;color:var(--r-text-faint)">' + esc(t.email) + '</div>' : "") + '</td>' +
-          '<td style="color:var(--r-text-muted)">' + esc(t.note || "—") + '</td>' +
+          '<td style="color:var(--r-text-muted)">' + esc(t.note || "—") +
+          (t.variant === "short" ? '<div style="font-size:11.5px;color:var(--r-text-faint)">short survey</div>' : "") +
+          '</td>' +
           '<td><span class="status ' + s.cls + '">' + s.label + '</span></td>' +
           '<td style="color:var(--r-text-faint);font-size:12px">' + esc((t.createdAt || "").slice(0, 10)) + '</td>';
         var actions = el('<td class="actions"></td>');
