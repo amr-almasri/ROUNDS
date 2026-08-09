@@ -1168,43 +1168,75 @@
     var stage = document.getElementById("stage");
     document.getElementById("progress-meta").remove();
 
-    function renderLogin(message) {
+    // Sign-in is a code emailed to the admin's own verified address, not a
+    // password: an Apple- or Google-only admin has no password to type, and
+    // this page is the one place they would need one.
+    function renderLogin(message, prefill) {
       stage.innerHTML = "";
       var c = el('<div class="card fade-in" style="max-width:420px;margin:40px auto"></div>');
       c.innerHTML =
         '<div class="step-eyebrow">Admin</div>' +
         '<h2 class="step-title" style="font-size:23px">Sign in</h2>' +
-        '<p class="muted" style="margin-bottom:18px">Your Rounds admin account — the same email and password you ' +
-        'use in the app.</p>';
+        '<p class="muted" style="margin-bottom:18px">Enter the email on your Rounds admin account. ' +
+        'We will send you a six-digit code.</p>';
       var form = el('<form></form>');
       form.innerHTML =
         '<label style="font-size:12px;font-weight:600;color:var(--r-text-muted)">Email' +
-        '<input type="email" name="email" autocomplete="username" required style="margin-top:6px" /></label>' +
-        '<label style="display:block;margin-top:14px;font-size:12px;font-weight:600;color:var(--r-text-muted)">Password' +
-        '<input type="password" name="password" autocomplete="current-password" required style="margin-top:6px" /></label>';
+        '<input type="email" name="email" autocomplete="username" required style="margin-top:6px" /></label>';
+      form.email.value = prefill || "";
+      var btn = el('<button class="btn btn-primary" type="submit" style="width:100%;margin-top:18px">Send code</button>');
+      form.appendChild(btn);
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var email = form.email.value.trim();
+        btn.disabled = true; btn.textContent = "Sending…";
+        api("/beta/admin/request-code", { method: "POST", body: { email: email } })
+          .then(function () { renderCodeStep(email); })
+          .catch(function (err) {
+            btn.disabled = false; btn.textContent = "Send code";
+            var old = c.querySelector(".err"); if (old) old.remove();
+            c.appendChild(el('<div class="err">' + esc(err.message || "Could not send a code.") + '</div>'));
+          });
+      });
+      c.appendChild(form);
+      if (message) c.appendChild(el('<div class="err">' + esc(message) + '</div>'));
+      stage.appendChild(c);
+    }
+
+    function renderCodeStep(email) {
+      stage.innerHTML = "";
+      var c = el('<div class="card fade-in" style="max-width:420px;margin:40px auto"></div>');
+      c.innerHTML =
+        '<div class="step-eyebrow">Admin</div>' +
+        '<h2 class="step-title" style="font-size:23px">Check your email</h2>' +
+        '<p class="muted" style="margin-bottom:18px">If <strong>' + esc(email) + '</strong> is on an admin ' +
+        'account, a six-digit code is on its way. It expires in half an hour.</p>';
+      var form = el('<form></form>');
+      form.innerHTML =
+        '<label style="font-size:12px;font-weight:600;color:var(--r-text-muted)">Code' +
+        '<input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" ' +
+        'required style="margin-top:6px;letter-spacing:0.3em;font-size:18px;text-align:center" /></label>';
       var btn = el('<button class="btn btn-primary" type="submit" style="width:100%;margin-top:18px">Sign in</button>');
       form.appendChild(btn);
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         btn.disabled = true; btn.textContent = "Signing in…";
-        api("/auth/email/login", {
-          method: "POST",
-          body: { email: form.email.value.trim(), password: form.password.value }
+        api("/beta/admin/verify-code", {
+          method: "POST", body: { email: email, code: form.code.value.trim() }
         }).then(function (data) {
-          if (!data.me || data.me.accountType !== "admin") {
-            throw new Error("That account is not an admin.");
-          }
           token = data.token;
           try { sessionStorage.setItem("rounds_beta_admin_token", token); } catch (e) {}
           load();
         }).catch(function (err) {
           btn.disabled = false; btn.textContent = "Sign in";
           var old = c.querySelector(".err"); if (old) old.remove();
-          c.appendChild(el('<div class="err">' + esc(err.message || "Could not sign in.") + '</div>'));
+          c.appendChild(el('<div class="err">' + esc(err.message || "That code is not valid.") + '</div>'));
         });
       });
       c.appendChild(form);
-      if (message) c.appendChild(el('<div class="err">' + esc(message) + '</div>'));
+      var back = el('<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:10px">Use a different email</button>');
+      back.addEventListener("click", function () { renderLogin(null, email); });
+      c.appendChild(back);
       stage.appendChild(c);
     }
 
