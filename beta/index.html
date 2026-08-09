@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="robots" content="noindex, nofollow, noarchive" />
+<title>Rounds — Beta feedback</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --r-teal: #0D7A6B;
+    --r-teal-pressed: #0A5E55;
+    --r-teal-faint: #E6F5F2;
+    --r-text-primary: #111827;
+    --r-text-soft: #374151;
+    --r-text-muted: #6B7280;
+    --r-text-faint: #9CA3AF;
+    --r-border: #E5E7EB;
+    --r-hairline: #EDEFF2;
+    --r-bg: #F9FAFB;
+    --r-card: #FFFFFF;
+    --r-warning: #991B1B;
+    --r-society: #4338CA;
+    --r-industry: #92400E;
+    --r-regulatory: #991B1B;
+    --r-surgical: #1E3A5F;
+    --r-cme: #1D4ED8;
+    --r-literature: #15803D;
+    --r-tier-key: #0D7A6B;
+    --r-tier-notable: #1D4ED8;
+    --r-tier-background: #64748B;
+
+    --radius-card: 12px;
+    --radius-control: 10px;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --fast: 0.15s;
+    --base: 0.2s;
+    --slow: 0.55s;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--r-bg);
+    color: var(--r-text-primary);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, .serif { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; }
+
+  a { color: var(--r-teal); }
+
+  .wrap { max-width: 680px; margin: 0 auto; padding: 0 20px 80px; }
+  .wrap-wide { max-width: 1060px; }
+
+  /* ---------- masthead ---------- */
+  .masthead {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(249, 250, 251, 0.92);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--r-hairline);
+  }
+  .masthead-inner {
+    max-width: 680px; margin: 0 auto; padding: 14px 20px 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .masthead-inner.wide { max-width: 1060px; }
+  .masthead img { height: 20px; width: auto; display: block; }
+  .masthead .eyebrow {
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--r-text-faint); padding-left: 12px; border-left: 1px solid var(--r-border);
+  }
+  .masthead .spacer { flex: 1; }
+
+  .progress-track { height: 3px; background: var(--r-hairline); }
+  .progress-fill {
+    height: 100%; background: var(--r-teal); width: 0;
+    transition: width var(--slow) var(--ease);
+  }
+  .progress-meta {
+    max-width: 680px; margin: 0 auto; padding: 8px 20px 10px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 11.5px; color: var(--r-text-faint);
+  }
+  .progress-meta strong { color: var(--r-text-muted); font-weight: 600; }
+
+  /* ---------- cards + type ---------- */
+  .card {
+    background: var(--r-card); border: 1px solid var(--r-border);
+    border-radius: var(--radius-card); padding: 22px;
+    box-shadow: 0 1px 3px rgba(17, 24, 39, 0.04);
+  }
+  .card + .card { margin-top: 14px; }
+
+  .step-eyebrow {
+    font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--r-teal); margin-bottom: 8px;
+  }
+  .step-title { font-size: 27px; line-height: 1.2; margin: 0 0 8px; }
+  .step-intro { font-size: 15px; line-height: 1.55; color: var(--r-text-muted); margin: 0 0 22px; max-width: 52ch; }
+
+  .q { padding: 20px 0; border-top: 1px solid var(--r-hairline); }
+  .q:first-of-type { border-top: none; padding-top: 4px; }
+  .q-label { font-size: 15.5px; font-weight: 600; line-height: 1.4; margin-bottom: 3px; }
+  .q-help { font-size: 13px; color: var(--r-text-muted); line-height: 1.5; margin-bottom: 12px; }
+  .q-optional { font-size: 11px; font-weight: 500; color: var(--r-text-faint); margin-left: 6px; }
+
+  /* ---------- scale ---------- */
+  .scale { display: flex; gap: 6px; }
+  .scale button {
+    flex: 1; min-width: 0; padding: 13px 0;
+    font-family: inherit; font-size: 15px; font-weight: 600;
+    color: var(--r-text-soft); background: var(--r-card);
+    border: 1px solid var(--r-border); border-radius: var(--radius-control);
+    cursor: pointer; transition: all var(--fast) var(--ease);
+  }
+  .scale button:hover { border-color: var(--r-teal); color: var(--r-teal); }
+  .scale button[aria-pressed="true"] {
+    background: var(--r-teal); border-color: var(--r-teal); color: #fff;
+  }
+  .scale.nps button { padding: 11px 0; font-size: 13.5px; }
+  .scale-anchors {
+    display: flex; justify-content: space-between; margin-top: 8px;
+    font-size: 11.5px; color: var(--r-text-faint);
+  }
+
+  /* ---------- chips / options ---------- */
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opts button {
+    font-family: inherit; font-size: 13.5px; font-weight: 500;
+    color: var(--r-text-soft); background: var(--r-card);
+    border: 1px solid var(--r-border); border-radius: 999px;
+    padding: 9px 15px; cursor: pointer; transition: all var(--fast) var(--ease);
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .opts button:hover { border-color: var(--r-teal); color: var(--r-teal); }
+  .opts button[aria-pressed="true"] {
+    background: var(--r-teal); border-color: var(--r-teal); color: #fff;
+  }
+  .opts button[aria-pressed="true"] .tick { opacity: 1; }
+  .tick { opacity: 0; transition: opacity var(--fast) var(--ease); }
+
+  .opts.stack { flex-direction: column; }
+  .opts.stack button {
+    border-radius: var(--radius-control); width: 100%;
+    justify-content: flex-start; text-align: left; padding: 13px 15px; font-size: 14.5px;
+  }
+
+  /* ---------- gate (used / not used) ---------- */
+  .gate { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .gate button {
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    padding: 15px 10px; line-height: 1.3;
+    color: var(--r-text-soft); background: var(--r-card);
+    border: 1px solid var(--r-border); border-radius: var(--radius-control);
+    cursor: pointer; transition: all var(--fast) var(--ease);
+  }
+  .gate button small { display: block; font-size: 11.5px; font-weight: 400; color: var(--r-text-faint); margin-top: 3px; }
+  .gate button:hover { border-color: var(--r-teal); }
+  .gate button[aria-pressed="true"] { background: var(--r-teal); border-color: var(--r-teal); color: #fff; }
+  .gate button[aria-pressed="true"] small { color: rgba(255,255,255,0.78); }
+  @media (max-width: 520px) { .gate { grid-template-columns: 1fr; } .gate button small { display: inline; margin-left: 6px; } }
+
+  /* ---------- text ---------- */
+  textarea, input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%; font-family: inherit; font-size: 14.5px; color: var(--r-text-primary);
+    background: var(--r-card); border: 1px solid var(--r-border);
+    border-radius: var(--radius-control); padding: 12px 14px; resize: vertical;
+    transition: border-color var(--fast) var(--ease);
+  }
+  textarea:focus, input:focus { outline: none; border-color: var(--r-teal); }
+  textarea { min-height: 88px; line-height: 1.5; }
+  .char-count { font-size: 11px; color: var(--r-text-faint); text-align: right; margin-top: 5px; }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    font-family: inherit; font-size: 15px; font-weight: 600;
+    padding: 13px 26px; border-radius: var(--radius-control); border: 1px solid transparent;
+    cursor: pointer; transition: all var(--fast) var(--ease);
+  }
+  .btn-primary { background: var(--r-teal); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--r-teal-pressed); }
+  .btn-primary:disabled { background: var(--r-border); color: var(--r-text-faint); cursor: not-allowed; }
+  .btn-ghost { background: transparent; color: var(--r-text-muted); border-color: var(--r-border); }
+  .btn-ghost:hover { color: var(--r-teal); border-color: var(--r-teal); }
+  .btn-sm { font-size: 12.5px; padding: 8px 14px; }
+  .btn-danger { background: transparent; color: var(--r-warning); border-color: #F3D6D6; }
+  .btn-danger:hover { background: #FEF2F2; }
+
+  .nav { display: flex; align-items: center; gap: 12px; margin-top: 26px; }
+  .nav .spacer { flex: 1; }
+  .nav-hint { font-size: 12px; color: var(--r-text-faint); }
+
+  /* ---------- feature mock ---------- */
+  .feature-head { display: flex; gap: 22px; align-items: center; margin-bottom: 4px; }
+  .feature-copy { flex: 1; min-width: 0; }
+  .mock {
+    flex-shrink: 0; width: 176px; background: var(--r-bg);
+    border: 1px solid var(--r-border); border-radius: 14px; padding: 11px;
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  @media (max-width: 640px) {
+    .feature-head { flex-direction: column-reverse; align-items: stretch; gap: 16px; }
+    .mock { width: 100%; }
+  }
+  .m-row { display: flex; align-items: center; gap: 7px; }
+  .m-card {
+    background: var(--r-card); border: 1px solid var(--r-border); border-radius: 8px;
+    padding: 8px 9px; display: flex; flex-direction: column; gap: 5px;
+  }
+  .m-title { font-family: 'Playfair Display', Georgia, serif; font-size: 10.5px; font-weight: 600; line-height: 1.3; color: var(--r-text-primary); }
+  .m-meta { font-size: 8px; color: var(--r-text-faint); letter-spacing: 0.03em; }
+  .m-bar { height: 5px; border-radius: 3px; background: var(--r-hairline); }
+  .m-field {
+    background: var(--r-card); border: 1px solid var(--r-border); border-radius: 999px;
+    padding: 6px 10px; font-size: 9px; color: var(--r-text-faint);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .m-pill {
+    display: inline-flex; align-items: center; gap: 4px; border-radius: 999px;
+    padding: 3px 7px; font-size: 8px; font-weight: 600; letter-spacing: 0.03em;
+  }
+  .m-pill-teal { background: var(--r-teal-faint); color: var(--r-teal); }
+  .m-btn {
+    background: var(--r-teal); color: #fff; border-radius: 6px; text-align: center;
+    padding: 6px 0; font-size: 9px; font-weight: 600;
+  }
+  .m-stripe { width: 3px; border-radius: 2px; align-self: stretch; }
+  .m-seg {
+    display: flex; background: var(--r-hairline); border-radius: 7px; padding: 2px; gap: 2px;
+  }
+  .m-seg div { flex: 1; text-align: center; font-size: 7.5px; font-weight: 600; padding: 4px 0; border-radius: 5px; color: var(--r-text-muted); }
+  .m-seg div.on { background: var(--r-card); color: var(--r-text-primary); box-shadow: 0 1px 2px rgba(17,24,39,0.06); }
+  .m-score {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .m-score-num { font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 600; color: var(--r-tier-key); line-height: 1; }
+  .m-notice {
+    background: var(--r-card); border: 1px solid var(--r-border); border-radius: 8px;
+    padding: 7px 8px; display: flex; gap: 6px; align-items: center;
+  }
+
+  /* ---------- misc ---------- */
+  .callout {
+    background: var(--r-teal-faint); border-radius: var(--radius-control);
+    padding: 14px 16px; font-size: 13.5px; line-height: 1.55; color: var(--r-text-soft);
+  }
+  .fade-in { animation: fade 0.36s var(--ease) both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in { animation: none; }
+    * { transition-duration: 0.01ms !important; }
+  }
+  .hidden { display: none !important; }
+  .center { text-align: center; }
+  .muted { color: var(--r-text-muted); font-size: 13.5px; line-height: 1.55; }
+  .err {
+    background: #FEF2F2; border: 1px solid #F3D6D6; color: var(--r-warning);
+    border-radius: var(--radius-control); padding: 11px 14px; font-size: 13.5px; margin-top: 14px;
+  }
+
+  /* ---------- admin ---------- */
+  .admin-tabs { display: flex; gap: 6px; margin-bottom: 18px; }
+  .admin-tabs button {
+    font-family: inherit; font-size: 13.5px; font-weight: 600; padding: 9px 16px;
+    border-radius: 999px; border: 1px solid var(--r-border); background: var(--r-card);
+    color: var(--r-text-muted); cursor: pointer; transition: all var(--fast) var(--ease);
+  }
+  .admin-tabs button[aria-pressed="true"] { background: var(--r-teal); border-color: var(--r-teal); color: #fff; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th {
+    text-align: left; font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em;
+    text-transform: uppercase; color: var(--r-text-faint); padding: 0 10px 10px; white-space: nowrap;
+  }
+  td { padding: 12px 10px; border-top: 1px solid var(--r-hairline); vertical-align: middle; }
+  td.actions { text-align: right; white-space: nowrap; }
+  .table-scroll { overflow-x: auto; }
+
+  .status {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;
+    padding: 4px 10px; border-radius: 999px;
+  }
+  .status-open { background: var(--r-hairline); color: var(--r-text-muted); }
+  .status-done { background: var(--r-teal-faint); color: var(--r-teal); }
+  .status-revoked { background: #FEF2F2; color: var(--r-warning); }
+
+  .form-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+  .form-row label { flex: 1; min-width: 160px; font-size: 12px; font-weight: 600; color: var(--r-text-muted); }
+  .form-row label input { margin-top: 6px; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .stat {
+    background: var(--r-bg); border: 1px solid var(--r-border); border-radius: var(--radius-control);
+    padding: 14px;
+  }
+  .stat-num { font-family: 'Playfair Display', Georgia, serif; font-size: 26px; font-weight: 600; line-height: 1; }
+  .stat-label { font-size: 11.5px; color: var(--r-text-muted); margin-top: 6px; }
+
+  .summary-row { padding: 12px 0; border-top: 1px solid var(--r-hairline); }
+  .summary-row:first-child { border-top: none; }
+  .summary-q { font-size: 13.5px; font-weight: 600; margin-bottom: 8px; }
+  .bar-line { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; font-size: 12.5px; }
+  .bar-line .bl-label { width: 190px; flex-shrink: 0; color: var(--r-text-muted); }
+  .bar-line .bl-track { display: block; flex: 1; height: 8px; background: var(--r-hairline); border-radius: 4px; overflow: hidden; }
+  .bar-line .bl-fill { display: block; height: 8px; background: var(--r-teal); border-radius: 4px; }
+  .bar-line .bl-n { width: 34px; text-align: right; color: var(--r-text-faint); font-size: 11.5px; }
+  @media (max-width: 560px) { .bar-line .bl-label { width: 110px; } }
+
+  details.resp { border-top: 1px solid var(--r-hairline); padding: 12px 0; }
+  details.resp summary { cursor: pointer; font-size: 14px; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 10px; }
+  details.resp summary::-webkit-details-marker { display: none; }
+  details.resp .ans { margin-top: 12px; }
+  .ans-row { display: flex; gap: 12px; padding: 7px 0; border-top: 1px dashed var(--r-hairline); font-size: 13px; }
+  .ans-row .ak { width: 220px; flex-shrink: 0; color: var(--r-text-muted); }
+  .ans-row .av { color: var(--r-text-primary); }
+  @media (max-width: 560px) { .ans-row { flex-direction: column; gap: 2px; } .ans-row .ak { width: auto; } }
+
+  .quote { border-left: 2px solid var(--r-border); padding-left: 12px; margin: 6px 0; font-size: 13px; color: var(--r-text-soft); line-height: 1.5; }
+  .quote cite { display: block; font-style: normal; font-size: 11.5px; color: var(--r-text-faint); margin-top: 3px; }
+</style>
+</head>
+
+<body>
+<div id="root"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var API = "https://roundsapp.onrender.com";
+  var root = document.getElementById("root");
+
+  // ---------------------------------------------------------------------
+  // helpers
+  // ---------------------------------------------------------------------
+  function el(html) { var t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; }
+  function esc(s) {
+    return String(s === null || s === undefined ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+  function qs(name) { return new URLSearchParams(location.search).get(name); }
+
+  function api(path, opts) {
+    opts = opts || {};
+    var headers = { "Content-Type": "application/json" };
+    if (opts.token) headers["Authorization"] = "Bearer " + opts.token;
+    return fetch(API + path, {
+      method: opts.method || "GET",
+      headers: headers,
+      body: opts.body ? JSON.stringify(opts.body) : undefined
+    }).then(function (res) {
+      return res.text().then(function (text) {
+        var data = null;
+        try { data = text ? JSON.parse(text) : null; } catch (e) { data = null; }
+        if (!res.ok) {
+          var msg = (data && (data.detail || data.message)) || ("Request failed (" + res.status + ")");
+          var err = new Error(typeof msg === "string" ? msg : "Request failed");
+          err.status = res.status;
+          throw err;
+        }
+        return data;
+      });
+    });
+  }
+
+  var TEAL = "var(--r-teal)";
+  function segmentedO(size, lw, color) {
+    size = size || 30; lw = lw || 2.6; color = color || TEAL;
+    var r = (size - lw) / 2, c = 2 * Math.PI * r, period = c / 6;
+    var dash = period * 0.74, gap = period * 0.26;
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true">' +
+      '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" stroke="' + color +
+      '" stroke-width="' + lw + '" stroke-linecap="round" stroke-dasharray="' + dash.toFixed(2) + ' ' + gap.toFixed(2) +
+      '" stroke-dashoffset="' + (gap / 2).toFixed(2) + '" transform="rotate(-90 ' + size / 2 + ' ' + size / 2 + ')" /></svg>';
+  }
+  var TICK = '<svg class="tick" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"/></svg>';
+
+  function masthead(label, wide) {
+    return '<div class="masthead"><div class="masthead-inner' + (wide ? " wide" : "") + '">' +
+      '<img src="/rounds-wordmark.svg" alt="Rounds" />' +
+      '<span class="eyebrow">' + esc(label) + '</span><span class="spacer"></span>' +
+      '<span id="mast-slot"></span></div>' +
+      '<div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>' +
+      '<div class="progress-meta" id="progress-meta"></div></div>';
+  }
+
+  // ---------------------------------------------------------------------
+  // feature mini-mocks — same tokens as the app, drawn not screenshotted
+  // ---------------------------------------------------------------------
+  var MOCKS = {
+    search:
+      '<div class="m-field">' + '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>' +
+      'Title, DOI, or a link</div>' +
+      '<div class="m-card"><div class="m-row" style="justify-content:space-between;align-items:flex-start">' +
+      '<div class="m-title" style="flex:1">Outcomes of early versus delayed fixation…</div>' +
+      '<svg width="10" height="10" viewBox="0 0 24 24" fill="' + TEAL + '"><path d="M6 4h12v16l-6-4-6 4V4Z"/></svg></div>' +
+      '<div class="m-meta">J BONE JOINT SURG · 2026</div>' +
+      '<div class="m-btn">Read</div></div>',
+    access:
+      '<div class="m-row" style="gap:5px"><span class="m-pill m-pill-teal">' + segmentedO(8, 1.6) + ' McMaster</span>' +
+      '<span class="m-meta">connected</span></div>' +
+      '<div class="m-card" style="gap:6px"><div class="m-bar" style="width:80%"></div><div class="m-bar" style="width:100%"></div>' +
+      '<div class="m-bar" style="width:92%"></div><div class="m-bar" style="width:64%"></div>' +
+      '<div class="m-meta" style="margin-top:2px">FULL TEXT · PDF</div></div>',
+    pdf:
+      '<div class="m-card" style="flex-direction:row;align-items:center;gap:7px">' +
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="' + TEAL + '" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10m0 0 4-4m-4 4-4-4M5 19h14"/></svg>' +
+      '<div style="flex:1"><div class="m-title" style="font-size:9.5px">Save PDF</div>' +
+      '<div class="m-meta">to your Files</div></div></div>' +
+      '<div class="m-card" style="gap:4px"><div class="m-row" style="gap:5px">' +
+      '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--r-text-faint)" stroke-width="1.8"><path d="M3 7h6l2 2h10v10H3z"/></svg>' +
+      '<span class="m-meta">ON MY IPHONE / ROUNDS</span></div>' +
+      '<div class="m-bar" style="width:70%"></div><div class="m-bar" style="width:52%"></div></div>',
+    digest:
+      '<div class="m-row" style="justify-content:space-between"><span class="m-meta">MON 3 – SUN 9 AUG</span>' +
+      '<span class="m-meta">12 ITEMS</span></div>' +
+      '<div class="m-card" style="flex-direction:row;gap:7px"><div class="m-stripe" style="background:var(--r-literature)"></div>' +
+      '<div style="flex:1"><div class="m-title">Cemented versus uncemented hemiarthroplasty…</div>' +
+      '<div class="m-meta" style="margin-top:3px">PEER-REVIEWED · 6 MIN</div></div></div>' +
+      '<div class="m-card" style="flex-direction:row;gap:7px"><div class="m-stripe" style="background:var(--r-society)"></div>' +
+      '<div style="flex:1"><div class="m-title">COA position statement update</div>' +
+      '<div class="m-meta" style="margin-top:3px">SOCIETY UPDATE</div></div></div>',
+    score:
+      '<div class="m-card" style="gap:8px"><div class="m-score">' +
+      '<div class="m-score-num">88</div>' +
+      '<div><div class="m-pill m-pill-teal">KEY READING</div>' +
+      '<div class="m-meta" style="margin-top:3px">ROUNDS EVIDENCE SCORE</div></div></div>' +
+      '<div style="display:flex;flex-direction:column;gap:4px">' +
+      '<div class="m-row"><span class="m-meta" style="width:38px">OUTCOME</span><div class="m-bar" style="flex:1;background:var(--r-tier-key);width:auto;opacity:.9"></div></div>' +
+      '<div class="m-row"><span class="m-meta" style="width:38px">METHODS</span><div class="m-bar" style="flex:1;background:var(--r-tier-key);opacity:.65"></div></div>' +
+      '<div class="m-row"><span class="m-meta" style="width:38px">DESIGN</span><div class="m-bar" style="flex:1;background:var(--r-tier-key);opacity:.45"></div></div>' +
+      '</div></div>',
+    library:
+      '<div class="m-seg"><div class="on">Bookmarked</div><div>Downloaded</div><div>Notes</div></div>' +
+      '<div class="m-card" style="flex-direction:row;gap:7px"><div class="m-stripe" style="background:var(--r-literature)"></div>' +
+      '<div style="flex:1"><div class="m-title">Tranexamic acid in primary TKA</div>' +
+      '<div class="m-meta" style="margin-top:3px">SAVED 4 AUG · OPEN ACCESS</div></div></div>' +
+      '<div class="m-card" style="flex-direction:row;gap:7px"><div class="m-stripe" style="background:var(--r-surgical)"></div>' +
+      '<div style="flex:1"><div class="m-title">Note — journal club, Thursday</div>' +
+      '<div class="m-meta" style="margin-top:3px">EDITED 2 AUG</div></div></div>',
+    share:
+      '<div class="m-card" style="gap:5px"><div class="m-meta">SAFARI</div>' +
+      '<div class="m-title">pubmed.ncbi.nlm.nih.gov</div></div>' +
+      '<div class="center" style="color:var(--r-text-faint);font-size:11px">↓ Share</div>' +
+      '<div class="m-card" style="flex-direction:row;align-items:center;gap:7px">' + segmentedO(16, 2) +
+      '<div style="flex:1"><div class="m-title" style="font-size:9.5px">Rounds</div>' +
+      '<div class="m-meta">opens the paper</div></div></div>',
+    reminders:
+      '<div class="m-notice">' + segmentedO(14, 1.9) +
+      '<div style="flex:1"><div class="m-title" style="font-size:9.5px">Your Rounds are ready</div>' +
+      '<div class="m-meta" style="margin-top:2px">LAST WEEK’S ORTHOPAEDIC LITERATURE</div></div></div>' +
+      '<div class="m-card" style="flex-direction:row;align-items:center;gap:7px">' +
+      '<div class="m-score-num" style="font-size:16px">6</div>' +
+      '<div class="m-meta">DAY STREAK · 4 PAPERS<br/>THIS WEEK</div></div>'
+  };
+
+  // ---------------------------------------------------------------------
+  // the survey
+  // ---------------------------------------------------------------------
+  var WHY_NOT = [
+    "I didn't need it",
+    "I couldn't find it",
+    "I tried, but it didn't work",
+    "It wasn't clear what it did",
+    "Too slow",
+    "Not how I work"
+  ];
+
+  function feature(cfg) {
+    var qs = [];
+    qs.push({
+      id: cfg.id + "_used", type: "gate", label: cfg.gateLabel || ("Did you use " + cfg.short + "?"),
+      required: true,
+      options: [
+        { v: "yes", label: "Yes", note: "used it at least once" },
+        { v: "no", label: "No", note: "knew about it, didn't use it" },
+        { v: "unaware", label: "Didn't know", note: "first I'm hearing of it" }
+      ]
+    });
+    var usedYes = function (a) { return a[cfg.id + "_used"] === "yes"; };
+    var notUsed = function (a) { var v = a[cfg.id + "_used"]; return v === "no" || v === "unaware"; };
+
+    qs.push({
+      id: cfg.id + "_rating", type: "scale", min: 1, max: 5, low: "Frustrating", high: "Excellent",
+      label: cfg.ratingLabel || "How well did it work for you?", required: true, showIf: usedYes
+    });
+    (cfg.followUps || []).forEach(function (q) {
+      q.showIf = usedYes;
+      qs.push(q);
+    });
+    qs.push({
+      id: cfg.id + "_valued", type: "scale", min: 1, max: 5, low: "Wouldn't miss it", high: "Would miss it a lot",
+      label: "If this disappeared tomorrow, how much would you miss it?", required: true, showIf: usedYes
+    });
+    qs.push({
+      id: cfg.id + "_why", type: "multi", label: "What kept you from using it?",
+      options: (cfg.reasons || WHY_NOT).map(function (r) { return { v: r, label: r }; }),
+      required: true, showIf: notUsed
+    });
+    qs.push({
+      id: cfg.id + "_comment", type: "text", label: "Anything you'd change about it?",
+      optional: true, placeholder: "Optional — a sentence is plenty.", maxLength: 1000
+    });
+    return { id: cfg.id, eyebrow: cfg.eyebrow || "Feature", title: cfg.title, intro: cfg.blurb, mock: cfg.mock, questions: qs };
+  }
+
+  var STEPS = [
+    { id: "welcome", kind: "intro" },
+
+    {
+      id: "you", eyebrow: "Section 1", title: "About you",
+      intro: "Two quick ones, so your answers can be read in context.",
+      questions: [
+        {
+          id: "role", type: "choice", label: "What best describes you?", required: true,
+          options: [
+            { v: "surgeon", label: "Orthopaedic surgeon" },
+            { v: "resident", label: "Resident or fellow" },
+            { v: "student", label: "Medical student" },
+            { v: "researcher", label: "Researcher" },
+            { v: "other", label: "Something else" }
+          ]
+        },
+        {
+          id: "frequency", type: "choice", label: "How often did you open Rounds during the beta?", required: true,
+          options: [
+            { v: "daily", label: "Most days" },
+            { v: "weekly_few", label: "A few times a week" },
+            { v: "weekly", label: "About once a week" },
+            { v: "few", label: "Once or twice in total" },
+            { v: "never", label: "I barely got into it" }
+          ]
+        },
+        {
+          id: "blocked", type: "text", label: "If something stopped you using it more, what was it?",
+          optional: true, placeholder: "Optional.", maxLength: 600
+        }
+      ]
+    },
+
+    {
+      id: "overall", eyebrow: "Section 2", title: "Rounds overall",
+      intro: "Before the feature-by-feature part — your gut read.",
+      questions: [
+        {
+          id: "nps", type: "scale", min: 0, max: 10, low: "Not at all likely", high: "Extremely likely",
+          label: "How likely are you to recommend Rounds to a colleague?", required: true, nps: true
+        },
+        {
+          id: "time_saved", type: "scale", min: 1, max: 5, low: "Strongly disagree", high: "Strongly agree",
+          label: "“Rounds saved me time getting to the literature I care about.”", required: true
+        },
+        {
+          id: "core_job", type: "choice", required: true,
+          label: "Which of these did Rounds do best for you?",
+          help: "The one thing you'd actually keep it for.",
+          options: [
+            { v: "find", label: "Finding a specific paper I already knew about" },
+            { v: "access", label: "Getting me past the paywall to full text" },
+            { v: "keep", label: "Keeping my papers and PDFs in one place" },
+            { v: "discover", label: "Showing me what's new that I'd have missed" },
+            { v: "triage", label: "Telling me which papers were worth my time" },
+            { v: "none", label: "None of them, really" }
+          ]
+        }
+      ]
+    },
+
+    feature({
+      id: "search", eyebrow: "Section 3 · Feature 1", short: "search",
+      title: "Finding a paper", mock: "search",
+      blurb: "Search by title, DOI, or a link you paste in — Rounds identifies the paper and opens it.",
+      ratingLabel: "How well did search find what you were after?",
+      followUps: [
+        {
+          id: "search_accuracy", type: "choice", label: "When you searched, how often did you get the right paper?",
+          required: true,
+          options: [
+            { v: "always", label: "Every time" },
+            { v: "usually", label: "Usually" },
+            { v: "sometimes", label: "About half the time" },
+            { v: "rarely", label: "Rarely" }
+          ]
+        },
+        {
+          id: "search_input", type: "multi", label: "What did you search with?", required: true,
+          options: [
+            { v: "title", label: "Paper title" },
+            { v: "doi", label: "A DOI" },
+            { v: "link", label: "A link I pasted" },
+            { v: "keywords", label: "Loose keywords / a topic" }
+          ]
+        }
+      ]
+    }),
+
+    feature({
+      id: "access", eyebrow: "Section 3 · Feature 2", short: "full-text access through your library",
+      title: "Getting the full text", mock: "access",
+      blurb: "Connect your institution once, then tapping Read opens the paper through your library's access instead of a paywall.",
+      gateLabel: "Did you connect your institution and open a full paper?",
+      ratingLabel: "How reliably did it get you to the actual paper?",
+      followUps: [
+        {
+          id: "access_speed", type: "scale", min: 1, max: 5, low: "Painfully slow", high: "Instant",
+          label: "How fast did papers open?", required: true
+        },
+        {
+          id: "access_problems", type: "multi", label: "Did you hit any of these?", required: true,
+          options: [
+            { v: "none", label: "No — it just worked" },
+            { v: "login", label: "Kept asking me to sign in again" },
+            { v: "wrong", label: "Opened the wrong paper" },
+            { v: "error", label: "Landed on a publisher error page" },
+            { v: "paywall", label: "Still hit a paywall" },
+            { v: "slow", label: "Took too long to load" }
+          ]
+        },
+        {
+          id: "access_setup", type: "choice", label: "How was the one-time institution sign-in?", required: true,
+          options: [
+            { v: "easy", label: "Straightforward" },
+            { v: "fiddly", label: "Worked, but fiddly" },
+            { v: "confusing", label: "I wasn't sure what it wanted" },
+            { v: "failed", label: "I couldn't get it to connect" }
+          ]
+        }
+      ],
+      reasons: ["I didn't need it", "My institution wasn't listed", "I couldn't get signed in", "I read papers elsewhere", "I wasn't sure what it did", "Privacy concerns"]
+    }),
+
+    feature({
+      id: "pdf", eyebrow: "Section 3 · Feature 3", short: "Save PDF",
+      title: "Saving the PDF", mock: "pdf",
+      blurb: "Save PDF puts the document in a folder you choose on your own phone — Rounds keeps only a pointer to it.",
+      ratingLabel: "How well did saving a PDF work?",
+      followUps: [
+        {
+          id: "pdf_folder", type: "choice", label: "The one-time “choose where PDFs save” step — did it make sense?",
+          required: true,
+          options: [
+            { v: "clear", label: "Clear, and I liked the control" },
+            { v: "ok", label: "Fine, but an extra step" },
+            { v: "confusing", label: "I wasn't sure what to pick" },
+            { v: "unexpected", label: "I didn't expect it at all" }
+          ]
+        },
+        {
+          id: "pdf_reopen", type: "choice", label: "Did you find your saved papers again afterwards?", required: true,
+          options: [
+            { v: "app", label: "Yes — from the Downloaded tab in Rounds" },
+            { v: "files", label: "Yes — in the Files app" },
+            { v: "both", label: "Both" },
+            { v: "no", label: "No, I lost track of them" }
+          ]
+        }
+      ],
+      reasons: ["I didn't need offline copies", "I couldn't find the button", "It failed when I tried", "I save PDFs another way", "I don't want files on my phone", "I wasn't sure where they'd go"]
+    }),
+
+    feature({
+      id: "digest", eyebrow: "Section 3 · Feature 4", short: "the Rounds tab",
+      title: "Your Rounds digest", mock: "digest",
+      blurb: "The centre tab: what came out in your subspecialties over your chosen window — papers, society and regulatory updates, technique videos.",
+      ratingLabel: "How useful was the digest to you?",
+      followUps: [
+        {
+          id: "digest_relevance", type: "scale", min: 1, max: 5, low: "Mostly noise", high: "Nearly all relevant",
+          label: "How relevant were the items to your practice?", required: true
+        },
+        {
+          id: "digest_cadence", type: "choice", label: "Was the amount right?", required: true,
+          options: [
+            { v: "too_much", label: "Too much to get through" },
+            { v: "right", label: "About right" },
+            { v: "too_little", label: "Not enough" },
+            { v: "unsure", label: "Didn't look closely enough to say" }
+          ]
+        },
+        {
+          id: "digest_missing", type: "multi", label: "What was missing or wrong?", required: true,
+          options: [
+            { v: "nothing", label: "Nothing — it was solid" },
+            { v: "wrong_subspecialty", label: "Items outside my subspecialty" },
+            { v: "missed_papers", label: "Missed papers I'd expected" },
+            { v: "empty_days", label: "Empty or thin days" },
+            { v: "summaries", label: "Summaries weren't useful" },
+            { v: "sources", label: "Sources I care about aren't covered" }
+          ]
+        }
+      ],
+      reasons: ["I didn't need it", "I get this from elsewhere", "The items weren't relevant", "Too much to read", "I didn't notice the tab", "I wasn't sure what it was"]
+    }),
+
+    feature({
+      id: "score", eyebrow: "Section 3 · Feature 5", short: "the Rounds Evidence Score",
+      title: "The Evidence Score", mock: "score",
+      blurb: "A 0–100 score on each paper — study design, methods, outcome, size, journal — sorted into Key reading, Worth a look, and Background.",
+      gateLabel: "Did you notice and use the score?",
+      ratingLabel: "How useful was the score for deciding what to read?",
+      followUps: [
+        {
+          id: "score_trust", type: "scale", min: 1, max: 5, low: "Didn't trust it", high: "Trusted it",
+          label: "How much did you trust the score?", required: true
+        },
+        {
+          id: "score_behaviour", type: "choice", label: "Did it change what you read?", required: true,
+          options: [
+            { v: "yes_often", label: "Yes — I went by it" },
+            { v: "yes_sometimes", label: "Sometimes" },
+            { v: "no", label: "No, I read what I'd have read anyway" },
+            { v: "disagreed", label: "No — I often disagreed with it" }
+          ]
+        },
+        {
+          id: "score_clarity", type: "choice", label: "Were the tiers (Key reading / Worth a look / Background) clear?",
+          required: true,
+          options: [
+            { v: "clear", label: "Clear straight away" },
+            { v: "after", label: "Clear after I opened the guide" },
+            { v: "unclear", label: "Still not sure what they mean" }
+          ]
+        }
+      ],
+      reasons: ["I didn't notice it", "I judge papers myself", "I didn't trust an automated score", "I wasn't sure what it measured", "It didn't match my read of the paper", "I didn't use the digest much"]
+    }),
+
+    feature({
+      id: "library", eyebrow: "Section 3 · Feature 6", short: "the Library",
+      title: "Library and notes", mock: "library",
+      blurb: "Bookmarked papers, downloaded PDFs, and your own notes — filterable, searchable, and openable straight back into full text.",
+      ratingLabel: "How well did the Library work for you?",
+      followUps: [
+        {
+          id: "library_use", type: "multi", label: "What did you use it for?", required: true,
+          options: [
+            { v: "bookmark", label: "Bookmarking papers to read later" },
+            { v: "downloads", label: "Getting back to saved PDFs" },
+            { v: "notes", label: "Writing notes" },
+            { v: "journal_club", label: "Gathering papers for teaching / journal club" }
+          ]
+        },
+        {
+          id: "library_missing", type: "text", label: "What's missing from it?",
+          optional: true, placeholder: "Optional — folders, tags, export, sync…", maxLength: 600
+        }
+      ],
+      reasons: ["I didn't save anything", "I keep references elsewhere", "I couldn't find it", "It wasn't clear what it held", "Notes weren't useful to me", "Too basic for what I need"]
+    }),
+
+    {
+      id: "extras", eyebrow: "Section 3 · Feature 7", title: "The smaller pieces",
+      intro: "Two quick ones — the share sheet and the morning reminder.",
+      mock: "share",
+      questions: [
+        {
+          id: "share_used", type: "gate", required: true,
+          label: "Did you ever send a paper into Rounds from another app (Safari, email, PubMed)?",
+          options: [
+            { v: "yes", label: "Yes", note: "used the share sheet" },
+            { v: "no", label: "No", note: "knew about it, didn't" },
+            { v: "unaware", label: "Didn't know", note: "wasn't aware of it" }
+          ]
+        },
+        {
+          id: "share_rating", type: "scale", min: 1, max: 5, low: "Frustrating", high: "Excellent",
+          label: "How well did that work?", required: true,
+          showIf: function (a) { return a.share_used === "yes"; }
+        },
+        {
+          id: "reminders_used", type: "gate", required: true,
+          label: "Did you have the daily reminder notifications on?",
+          options: [
+            { v: "yes", label: "Yes", note: "had them on" },
+            { v: "no", label: "No", note: "turned them off / never on" },
+            { v: "unaware", label: "Didn't know", note: "wasn't aware of them" }
+          ]
+        },
+        {
+          id: "reminders_rating", type: "choice", label: "How did the reminders land?", required: true,
+          showIf: function (a) { return a.reminders_used === "yes"; },
+          options: [
+            { v: "useful", label: "Useful — they got me into the app" },
+            { v: "neutral", label: "Neutral — I mostly ignored them" },
+            { v: "noisy", label: "Too frequent" },
+            { v: "annoying", label: "Annoying enough that I'd turn them off" }
+          ]
+        },
+        {
+          id: "streak_view", type: "choice", label: "The reading streak on the Rounds tab — what did you make of it?",
+          required: true,
+          options: [
+            { v: "motivating", label: "Motivating" },
+            { v: "neutral", label: "Didn't really notice it" },
+            { v: "gimmicky", label: "Feels gimmicky for a clinical tool" },
+            { v: "pressure", label: "Adds pressure I don't want" }
+          ]
+        }
+      ]
+    },
+
+    {
+      id: "friction", eyebrow: "Section 4", title: "Where it got in your way",
+      intro: "The honest part. This is the most useful page in the survey.",
+      questions: [
+        {
+          id: "friction_points", type: "multi", required: true,
+          label: "Did any of these happen to you?",
+          help: "Select everything that applies.",
+          options: [
+            { v: "none", label: "Nothing notable went wrong" },
+            { v: "slow_launch", label: "Slow to start up" },
+            { v: "slow_open", label: "Papers slow to open" },
+            { v: "wrong_paper", label: "Opened the wrong paper" },
+            { v: "no_access", label: "Couldn't get full text I should have had" },
+            { v: "pdf_fail", label: "Save PDF failed" },
+            { v: "signin", label: "Trouble signing in or staying signed in" },
+            { v: "lost_data", label: "Saved items or notes went missing" },
+            { v: "crash", label: "It crashed or froze" },
+            { v: "confusing", label: "I couldn't work out how to do something" }
+          ]
+        },
+        {
+          id: "friction_detail", type: "text", required: true,
+          label: "Tell us about the worst one.",
+          help: "What were you trying to do, and what happened instead? A couple of sentences.",
+          placeholder: "e.g. Tapped Read on a JBJS paper from the digest and got a publisher error page.",
+          maxLength: 2000
+        },
+        {
+          id: "trust", type: "scale", min: 1, max: 5, low: "Not at all", high: "Completely",
+          label: "How much did you trust Rounds to be accurate about the literature?", required: true
+        }
+      ]
+    },
+
+    {
+      id: "closing", eyebrow: "Section 5", title: "Where this goes next",
+      intro: "Last page.",
+      questions: [
+        {
+          id: "keep_using", type: "scale", min: 1, max: 5, low: "Definitely not", high: "Definitely",
+          label: "Will you keep using Rounds now the beta is over?", required: true
+        },
+        {
+          id: "one_change", type: "text", required: true,
+          label: "What one change would make the biggest difference to you?",
+          placeholder: "One thing. The one that matters most.", maxLength: 1000
+        },
+        {
+          id: "missing_feature", type: "text", optional: true,
+          label: "Anything Rounds doesn't do that you expected it to?",
+          placeholder: "Optional.", maxLength: 1000
+        },
+        {
+          id: "followup", type: "choice", required: true,
+          label: "Can we come back to you with a follow-up question?",
+          options: [
+            { v: "yes", label: "Yes, happy to" },
+            { v: "call", label: "Yes — a short call is fine too" },
+            { v: "no", label: "I'd rather not" }
+          ]
+        },
+        {
+          id: "anything_else", type: "text", optional: true,
+          label: "Anything else you want us to know?",
+          placeholder: "Optional.", maxLength: 2000
+        }
+      ]
+    }
+  ];
+
+  // Human labels for the admin summary — keyed by question id.
+  var QUESTION_LABELS = {};
+  var OPTION_LABELS = {};
+  STEPS.forEach(function (s) {
+    (s.questions || []).forEach(function (q) {
+      QUESTION_LABELS[q.id] = q.label;
+      if (q.options) {
+        OPTION_LABELS[q.id] = {};
+        q.options.forEach(function (o) { OPTION_LABELS[q.id][o.v] = o.label; });
+      }
+    });
+  });
+
+  // =====================================================================
+  // TESTER SIDE
+  // =====================================================================
+  function runSurvey(token) {
+    var storeKey = "rounds_beta_v1_" + token;
+    var answers = {};
+    var stepIndex = 0;
+    var startedAt = Date.now();
+    var intro = null;
+
+    try {
+      var saved = JSON.parse(localStorage.getItem(storeKey) || "null");
+      if (saved && saved.answers) { answers = saved.answers; stepIndex = saved.stepIndex || 0; }
+    } catch (e) { /* a corrupt draft is not worth blocking on */ }
+
+    function persist() {
+      try { localStorage.setItem(storeKey, JSON.stringify({ answers: answers, stepIndex: stepIndex })); } catch (e) {}
+    }
+
+    function visibleQuestions(step) {
+      return (step.questions || []).filter(function (q) { return !q.showIf || q.showIf(answers); });
+    }
+
+    function answered(q) {
+      var v = answers[q.id];
+      if (q.optional) return true;
+      if (q.type === "multi") return Array.isArray(v) && v.length > 0;
+      if (q.type === "text") return typeof v === "string" && v.trim().length > 0;
+      return v !== undefined && v !== null && v !== "";
+    }
+
+    function stepComplete(step) {
+      return visibleQuestions(step).every(answered);
+    }
+
+    root.innerHTML = masthead("Beta feedback") + '<div class="wrap"><div id="stage"></div></div>';
+    var stage = document.getElementById("stage");
+
+    function setProgress() {
+      var pct = Math.round((stepIndex / (STEPS.length - 1)) * 100);
+      document.getElementById("progress-fill").style.width = pct + "%";
+      var meta = document.getElementById("progress-meta");
+      if (stepIndex === 0 || stepIndex >= STEPS.length) { meta.innerHTML = ""; return; }
+      meta.innerHTML = '<span>Step <strong>' + stepIndex + '</strong> of ' + (STEPS.length - 1) + '</span>' +
+        '<span>' + pct + '% complete · saved on this device</span>';
+    }
+
+    // ----- question renderers -----
+    function renderQuestion(q) {
+      var wrap = el('<div class="q"></div>');
+      var label = '<div class="q-label">' + esc(q.label) +
+        (q.optional ? '<span class="q-optional">optional</span>' : "") + '</div>';
+      wrap.insertAdjacentHTML("beforeend", label);
+      if (q.help) wrap.insertAdjacentHTML("beforeend", '<div class="q-help">' + esc(q.help) + '</div>');
+
+      if (q.type === "scale") {
+        var box = el('<div></div>');
+        var row = el('<div class="scale' + (q.nps ? " nps" : "") + '"></div>');
+        for (var i = q.min; i <= q.max; i++) {
+          (function (val) {
+            var b = el('<button type="button" aria-pressed="' + (answers[q.id] === val) + '">' + val + '</button>');
+            b.addEventListener("click", function () { answers[q.id] = val; persist(); render(); });
+            row.appendChild(b);
+          })(i);
+        }
+        box.appendChild(row);
+        box.insertAdjacentHTML("beforeend",
+          '<div class="scale-anchors"><span>' + esc(q.low) + '</span><span>' + esc(q.high) + '</span></div>');
+        wrap.appendChild(box);
+      }
+
+      else if (q.type === "gate") {
+        var g = el('<div class="gate"></div>');
+        q.options.forEach(function (o) {
+          var b = el('<button type="button" aria-pressed="' + (answers[q.id] === o.v) + '">' + esc(o.label) +
+            (o.note ? '<small>' + esc(o.note) + '</small>' : "") + '</button>');
+          b.addEventListener("click", function () { answers[q.id] = o.v; persist(); render(); });
+          g.appendChild(b);
+        });
+        wrap.appendChild(g);
+      }
+
+      else if (q.type === "choice" || q.type === "multi") {
+        var multi = q.type === "multi";
+        var longest = q.options.reduce(function (m, o) { return Math.max(m, o.label.length); }, 0);
+        var list = el('<div class="opts' + (longest > 34 ? " stack" : "") + '"></div>');
+        q.options.forEach(function (o) {
+          var on = multi ? (answers[q.id] || []).indexOf(o.v) !== -1 : answers[q.id] === o.v;
+          var b = el('<button type="button" aria-pressed="' + on + '">' + TICK + esc(o.label) + '</button>');
+          b.addEventListener("click", function () {
+            if (!multi) { answers[q.id] = o.v; }
+            else {
+              var cur = answers[q.id] || [];
+              // "nothing / none" answers are exclusive — selecting one clears the rest.
+              var exclusive = o.v === "none" || o.v === "nothing";
+              if (cur.indexOf(o.v) !== -1) cur = cur.filter(function (x) { return x !== o.v; });
+              else if (exclusive) cur = [o.v];
+              else cur = cur.filter(function (x) { return x !== "none" && x !== "nothing"; }).concat([o.v]);
+              answers[q.id] = cur;
+            }
+            persist(); render();
+          });
+          list.appendChild(b);
+        });
+        wrap.appendChild(list);
+      }
+
+      else if (q.type === "text") {
+        var max = q.maxLength || 1000;
+        var ta = el('<textarea maxlength="' + max + '" placeholder="' + esc(q.placeholder || "") + '"></textarea>');
+        ta.value = answers[q.id] || "";
+        var count = el('<div class="char-count">' + (ta.value.length) + " / " + max + '</div>');
+        ta.addEventListener("input", function () {
+          answers[q.id] = ta.value;
+          count.textContent = ta.value.length + " / " + max;
+          persist();
+          syncNav();
+        });
+        wrap.appendChild(ta);
+        wrap.appendChild(count);
+      }
+
+      return wrap;
+    }
+
+    var navNext = null;
+    function syncNav() {
+      if (!navNext) return;
+      navNext.disabled = !stepComplete(STEPS[stepIndex]);
+    }
+
+    // ----- screens -----
+    function renderIntro() {
+      // Whatever the admin typed, in full — splitting on the first word greets
+      // half the testers as "Dr".
+      var name = (intro && intro.name) || "";
+      stage.innerHTML = "";
+      var c = el('<div class="card fade-in"></div>');
+      c.innerHTML =
+        '<div class="center" style="margin-bottom:18px">' + segmentedO(46, 3.4) + '</div>' +
+        '<h1 class="step-title center" style="font-size:31px">' +
+        (name ? "Thank you, " + esc(name) + "." : "Thank you.") + '</h1>' +
+        '<p class="step-intro center" style="margin:0 auto 22px">You have used Rounds through the beta. ' +
+        'These questions are how we work out what to build next, what to fix, and what to drop.</p>' +
+        '<div class="callout"><strong>About ten minutes.</strong> Mostly taps — there are five short boxes to type in, ' +
+        'and two of them are optional. Your progress saves on this device as you go, so you can stop and come back to ' +
+        'the same link. Nothing is sent until you press submit at the end.</div>' +
+        '<p class="muted" style="margin-top:18px">Answers go to the Rounds team only, tied to your name so we can follow up. ' +
+        'We never ask what you searched for.</p>';
+      var nav = el('<div class="nav"><span class="spacer"></span></div>');
+      var b = el('<button class="btn btn-primary">Start</button>');
+      b.addEventListener("click", function () { stepIndex = 1; persist(); render(); });
+      nav.appendChild(b);
+      c.appendChild(nav);
+      stage.appendChild(c);
+    }
+
+    function renderStep(step) {
+      stage.innerHTML = "";
+      var c = el('<div class="card fade-in"></div>');
+      var headHTML =
+        '<div class="step-eyebrow">' + esc(step.eyebrow || "") + '</div>' +
+        '<h2 class="step-title">' + esc(step.title) + '</h2>' +
+        (step.intro ? '<p class="step-intro">' + esc(step.intro) + '</p>' : "");
+
+      if (step.mock && MOCKS[step.mock]) {
+        c.insertAdjacentHTML("beforeend",
+          '<div class="feature-head"><div class="feature-copy">' + headHTML + '</div>' +
+          '<div class="mock" role="img" aria-label="Illustration of the ' + esc(step.title) + ' screen">' +
+          MOCKS[step.mock] + '</div></div>');
+      } else {
+        c.insertAdjacentHTML("beforeend", headHTML);
+      }
+
+      visibleQuestions(step).forEach(function (q) { c.appendChild(renderQuestion(q)); });
+
+      var nav = el('<div class="nav"></div>');
+      var back = el('<button class="btn btn-ghost">Back</button>');
+      back.addEventListener("click", function () { stepIndex--; persist(); render(); window.scrollTo(0, 0); });
+      nav.appendChild(back);
+      nav.appendChild(el('<span class="spacer"></span>'));
+
+      var last = stepIndex === STEPS.length - 1;
+      navNext = el('<button class="btn btn-primary">' + (last ? "Submit" : "Next") + '</button>');
+      navNext.addEventListener("click", function () {
+        if (!stepComplete(step)) return;
+        if (last) { submit(); return; }
+        stepIndex++; persist(); render(); window.scrollTo(0, 0);
+      });
+      nav.appendChild(navNext);
+      c.appendChild(nav);
+      c.insertAdjacentHTML("beforeend",
+        '<div class="nav-hint" style="margin-top:10px">' +
+        (stepComplete(step) ? "" : "Answer the questions above to continue.") + '</div>');
+      stage.appendChild(c);
+      syncNav();
+    }
+
+    function submit() {
+      navNext.disabled = true;
+      navNext.textContent = "Sending…";
+      var payload = { answers: answers, durationSec: Math.round((Date.now() - startedAt) / 1000) };
+      api("/beta/survey/" + encodeURIComponent(token), { method: "POST", body: payload })
+        .then(function () {
+          try { localStorage.removeItem(storeKey); } catch (e) {}
+          renderDone();
+        })
+        .catch(function (err) {
+          navNext.disabled = false;
+          navNext.textContent = "Submit";
+          var existing = stage.querySelector(".err");
+          if (existing) existing.remove();
+          stage.querySelector(".card").appendChild(
+            el('<div class="err">' + esc(err.message || "Could not send your answers.") +
+              ' Your answers are still saved on this device — try again in a moment.</div>'));
+        });
+    }
+
+    function renderDone() {
+      document.getElementById("progress-fill").style.width = "100%";
+      document.getElementById("progress-meta").innerHTML = "";
+      stage.innerHTML = "";
+      var c = el('<div class="card fade-in center"></div>');
+      c.innerHTML =
+        '<div style="margin-bottom:18px">' + segmentedO(46, 3.4) + '</div>' +
+        '<h1 class="step-title" style="font-size:29px">That is everything.</h1>' +
+        '<p class="step-intro" style="margin:0 auto">Thank you — genuinely. Every answer here gets read, and the ' +
+        'friction page gets read twice.</p>' +
+        '<p class="muted" style="margin-top:18px">You can close this tab. If you said we could follow up, ' +
+        'you may hear from us once.</p>';
+      stage.appendChild(c);
+    }
+
+    function renderClosed(message) {
+      stage.innerHTML = "";
+      var c = el('<div class="card fade-in center"></div>');
+      c.innerHTML =
+        '<div style="margin-bottom:18px">' + segmentedO(40, 3, "var(--r-text-faint)") + '</div>' +
+        '<h1 class="step-title" style="font-size:25px">' + esc(message) + '</h1>' +
+        '<p class="muted">If you think this is a mistake, reply to the email that sent you here and we will ' +
+        'issue a fresh link.</p>';
+      stage.appendChild(c);
+    }
+
+    function render() {
+      setProgress();
+      if (stepIndex === 0) renderIntro();
+      else renderStep(STEPS[stepIndex]);
+    }
+
+    stage.innerHTML = '<div class="card center muted">Opening your survey…</div>';
+    api("/beta/survey/" + encodeURIComponent(token))
+      .then(function (data) {
+        intro = data;
+        if (data.status === "submitted") { renderClosed("You have already sent this one in."); return; }
+        render();
+      })
+      .catch(function (err) {
+        renderClosed(err.status === 404 ? "This link is no longer active." :
+          "We could not open your survey just now.");
+      });
+  }
+
+  // =====================================================================
+  // ADMIN SIDE
+  // =====================================================================
+  function runAdmin() {
+    var token = null;
+    var tab = "invites";
+    var testers = [];
+    var responses = [];
+
+    try { token = sessionStorage.getItem("rounds_beta_admin_token"); } catch (e) {}
+
+    root.innerHTML = masthead("Beta feedback · admin", true) +
+      '<div class="wrap wrap-wide" style="padding-top:26px"><div id="stage"></div></div>';
+    var stage = document.getElementById("stage");
+    document.getElementById("progress-meta").remove();
+
+    function renderLogin(message) {
+      stage.innerHTML = "";
+      var c = el('<div class="card fade-in" style="max-width:420px;margin:40px auto"></div>');
+      c.innerHTML =
+        '<div class="step-eyebrow">Admin</div>' +
+        '<h2 class="step-title" style="font-size:23px">Sign in</h2>' +
+        '<p class="muted" style="margin-bottom:18px">Your Rounds admin account — the same email and password you ' +
+        'use in the app.</p>';
+      var form = el('<form></form>');
+      form.innerHTML =
+        '<label style="font-size:12px;font-weight:600;color:var(--r-text-muted)">Email' +
+        '<input type="email" name="email" autocomplete="username" required style="margin-top:6px" /></label>' +
+        '<label style="display:block;margin-top:14px;font-size:12px;font-weight:600;color:var(--r-text-muted)">Password' +
+        '<input type="password" name="password" autocomplete="current-password" required style="margin-top:6px" /></label>';
+      var btn = el('<button class="btn btn-primary" type="submit" style="width:100%;margin-top:18px">Sign in</button>');
+      form.appendChild(btn);
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        btn.disabled = true; btn.textContent = "Signing in…";
+        api("/auth/email/login", {
+          method: "POST",
+          body: { email: form.email.value.trim(), password: form.password.value }
+        }).then(function (data) {
+          if (!data.me || data.me.accountType !== "admin") {
+            throw new Error("That account is not an admin.");
+          }
+          token = data.token;
+          try { sessionStorage.setItem("rounds_beta_admin_token", token); } catch (e) {}
+          load();
+        }).catch(function (err) {
+          btn.disabled = false; btn.textContent = "Sign in";
+          var old = c.querySelector(".err"); if (old) old.remove();
+          c.appendChild(el('<div class="err">' + esc(err.message || "Could not sign in.") + '</div>'));
+        });
+      });
+      c.appendChild(form);
+      if (message) c.appendChild(el('<div class="err">' + esc(message) + '</div>'));
+      stage.appendChild(c);
+    }
+
+    function load() {
+      stage.innerHTML = '<div class="card center muted">Loading…</div>';
+      Promise.all([
+        api("/admin/beta/testers", { token: token }),
+        api("/admin/beta/responses", { token: token })
+      ]).then(function (out) {
+        testers = out[0]; responses = out[1];
+        renderAdmin();
+      }).catch(function (err) {
+        if (err.status === 401 || err.status === 403) {
+          try { sessionStorage.removeItem("rounds_beta_admin_token"); } catch (e) {}
+          token = null;
+          renderLogin(err.status === 403 ? "That account is not an admin." : "Your session expired.");
+          return;
+        }
+        stage.innerHTML = "";
+        stage.appendChild(el('<div class="card"><div class="err" style="margin:0">' +
+          esc(err.message || "Could not load.") + '</div></div>'));
+      });
+    }
+
+    function surveyURL(t) { return location.origin + "/beta/?k=" + t.token; }
+
+    function statusOf(t) {
+      if (t.revoked) return { cls: "status-revoked", label: "Revoked" };
+      if (t.submittedAt) return { cls: "status-done", label: "Submitted" };
+      return { cls: "status-open", label: "Waiting" };
+    }
+
+    function renderAdmin() {
+      stage.innerHTML = "";
+
+      var head = el('<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap"></div>');
+      head.innerHTML = '<h2 class="step-title" style="font-size:25px;margin:0;flex:1">Beta feedback</h2>';
+      var out = el('<button class="btn btn-ghost btn-sm">Sign out</button>');
+      out.addEventListener("click", function () {
+        try { sessionStorage.removeItem("rounds_beta_admin_token"); } catch (e) {}
+        token = null; renderLogin();
+      });
+      head.appendChild(out);
+      stage.appendChild(head);
+
+      var tabs = el('<div class="admin-tabs"></div>');
+      [["invites", "Invites (" + testers.length + ")"],
+       ["summary", "Summary"],
+       ["responses", "Responses (" + responses.length + ")"]].forEach(function (t) {
+        var b = el('<button type="button" aria-pressed="' + (tab === t[0]) + '">' + esc(t[1]) + '</button>');
+        b.addEventListener("click", function () { tab = t[0]; renderAdmin(); });
+        tabs.appendChild(b);
+      });
+      stage.appendChild(tabs);
+
+      if (tab === "invites") renderInvites();
+      else if (tab === "summary") renderSummary();
+      else renderResponses();
+    }
+
+    // ----- invites -----
+    function renderInvites() {
+      var add = el('<div class="card"></div>');
+      add.innerHTML = '<div class="q-label" style="margin-bottom:12px">Create an invite link</div>';
+      var form = el('<form class="form-row"></form>');
+      form.innerHTML =
+        '<label>Name<input type="text" name="name" required placeholder="Dr Sarah Chen" /></label>' +
+        '<label>Email <span style="font-weight:400;color:var(--r-text-faint)">(so you can send it)</span>' +
+        '<input type="email" name="email" placeholder="optional" /></label>' +
+        '<label>Note<input type="text" name="note" placeholder="e.g. PGY-4, sports" /></label>';
+      var btn = el('<button class="btn btn-primary btn-sm" type="submit" style="padding:12px 20px">Create link</button>');
+      form.appendChild(btn);
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        btn.disabled = true; btn.textContent = "Creating…";
+        api("/admin/beta/testers", {
+          method: "POST", token: token,
+          body: {
+            name: form.name.value.trim(),
+            email: form.email.value.trim() || null,
+            note: form.note.value.trim() || null
+          }
+        }).then(function () { load(); })
+          .catch(function (err) {
+            btn.disabled = false; btn.textContent = "Create link";
+            var old = add.querySelector(".err"); if (old) old.remove();
+            add.appendChild(el('<div class="err">' + esc(err.message) + '</div>'));
+          });
+      });
+      add.appendChild(form);
+      stage.appendChild(add);
+
+      var card = el('<div class="card"></div>');
+      if (!testers.length) {
+        card.innerHTML = '<div class="center muted" style="padding:22px 0">No invites yet. ' +
+          'Create one above and send the link.</div>';
+        stage.appendChild(card);
+        return;
+      }
+      var scroll = el('<div class="table-scroll"></div>');
+      var table = el('<table><thead><tr><th>Tester</th><th>Note</th><th>Status</th><th>Created</th>' +
+        '<th style="text-align:right">Link</th></tr></thead><tbody></tbody></table>');
+      var tbody = table.querySelector("tbody");
+      testers.forEach(function (t) {
+        var s = statusOf(t);
+        var tr = el('<tr></tr>');
+        tr.innerHTML =
+          '<td><div style="font-weight:600">' + esc(t.name) + '</div>' +
+          (t.email ? '<div style="font-size:11.5px;color:var(--r-text-faint)">' + esc(t.email) + '</div>' : "") + '</td>' +
+          '<td style="color:var(--r-text-muted)">' + esc(t.note || "—") + '</td>' +
+          '<td><span class="status ' + s.cls + '">' + s.label + '</span></td>' +
+          '<td style="color:var(--r-text-faint);font-size:12px">' + esc((t.createdAt || "").slice(0, 10)) + '</td>';
+        var actions = el('<td class="actions"></td>');
+
+        var copy = el('<button class="btn btn-ghost btn-sm">Copy link</button>');
+        copy.addEventListener("click", function () {
+          var url = surveyURL(t);
+          var done = function () { copy.textContent = "Copied"; setTimeout(function () { copy.textContent = "Copy link"; }, 1600); };
+          if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () { window.prompt("Copy this link", url); });
+          else window.prompt("Copy this link", url);
+        });
+        actions.appendChild(copy);
+
+        if (t.submittedAt || t.revoked) {
+          var reopen = el('<button class="btn btn-ghost btn-sm" style="margin-left:6px">Reopen</button>');
+          reopen.addEventListener("click", function () {
+            api("/admin/beta/testers/" + t.id + "/reopen", { method: "POST", token: token }).then(load);
+          });
+          actions.appendChild(reopen);
+        }
+        if (!t.revoked) {
+          var revoke = el('<button class="btn btn-danger btn-sm" style="margin-left:6px">Revoke</button>');
+          revoke.addEventListener("click", function () {
+            if (!window.confirm("Deactivate " + t.name + "'s link? Any answers they already sent are kept.")) return;
+            api("/admin/beta/testers/" + t.id, { method: "DELETE", token: token }).then(load);
+          });
+          actions.appendChild(revoke);
+        }
+        tr.appendChild(actions);
+        tbody.appendChild(tr);
+      });
+      scroll.appendChild(table);
+      card.appendChild(scroll);
+      stage.appendChild(card);
+    }
+
+    // ----- summary -----
+    function valuesFor(qid) {
+      var out = [];
+      responses.forEach(function (r) {
+        var v = r.answers[qid];
+        if (v === undefined || v === null || v === "") return;
+        if (Array.isArray(v)) v.forEach(function (x) { out.push(x); });
+        else out.push(v);
+      });
+      return out;
+    }
+
+    function barBlock(qid, label) {
+      var vals = valuesFor(qid);
+      if (!vals.length) return null;
+      var counts = {};
+      vals.forEach(function (v) { counts[v] = (counts[v] || 0) + 1; });
+      var keys = Object.keys(counts).sort(function (a, b) {
+        var na = Number(a), nb = Number(b);
+        if (!isNaN(na) && !isNaN(nb)) return na - nb;
+        return counts[b] - counts[a];
+      });
+      var max = Math.max.apply(null, keys.map(function (k) { return counts[k]; }));
+      var block = el('<div class="summary-row"></div>');
+      var numeric = keys.every(function (k) { return !isNaN(Number(k)); });
+      var mean = numeric
+        ? (vals.reduce(function (s, v) { return s + Number(v); }, 0) / vals.length).toFixed(1)
+        : null;
+      block.innerHTML = '<div class="summary-q">' + esc(label) +
+        (mean !== null ? ' <span style="color:var(--r-teal)">mean ' + mean + '</span>' : "") +
+        ' <span style="font-weight:400;color:var(--r-text-faint)">n=' + vals.length + '</span></div>';
+      keys.forEach(function (k) {
+        var pretty = (OPTION_LABELS[qid] && OPTION_LABELS[qid][k]) || k;
+        block.insertAdjacentHTML("beforeend",
+          '<div class="bar-line"><span class="bl-label">' + esc(pretty) + '</span>' +
+          '<span class="bl-track"><span class="bl-fill" style="width:' + Math.round(counts[k] / max * 100) + '%"></span></span>' +
+          '<span class="bl-n">' + counts[k] + '</span></div>');
+      });
+      return block;
+    }
+
+    var FEATURES = [
+      ["search", "Search"], ["access", "Full-text access"], ["pdf", "Save PDF"],
+      ["digest", "Rounds digest"], ["score", "Evidence Score"], ["library", "Library & notes"],
+      ["share", "Share sheet"], ["reminders", "Reminders"]
+    ];
+
+    function renderSummary() {
+      if (!responses.length) {
+        stage.appendChild(el('<div class="card center muted" style="padding:36px 0">' +
+          'No responses yet. The summary fills in as they come back.</div>'));
+        return;
+      }
+
+      // headline numbers
+      var nps = valuesFor("nps").map(Number);
+      var promoters = nps.filter(function (v) { return v >= 9; }).length;
+      var detractors = nps.filter(function (v) { return v <= 6; }).length;
+      var npsScore = nps.length ? Math.round((promoters - detractors) / nps.length * 100) : null;
+      var durations = responses.map(function (r) { return r.durationSec; }).filter(function (d) { return d; });
+      var medianMin = durations.length
+        ? (durations.sort(function (a, b) { return a - b; })[Math.floor(durations.length / 2)] / 60).toFixed(1)
+        : "—";
+
+      var stats = el('<div class="card"><div class="stat-grid"></div></div>');
+      var grid = stats.querySelector(".stat-grid");
+      [
+        [responses.length + " / " + testers.length, "Responses in"],
+        [npsScore === null ? "—" : npsScore, "Net promoter score"],
+        [(valuesFor("time_saved").reduce(function (s, v) { return s + Number(v); }, 0) /
+          Math.max(1, valuesFor("time_saved").length)).toFixed(1), "“Saved me time” (1–5)"],
+        [medianMin + " min", "Median time to complete"]
+      ].forEach(function (s) {
+        grid.appendChild(el('<div class="stat"><div class="stat-num">' + esc(s[0]) + '</div>' +
+          '<div class="stat-label">' + esc(s[1]) + '</div></div>'));
+      });
+      stage.appendChild(stats);
+
+      // feature adoption
+      var adopt = el('<div class="card"><div class="summary-q" style="margin-bottom:12px">Feature use</div></div>');
+      FEATURES.forEach(function (f) {
+        var vals = valuesFor(f[0] + "_used");
+        if (!vals.length) return;
+        var yes = vals.filter(function (v) { return v === "yes"; }).length;
+        var unaware = vals.filter(function (v) { return v === "unaware"; }).length;
+        // Only the 1–5 scales have a mean; the reminders follow-up is a choice,
+        // and averaging it would print NaN.
+        var ratings = valuesFor(f[0] + "_rating").map(Number).filter(function (n) { return !isNaN(n); });
+        var mean = ratings.length
+          ? " · " + (ratings.reduce(function (s, v) { return s + v; }, 0) / ratings.length).toFixed(1) + "/5"
+          : "";
+        adopt.insertAdjacentHTML("beforeend",
+          '<div class="bar-line"><span class="bl-label">' + esc(f[1]) + '</span>' +
+          '<span class="bl-track"><span class="bl-fill" style="width:' + Math.round(yes / vals.length * 100) + '%"></span></span>' +
+          '<span class="bl-n" style="width:auto">' + yes + '/' + vals.length +
+          ' used' + mean + (unaware ? ' · ' + unaware + ' unaware' : "") + '</span></div>');
+      });
+      stage.appendChild(adopt);
+
+      // distributions worth seeing at a glance
+      var dist = el('<div class="card"></div>');
+      ["core_job", "friction_points", "keep_using", "trust", "role", "frequency"].forEach(function (qid) {
+        var b = barBlock(qid, QUESTION_LABELS[qid] || qid);
+        if (b) dist.appendChild(b);
+      });
+      stage.appendChild(dist);
+
+      // free text, gathered
+      var textCard = el('<div class="card"><div class="summary-q" style="margin-bottom:6px">In their words</div></div>');
+      [["one_change", "Biggest change wanted"], ["friction_detail", "Worst friction"],
+       ["missing_feature", "Expected but missing"], ["anything_else", "Anything else"]].forEach(function (t) {
+        var quotes = responses.filter(function (r) { return (r.answers[t[0]] || "").trim(); });
+        if (!quotes.length) return;
+        textCard.insertAdjacentHTML("beforeend",
+          '<div class="summary-q" style="margin-top:16px;color:var(--r-text-muted);font-size:12px;' +
+          'text-transform:uppercase;letter-spacing:.07em">' + esc(t[1]) + '</div>');
+        quotes.forEach(function (r) {
+          textCard.insertAdjacentHTML("beforeend",
+            '<div class="quote">' + esc(r.answers[t[0]]) + '<cite>' + esc(r.testerName) + '</cite></div>');
+        });
+      });
+      stage.appendChild(textCard);
+    }
+
+    // ----- responses -----
+    function csvEscape(v) {
+      var s = Array.isArray(v) ? v.join("; ") : (v === null || v === undefined ? "" : String(v));
+      return '"' + s.replace(/"/g, '""') + '"';
+    }
+
+    function exportCSV() {
+      var keys = [];
+      STEPS.forEach(function (s) { (s.questions || []).forEach(function (q) { keys.push(q.id); }); });
+      responses.forEach(function (r) {
+        Object.keys(r.answers).forEach(function (k) { if (keys.indexOf(k) === -1) keys.push(k); });
+      });
+      var header = ["tester", "note", "submitted", "duration_sec"].concat(keys);
+      var lines = [header.map(csvEscape).join(",")];
+      responses.forEach(function (r) {
+        var row = [r.testerName, r.testerNote || "", r.createdAt, r.durationSec || ""]
+          .concat(keys.map(function (k) { return r.answers[k]; }));
+        lines.push(row.map(csvEscape).join(","));
+      });
+      var blob = new Blob(["﻿" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "rounds-beta-feedback.csv";
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    }
+
+    function prettyValue(qid, v) {
+      if (Array.isArray(v)) {
+        return v.map(function (x) { return prettyValue(qid, x); }).join(", ");
+      }
+      if (OPTION_LABELS[qid] && OPTION_LABELS[qid][v]) return OPTION_LABELS[qid][v];
+      return String(v);
+    }
+
+    function renderResponses() {
+      var card = el('<div class="card"></div>');
+      var bar = el('<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">' +
+        '<div class="summary-q" style="flex:1;margin:0">' + responses.length + ' response' +
+        (responses.length === 1 ? "" : "s") + '</div></div>');
+      var csv = el('<button class="btn btn-ghost btn-sm">Export CSV</button>');
+      csv.addEventListener("click", exportCSV);
+      bar.appendChild(csv);
+      card.appendChild(bar);
+
+      if (!responses.length) {
+        card.appendChild(el('<div class="center muted" style="padding:26px 0">Nothing submitted yet.</div>'));
+        stage.appendChild(card);
+        return;
+      }
+
+      responses.forEach(function (r) {
+        var d = el('<details class="resp"></details>');
+        d.appendChild(el('<summary><span>' + esc(r.testerName) + '</span>' +
+          '<span style="font-weight:400;color:var(--r-text-faint);font-size:12px">' +
+          esc((r.createdAt || "").slice(0, 10)) +
+          (r.durationSec ? " · " + Math.round(r.durationSec / 60) + " min" : "") + '</span></summary>'));
+        var body = el('<div class="ans"></div>');
+        STEPS.forEach(function (s) {
+          (s.questions || []).forEach(function (q) {
+            var v = r.answers[q.id];
+            if (v === undefined || v === null || v === "" || (Array.isArray(v) && !v.length)) return;
+            body.appendChild(el('<div class="ans-row"><span class="ak">' + esc(q.label) + '</span>' +
+              '<span class="av">' + esc(prettyValue(q.id, v)) + '</span></div>'));
+          });
+        });
+        d.appendChild(body);
+        card.appendChild(d);
+      });
+      stage.appendChild(card);
+    }
+
+    if (token) load(); else renderLogin();
+  }
+
+  // =====================================================================
+  var k = qs("k");
+  if (k) runSurvey(k); else runAdmin();
+})();
+</script>
+</body>
+</html>
