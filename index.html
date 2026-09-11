@@ -110,6 +110,8 @@
   .r-logo-img { display: block; width: auto; max-width: 100%; }
 
   .r-nav-cta {
+    display: inline-block;
+    text-decoration: none;
     background: var(--r-teal);
     color: #fff;
     border: none;
@@ -125,6 +127,8 @@
   /* ---------- Buttons / chips shared ---------- */
 
   .r-btn-primary {
+    display: inline-block;
+    text-decoration: none;
     background: var(--r-teal);
     color: #fff;
     border: none;
@@ -845,8 +849,9 @@
   .r-cta-section h2 { font-size: 32px; font-weight: 600; margin-bottom: 14px; }
   .r-cta-section p { color: var(--r-text-soft); font-size: 16px; max-width: 50ch; margin: 0 auto 32px; line-height: 1.6; }
   .r-store-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
-  .r-store-badge { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: var(--radius-control); border: 1px solid var(--r-border); background: #fff; color: var(--r-text-faint); font-size: 13px; cursor: default; }
-  .r-store-badge strong { display: block; font-size: 15px; color: var(--r-text-muted); }
+  .r-store-badge { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: var(--radius-control); border: 1px solid var(--r-border); background: #fff; color: var(--r-text-muted); font-size: 13px; text-decoration: none; transition: border-color .2s cubic-bezier(.4,0,.2,1), box-shadow .2s cubic-bezier(.4,0,.2,1); }
+  .r-store-badge:hover, .r-store-badge:focus-visible { border-color: var(--r-teal); box-shadow: 0 2px 10px rgba(0,0,0,.06); outline: none; }
+  .r-store-badge strong { display: block; font-size: 15px; color: var(--r-text-primary); }
 
   .r-waitlist-form { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 0 auto 12px; max-width: 480px; }
   .r-waitlist-input {
@@ -926,6 +931,8 @@
 
 <script type="text/babel-source" id="app-source">
 const { useState, useMemo, useRef, useEffect } = React;
+
+const APP_STORE_URL = 'https://apps.apple.com/app/id6789712386';
 
 /* ============================== Brand mark ============================== */
 
@@ -1311,9 +1318,9 @@ function Header() {
         <span className="r-header-logo" data-visible={pastHero ? "true" : "false"}>
           <RoundsWordmark height={22} />
         </span>
-        <button className="r-nav-cta" onClick={() => document.getElementById('cta').scrollIntoView({ behavior: 'smooth' })}>
-          Get early access
-        </button>
+        <a className="r-nav-cta" href={APP_STORE_URL} target="_blank" rel="noopener">
+          Download
+        </a>
       </div>
     </header>
   );
@@ -2033,7 +2040,7 @@ function Hero({ saved, setSaved }) {
             paper, PDF included, is a couple of taps away.
           </p>
           <div className="r-hero-actions">
-            <button className="r-btn-primary" onClick={() => document.getElementById('cta').scrollIntoView({ behavior: 'smooth' })}>Get early access</button>
+            <a className="r-btn-primary" href={APP_STORE_URL} target="_blank" rel="noopener">Download on the App Store</a>
             <button className="r-btn-secondary" onClick={() => document.getElementById('search-demo').scrollIntoView({ behavior: 'smooth' })}>Try the demo below</button>
           </div>
         </div>
@@ -2628,8 +2635,8 @@ function CtaSection() {
   return (
     <section className="r-cta-section" id="cta">
       <div className="r-container">
-        <h2 className="r-serif">Rounds is in early access</h2>
-        <p>The app is built and in testing with a small group of institutions. Join the waitlist and you will hear first.</p>
+        <h2 className="r-serif">Rounds is on the App Store</h2>
+        <p>Free for iPhone. Sign in with your institution once and the full text is a couple of taps away. Leave your email if you would like to hear about new institutions and features.</p>
         {status === 'done' ? (
           <div className="r-waitlist-done" role="status">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -2653,7 +2660,7 @@ function CtaSection() {
                 disabled={status === 'sending'}
               />
               <button className="r-btn-primary" type="submit" disabled={status === 'sending'}>
-                {status === 'sending' ? 'Joining…' : 'Get early access'}
+                {status === 'sending' ? 'Joining…' : 'Keep me posted'}
               </button>
             </form>
             {status === 'error' && (
@@ -2662,10 +2669,10 @@ function CtaSection() {
           </React.Fragment>
         )}
         <div className="r-store-row">
-          <span className="r-store-badge" aria-disabled="true">
-            <AppleLogo size={22} />
-            <span><strong>App Store</strong>Coming soon</span>
-          </span>
+          <a className="r-store-badge" href={APP_STORE_URL} target="_blank" rel="noopener" aria-label="Download Rounds on the App Store">
+            <AppleLogo size={22} color="var(--r-text-primary)" />
+            <span><strong>App Store</strong>Download for iPhone</span>
+          </a>
         </div>
       </div>
     </section>
