@@ -109,6 +109,18 @@
 
   .r-logo-img { display: block; width: auto; max-width: 100%; }
 
+  .r-header-right { display: flex; align-items: center; gap: 22px; }
+  .r-nav-links { display: flex; align-items: center; gap: 18px; }
+  .r-nav-links a {
+    font-size: 14px; font-weight: 600; color: var(--r-text-soft); text-decoration: none;
+    transition: color var(--base) var(--ease);
+  }
+  .r-nav-links a:hover { color: var(--r-teal); }
+  @media (max-width: 640px) {
+    .r-header-right { gap: 14px; }
+    .r-nav-links a:not(.keep-mobile) { display: none; }
+  }
+
   .r-nav-cta {
     display: inline-block;
     text-decoration: none;
@@ -1321,9 +1333,17 @@ function Header() {
         <span className="r-header-logo" data-visible={pastHero ? "true" : "false"}>
           <RoundsWordmark height={22} />
         </span>
-        <a className="r-nav-cta" href={APP_STORE_URL} target="_blank" rel="noopener">
-          Download
-        </a>
+        <div className="r-header-right">
+          <nav className="r-nav-links" aria-label="Site">
+            <a className="keep-mobile" href="/score/">The RES</a>
+            <a href="/privacy/">Privacy</a>
+            <a href="/terms/">Terms</a>
+            <a href="/support/">Support</a>
+          </nav>
+          <a className="r-nav-cta" href={APP_STORE_URL} target="_blank" rel="noopener">
+            Download
+          </a>
+        </div>
       </div>
     </header>
   );
