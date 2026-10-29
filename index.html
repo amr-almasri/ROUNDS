@@ -815,6 +815,9 @@
   /* Score — a compact strip, not a section of its own */
   .r-score-strip { display: grid; grid-template-columns: minmax(230px, 0.8fr) 1.2fr; gap: 44px; align-items: start; margin-top: 26px; }
   @media (max-width: 900px) { .r-score-strip { grid-template-columns: 1fr; gap: 30px; } }
+  .r-res-more { margin-top: 10px; }
+  .r-res-more a { font-weight: 600; color: var(--r-teal); text-underline-offset: 3px; }
+  .r-res-more a::after { content: " →"; }
   .r-score-weighs-label { font-size: 13.5px; font-weight: 700; color: var(--r-text-primary); }
   .r-res-chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
   .r-res-chip { font-size: 12.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: var(--r-teal-faint); color: var(--r-teal); }
@@ -2484,6 +2487,7 @@ function DigestDemoSection({ saved, setSaved }) {
             Every peer-reviewed paper gets a score out of 100, worked out from its abstract. The edition is sorted
             by it, highest first, so you can start at the top and stop when you run out of time.
           </p>
+          <p className="r-res-more"><a href="/score/">Read more about the RES</a></p>
           <div className="r-score-strip">
             <div className="r-score-tiers">
               {["key", "notable"].map(k => {
