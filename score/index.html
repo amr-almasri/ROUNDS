@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>The RES &mdash; Rounds</title>
+  <meta name="description" content="Learn more about The Rounds Evidence Score and how it is calculated" />
+  <link rel="canonical" href="https://getrounds.ca/score/" />
+  <link rel="stylesheet" href="../legal.css" />
+  <style>
+    :root {
+      --d-design: #0D7A6B; --d-decision: #1D4ED8; --d-safeguards: #92400E;
+      --d-size: #5B21B6; --d-transparency: #4D7C0F;
+      --tint-design: #D6EFE9; --tint-decision: #DCEAFB; --tint-safeguards: #FDE4CF;
+      --tint-size: #EBE2F6; --tint-transparency: #E4EFD3;
+      --tier-key: #0D7A6B; --tier-look: #1D4ED8; --tier-back: #64748B;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .shell, .header-inner, .footer-inner { width: min(1320px, calc(100% - 64px)); margin: 0 auto; }
+    .band { padding: 64px 0; border-top: 1px solid var(--r-hairline); }
+    .band.alt { background: var(--r-card); }
+    .band h2 {
+      font-family: 'Playfair Display', Georgia, serif; font-weight: 600;
+      font-size: 32px; line-height: 1.2; margin: 0 0 18px; color: var(--r-text-primary);
+    }
+    .band h3 { font-size: 17px; font-weight: 600; margin: 28px 0 8px; color: var(--r-text-primary); }
+    .band p { font-size: 16.5px; line-height: 1.75; color: var(--r-text-soft); margin: 0 0 16px; }
+    .band p.small { font-size: 14px; color: var(--r-text-muted); }
+    .band ul { margin: 0 0 16px; padding-left: 22px; }
+    .band li { font-size: 16.5px; line-height: 1.7; color: var(--r-text-soft); margin-bottom: 8px; }
+    .kicker {
+      font-size: 11.5px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase;
+      color: var(--r-teal); margin: 0 0 10px;
+    }
+    .term { color: var(--r-teal); font-weight: 600; }
+    .dt-design { color: var(--d-design); } .dt-decision { color: var(--d-decision); }
+    .dt-safeguards { color: var(--d-safeguards); } .dt-size { color: var(--d-size); }
+    .dt-transparency { color: var(--d-transparency); }
+    .t-key { color: var(--tier-key); font-weight: 700; }
+    .t-look { color: var(--tier-look); font-weight: 700; }
+    .t-back { color: var(--tier-back); font-weight: 700; }
+
+    /* one transition per block, never per paragraph */
+    .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* hero */
+    .hero {
+      padding: 76px 0 64px;
+      background: radial-gradient(1000px 440px at 88% -14%, rgba(13,122,107,.1), transparent 62%),
+                  linear-gradient(180deg, #fff, var(--r-bg));
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', Georgia, serif; font-weight: 600;
+      font-size: clamp(34px, 4.8vw, 54px); line-height: 1.08; margin: 0 0 16px;
+    }
+    .hero p { font-size: 19px; line-height: 1.6; color: var(--r-text-soft); margin: 0; }
+
+    /* introduction beside the three marks */
+    .intro-grid { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 72px; align-items: center; }
+    .tier-stack { display: flex; flex-direction: column; align-items: center; gap: 26px; }
+    .ring { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .ring-o { position: relative; width: var(--ring); height: var(--ring); }
+    .ring-o svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .ring .arc { fill: none; stroke-width: 6; stroke-linecap: round; }
+    .ring-centre {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; line-height: 1;
+    }
+    .ring-centre b { font-size: calc(var(--ring) * .32); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .ring-centre i { font-style: normal; font-size: calc(var(--ring) * .1); font-weight: 600; opacity: .6; margin-top: 4px; }
+    .ring figcaption { font-size: 13.5px; font-weight: 700; }
+    .ring.logo .ring-o svg { animation: settle 1.4s var(--ease) both; }
+    @keyframes settle { from { transform: rotate(-150deg); opacity: 0; } to { transform: rotate(-90deg); opacity: 1; } }
+
+    /* flow */
+    .steps { list-style: none; margin: 6px 0 22px; padding: 0; display: grid;
+             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; counter-reset: s; }
+    .steps li {
+      display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start;
+      border: 1px solid var(--r-border); border-radius: 10px; background: #fff; padding: 16px;
+    }
+    .step-n {
+      width: 28px; height: 28px; border-radius: 7px; background: var(--r-teal); color: #fff;
+      display: grid; place-items: center; font-size: 13px; font-weight: 700;
+    }
+    .steps b { font-size: 15px; color: var(--r-text-primary); display: block; margin-bottom: 4px; }
+    .steps p { margin: 0; font-size: 14.2px; line-height: 1.6; }
+
+    /* callout */
+    .callout {
+      border-left: 4px solid var(--r-teal); background: var(--r-teal-faint);
+      border-radius: 0 10px 10px 0; padding: 18px 20px; margin: 0 0 18px;
+    }
+    .callout.warn { border-left-color: var(--r-warning); background: var(--r-warning-bg); }
+    .callout b { display: block; font-size: 11.5px; letter-spacing: 1.1px; text-transform: uppercase;
+                 color: var(--r-teal); margin-bottom: 6px; }
+    .callout.warn b { color: var(--r-warning); }
+    .callout p { margin: 0; font-size: 15px; line-height: 1.65; }
+
+    /* the five domains: one connected table */
+    .domains { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; margin: 6px 0 22px;
+               border-radius: 10px; overflow: hidden; }
+    .dom { display: flex; flex-direction: column; }
+    .dom-head { color: #fff; font-size: 14px; font-weight: 700; padding: 16px 16px; }
+    .dom-ask { flex: 1; padding: 16px; font-size: 14.6px; line-height: 1.6; color: var(--r-text-soft); }
+    .dom.d-design .dom-head { background: var(--d-design); } .dom.d-design .dom-ask { background: var(--tint-design); }
+    .dom.d-decision .dom-head { background: var(--d-decision); } .dom.d-decision .dom-ask { background: var(--tint-decision); }
+    .dom.d-safeguards .dom-head { background: var(--d-safeguards); } .dom.d-safeguards .dom-ask { background: var(--tint-safeguards); }
+    .dom.d-size .dom-head { background: var(--d-size); } .dom.d-size .dom-ask { background: var(--tint-size); }
+    .dom.d-transparency .dom-head { background: var(--d-transparency); } .dom.d-transparency .dom-ask { background: var(--tint-transparency); }
+
+    /* tables */
+    .t-wrap { overflow-x: auto; margin: 6px 0 20px; }
+    .t-wrap table { width: 100%; border-collapse: collapse; font-size: 14.6px; }
+    .t-wrap th { background: var(--r-teal); color: #fff; text-align: left; padding: 11px 14px;
+                 font-size: 13px; font-weight: 600; }
+    .t-wrap td { padding: 11px 14px; border-bottom: 1px solid var(--r-hairline);
+                 color: var(--r-text-soft); vertical-align: top; line-height: 1.55; }
+    .t-wrap tbody tr:nth-child(even) td { background: #FAFBFB; }
+    .t-wrap td.centre { text-align: center; vertical-align: middle; }
+    .t-wrap td.tint { font-weight: 600; color: var(--r-text-primary); }
+    td.tint.d-design { background: var(--tint-design) !important; }
+    td.tint.d-decision { background: var(--tint-decision) !important; }
+    td.tint.d-safeguards { background: var(--tint-safeguards) !important; }
+    td.tint.d-size { background: var(--tint-size) !important; }
+    td.tint.d-transparency { background: var(--tint-transparency) !important; }
+    svg.check { width: 22px; height: 22px; display: inline-block; vertical-align: middle; }
+    svg.check circle { fill: var(--r-teal-faint); stroke: var(--r-teal); stroke-width: 1.4; }
+    svg.check path { fill: none; stroke: var(--r-teal); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* worked examples */
+    .legend { display: flex; flex-wrap: wrap; gap: 3px; margin: 6px 0 10px; }
+    .legend .seg { flex: 1 1 0; padding: 9px 12px; color: #fff; font-size: 12.5px; font-weight: 700;
+                   border-radius: 6px; cursor: default; }
+    .seg.d-design { background: var(--d-design); } .seg.d-decision { background: var(--d-decision); }
+    .seg.d-safeguards { background: var(--d-safeguards); } .seg.d-size { background: var(--d-size); }
+    .seg.d-transparency { background: var(--d-transparency); }
+    .abstract { margin: 0 0 8px; border: 1px solid var(--r-border); border-left: 4px solid var(--r-teal);
+                border-radius: 0 10px 10px 0; background: #fff; padding: 22px 26px;
+                font-size: 16px; line-height: 2.05; color: var(--r-text-primary); }
+    .abstract mark { background: transparent; color: inherit; border-radius: 3px; padding: 1px 2px;
+                     box-shadow: inset 0 -.62em 0 var(--hl); transition: box-shadow .25s var(--ease); }
+    .abstract mark.lift { box-shadow: inset 0 -1.3em 0 var(--hl); }
+    .abstract mark:focus { outline: none; }
+    mark.d-design { --hl: var(--tint-design); } mark.d-decision { --hl: var(--tint-decision); }
+    mark.d-safeguards { --hl: var(--tint-safeguards); } mark.d-size { --hl: var(--tint-size); }
+    mark.d-transparency { --hl: var(--tint-transparency); }
+
+    /* references */
+    ol.refs { list-style: none; margin: 6px 0 0; padding: 0; columns: 2; column-gap: 48px; }
+    ol.refs li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; font-size: 13.4px;
+                 line-height: 1.6; color: var(--r-text-soft); padding: 9px 0; border-top: 1px solid var(--r-hairline);
+                 break-inside: avoid; }
+    ol.refs li span { color: var(--r-teal); font-weight: 700; text-align: right; }
+    ol.refs a { font-size: 12.6px; white-space: nowrap; }
+
+    /* FAQ */
+    .faq-cols { columns: 2; column-gap: 56px; }
+    .faq-group { break-inside: avoid-column; margin-bottom: 26px; }
+    .faq-group h3 { font-size: 11.5px; letter-spacing: 1.3px; text-transform: uppercase; color: var(--r-teal);
+                    margin: 0 0 4px; font-weight: 700; }
+    details.qa { border-bottom: 1px solid var(--r-hairline); break-inside: avoid; }
+    details.qa summary { list-style: none; cursor: pointer; padding: 15px 32px 15px 0; position: relative;
+                         font-size: 15.6px; font-weight: 600; color: var(--r-text-primary); line-height: 1.5; }
+    details.qa summary::-webkit-details-marker { display: none; }
+    details.qa summary::after { content: ""; position: absolute; right: 6px; top: 22px; width: 8px; height: 8px;
+      border-right: 2px solid var(--r-text-muted); border-bottom: 2px solid var(--r-text-muted);
+      transform: rotate(45deg); transition: transform .25s var(--ease); }
+    details.qa[open] summary::after { transform: rotate(-135deg); }
+    details.qa .answer { padding: 0 36px 16px 0; }
+    details.qa .answer p { margin: 0; font-size: 15.2px; line-height: 1.72; }
+
+    @media (max-width: 960px) {
+      .shell, .header-inner, .footer-inner { width: calc(100% - 32px); }
+      .intro-grid { grid-template-columns: 1fr; gap: 36px; }
+      .tier-stack { flex-direction: row; justify-content: center; gap: 18px; flex-wrap: wrap; }
+      .tier-stack .ring { --ring: 96px !important; }
+      .domains { grid-template-columns: 1fr; }
+      .band { padding: 46px 0; } .band h2 { font-size: 26px; }
+      .faq-cols, ol.refs { columns: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .ring.logo .ring-o svg { animation: none; }
+      .abstract mark { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="../" aria-label="Rounds home"><img class="brand-wordmark" src="../rounds-wordmark.svg" alt="Rounds" /></a>
+      <nav class="header-nav" aria-label="Site">
+        <a href="../score/" aria-current="page">The RES</a>
+        <a href="../privacy/">Privacy</a>
+        <a href="../terms/">Terms</a>
+        <a class="keep-mobile" href="../support/">Support</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="hero">
+      <div class="shell">
+        <h1>The Rounds Evidence Score</h1>
+        <p>Learn more about The Rounds Evidence Score and how it is calculated</p>
+      </div>
+    </div>
+
+    <section id="s-introduction" class="band"><div class="shell reveal"><div class="intro-grid"><div><h2>Introduction</h2><p>PubMed lists more than 1.8 million records with a 2025 publication date, about 5,000 a day, by a search run on 27 October 2026. As early as 2010 that was already 75 trials and 11 systematic reviews a day.<sup>1</sup> Orthopaedics carries its share across trauma, arthroplasty, sports medicine, spine, hand, upper extremity, foot and ankle, oncology and paediatrics. Rounds reads 44 journals, almost all of them orthopaedic, from JBJS and The Bone &amp; Joint Journal to the subspecialty titles, alongside society, regulatory and education sources.</p><p>Orthopaedic surgeons read between cases, on call and after clinic, and like other physicians they rely on the abstract. Internists in one survey read only the abstract for 63% of the articles they looked at.<sup>3</sup> One estimate put the time a physician trained in epidemiology would need to appraise a single month of the literature relevant to primary care at 627 hours.<sup>2</sup> The difficulty is rarely a shortage of good research. It is knowing where to start.</p><p>The Rounds Evidence Score is a way to triage that volume. Every abstract is read against the same fixed rules, and the papers that report the most decision-relevant evidence rise to the top, so a reader with twenty minutes spends them on the papers most likely to bear on their practice.</p><p>A low score is not a verdict that a paper is poor. Biomechanical and cadaveric work, basic science, early case series and technique papers are what later orthopaedic trials are built on: a fixation construct is tested on the bench before it is tested in patients. Many score modestly because they answer a different question from the one a clinician brings to clinic, not because they were done badly.</p><p>The score is built for anyone keeping up with the literature who needs a place to start — surgeons, fellows, residents, medical students and researchers alike. An academic reader can use it the same way, as a first pass rather than a replacement for their own reading.</p></div><aside class="tier-stack" aria-hidden="true"><figure class="ring" style="--ring:132px;color:#0D7A6B"><div class="ring-o"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#0D7A6B" stroke-dasharray="34.10 242.36" stroke-dashoffset="-5.99"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#0D7A6B" stroke-dasharray="34.10 242.36" stroke-dashoffset="-52.07"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#0D7A6B" stroke-dasharray="34.10 242.36" stroke-dashoffset="-98.14"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#0D7A6B" stroke-dasharray="34.10 242.36" stroke-dashoffset="-144.22"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#0D7A6B" stroke-dasharray="34.10 242.36" stroke-dashoffset="-190.30"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#0D7A6B" stroke-dasharray="34.10 242.36" stroke-dashoffset="-236.37"></circle></svg><div class="ring-centre"><b data-score="92">92</b><i>/100</i></div></div><figcaption>Key reading</figcaption></figure><figure class="ring logo" style="--ring:104px"><div class="ring-o"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#4338CA" stroke-dasharray="34.10 242.36" stroke-dashoffset="-5.99"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#5B21B6" stroke-dasharray="34.10 242.36" stroke-dashoffset="-52.07"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#0D7A6B" stroke-dasharray="34.10 242.36" stroke-dashoffset="-98.14"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#1E3A5F" stroke-dasharray="34.10 242.36" stroke-dashoffset="-144.22"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#991B1B" stroke-dasharray="34.10 242.36" stroke-dashoffset="-190.30"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#92400E" stroke-dasharray="34.10 242.36" stroke-dashoffset="-236.37"></circle></svg></div></figure><figure class="ring" style="--ring:132px;color:#1D4ED8"><div class="ring-o"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#1D4ED8" stroke-dasharray="34.10 242.36" stroke-dashoffset="-5.99"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#1D4ED8" stroke-dasharray="34.10 242.36" stroke-dashoffset="-52.07"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#1D4ED8" stroke-dasharray="34.10 242.36" stroke-dashoffset="-98.14"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#1D4ED8" stroke-dasharray="34.10 242.36" stroke-dashoffset="-144.22"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#1D4ED8" stroke-dasharray="34.10 242.36" stroke-dashoffset="-190.30"></circle><circle class="arc" cx="50" cy="50" r="44.0" style="stroke:#1D4ED8" stroke-dasharray="34.10 242.36" stroke-dashoffset="-236.37"></circle></svg><div class="ring-centre"><b data-score="68">68</b><i>/100</i></div></div><figcaption>Worth a look</figcaption></figure></aside></div></div></section><section id="s-evidence-based-model" class="band alt"><div class="shell reveal"><h2>Evidence Based Model</h2><p>The score takes its structure from established reporting and appraisal methods.</p><div class="t-wrap"><table><thead><tr><th>Score aspect</th><th>What it is built on</th></tr></thead><tbody><tr><td>Criteria</td><td>The published standards for what an abstract must report: CONSORT for Abstracts for trials<sup>4</sup> and PRISMA for Abstracts for reviews.<sup>5</sup></td></tr><tr><td>Modules</td><td>Each module follows its design's own reporting guideline, among them STROBE,<sup>15</sup> STARD,<sup>16</sup> TRIPOD,<sup>17</sup> PRISMA,<sup>10</sup> AMSTAR 2,<sup>11</sup> GRADE<sup>14</sup> and CARE.<sup>18</sup></td></tr><tr><td>Checks and Safeguards</td><td>Trials with inadequate or unclear allocation concealment overestimated treatment effects by 30–41%, and trials that were not double-blind by 17%.<sup>6</sup></td></tr><tr><td>Item by item</td><td>Summary quality scores can rank the same trials in opposite directions depending on the scale used, so methods should be judged item by item.<sup>7</sup></td></tr><tr><td>Conclusions</td><td>Abstract conclusions often overstate trials with non-significant results: 58% in one sample.<sup>8</sup> Conclusions are flagged, never scored.</td></tr><tr><td>Overall</td><td>A study done by McMaster, McMaster PLUS, screened more than 110 journals against appraisal criteria before clinicians rated what passed, and 90% of physicians offered the alerts used them.<sup>9</sup></td></tr></tbody></table></div></div></section><section id="s-the-score" class="band"><div class="shell reveal"><h2>The Score</h2><p>The Rounds Evidence Score is absolute: there is no partial credit. Every item is earned in full or not at all.</p><ol class="steps"><li><span class="step-n">1</span><div><b>Identify the design</b><p>The publication type and the design the abstract states decide which module analyses the paper. An editorial, letter or comment is not research and scores 0.</p></div></li><li><span class="step-n">2</span><div><b>Check the integrity record</b><p>A retraction or an expression of concern stops the paper here.</p></div></li><li><span class="step-n">3</span><div><b>Find each aspect in the abstract</b><p>For each aspect the model answers one question: is this stated, and in what words?</p></div></li><li><span class="step-n">4</span><div><b>Check the quote</b><p>If those exact words are not in the abstract, the aspect counts as not reported.</p></div></li><li><span class="step-n">5</span><div><b>Score the five domains</b><p>Each aspect carries a fixed weight for this kind of paper, and is given in full or not at all.</p></div></li><li><span class="step-n">6</span><div><b>Apply any correction</b><p>A paper carrying an erratum loses points and is flagged.</p></div></li><li><span class="step-n">7</span><div><b>Apply the label</b><p>From the number and a final checklist of the methods this design depends on.</p></div></li></ol><aside class="callout warn"><b>A retracted paper is never scored</b><p>A retraction or an expression of concern on the record scores 0, moves the paper to Background, and the reader is warned on the card itself. Rounds never presents a withdrawn paper as ordinary reading.</p></aside><aside class="callout"><b>What reported means</b><p>The score checks that a method was <strong>reported</strong>, not that it was done well. A trial whose abstract says “patients were randomized” earns the randomization points; how the sequence was generated is not read, because an abstract does not say. Judging method quality from an abstract would not be reliable, and nobody could check it. A quoted phrase can be checked in seconds.</p></aside></div></section><section id="s-the-five-domains" class="band alt"><div class="shell reveal"><h2>The five domains</h2><p>Every paper is analysed against five domains.</p><div class="domains"><div class="dom d-design"><div class="dom-head">Design</div><div class="dom-ask">Can this design answer this kind of question?</div></div><div class="dom d-decision"><div class="dom-head">Decision information</div><div class="dom-ask">Does the abstract state the <strong class="dt-decision">population</strong>, the <strong class="dt-decision">comparator</strong>, the <strong class="dt-decision">outcome</strong>, the <strong class="dt-decision">main estimate</strong> and its <strong class="dt-decision">uncertainty</strong>?</div></div><div class="dom d-safeguards"><div class="dom-head">Safeguards</div><div class="dom-ask">Are the methods this design depends on reported? Safeguards carry the most weight, because they are the part a reader cannot get from the title.</div></div><div class="dom d-size"><div class="dom-head">Size and precision</div><div class="dom-ask">How much was studied, and how precisely is the result reported?</div></div><div class="dom d-transparency"><div class="dom-head">Transparency</div><div class="dom-ask">Who funded it, is the record clean, and is the data available?</div></div></div><p>The five domains are scored separately and added together. The total is the <strong>Rounds Evidence Score</strong>, from 0 to 100. The weight each domain carries is fixed in advance and applied identically to every paper of the same kind.</p></div></section><section id="s-modules" class="band"><div class="shell reveal"><h2>Modules</h2><p>Research comes in many shapes, and a question that matters for one design means nothing for another. Rounds therefore analyses each paper with the module that fits its question, and every module has its own ceiling: the highest score that kind of paper can reach when its abstract reports everything the module asks for.</p><div class="t-wrap"><table><thead><tr><th>Module</th><th>Example Paper</th><th>Ceiling</th><th>Can it be a Key Reading?</th></tr></thead><tbody><tr><td>Intervention</td><td>A randomized trial of operative against non-operative treatment of a displaced fracture</td><td>100</td><td class="centre"><svg class="check" viewBox="0 0 20 20" aria-label="Yes" role="img"><circle cx="10" cy="10" r="9"></circle><path d="M5.8 10.4l2.7 2.7 5.7-6"></path></svg></td></tr><tr><td>Observational or prognosis</td><td>A registry cohort of implant survivorship</td><td>100</td><td class="centre"><svg class="check" viewBox="0 0 20 20" aria-label="Yes" role="img"><circle cx="10" cy="10" r="9"></circle><path d="M5.8 10.4l2.7 2.7 5.7-6"></path></svg></td></tr><tr><td>Diagnostic accuracy</td><td>MRI measured against arthroscopic findings for meniscal tears</td><td>100</td><td class="centre"><svg class="check" viewBox="0 0 20 20" aria-label="Yes" role="img"><circle cx="10" cy="10" r="9"></circle><path d="M5.8 10.4l2.7 2.7 5.7-6"></path></svg></td></tr><tr><td>Prediction model</td><td>A model predicting dislocation after total hip arthroplasty</td><td>100</td><td class="centre"><svg class="check" viewBox="0 0 20 20" aria-label="Yes" role="img"><circle cx="10" cy="10" r="9"></circle><path d="M5.8 10.4l2.7 2.7 5.7-6"></path></svg></td></tr><tr><td>Systematic review or meta-analysis</td><td>A meta-analysis of graft choice in ACL reconstruction</td><td>100</td><td class="centre"><svg class="check" viewBox="0 0 20 20" aria-label="Yes" role="img"><circle cx="10" cy="10" r="9"></circle><path d="M5.8 10.4l2.7 2.7 5.7-6"></path></svg></td></tr><tr><td>Guideline or consensus</td><td>A society clinical practice guideline, or a Delphi consensus</td><td>100</td><td class="centre"><svg class="check" viewBox="0 0 20 20" aria-label="Yes" role="img"><circle cx="10" cy="10" r="9"></circle><path d="M5.8 10.4l2.7 2.7 5.7-6"></path></svg></td></tr><tr><td>Methods or analysis</td><td>Validation of a patient-reported outcome measure</td><td>100</td><td class="centre"></td></tr><tr><td>Preclinical animal</td><td>An animal model of rotator cuff tendon healing</td><td>95</td><td class="centre"></td></tr><tr><td>Qualitative or mixed methods</td><td>Interviews on return to sport after ACL reconstruction</td><td>95</td><td class="centre"></td></tr><tr><td>General research</td><td>A bibliometric or health-services study</td><td>87</td><td class="centre"></td></tr><tr><td>Biomechanical or cadaveric</td><td>A cadaveric comparison of graft fixation constructs</td><td>85</td><td class="centre"></td></tr><tr><td>Narrative review</td><td>A current-concepts review</td><td>82</td><td class="centre"></td></tr><tr><td>Case report or series</td><td>A series of periprosthetic fractures, or a technique note</td><td>81</td><td class="centre"></td></tr><tr><td>Editorial, letter, comment</td><td>—</td><td>0</td><td class="centre"></td></tr></tbody></table></div></div></section><section id="s-res-limitation" class="band alt"><div class="shell reveal"><h2>RES Limitation</h2><ul><li>The RES only reads the abstract, which can be constrained by the character counts journals impose. A thin abstract scores low however good the study behind it is.</li><li>It checks that a method was reported, not that it was adequate.</li><li>It has not been validated yet.</li><li>It is not RoB 2, AMSTAR 2 or GRADE, and it is not a verdict on quality.</li></ul></div></section><section id="s-trial-of-vancomycin-and-cefazolin-as-surgical-prophylaxis-in-arthroplasty" class="band"><div class="shell reveal"><p class="kicker">EXAMPLE 1 · KEY READING</p><h2>Trial of vancomycin and cefazolin as surgical prophylaxis in arthroplasty</h2><p class="small">Peel TN, et al. &nbsp;·&nbsp; <strong>N Engl J Med</strong>, 2023 &nbsp;·&nbsp; doi 10.1056/NEJMoa2301401 &nbsp;·&nbsp; abstract from PubMed, abridged.</p><div class="legend"><span class="seg d-decision" data-domain="decision">Decision information</span><span class="seg d-design" data-domain="design">Design</span><span class="seg d-safeguards" data-domain="safeguards">Safeguards</span><span class="seg d-size" data-domain="size">Size</span><span class="seg d-transparency" data-domain="transparency">Transparency</span></div><blockquote class="abstract">In this multicenter, <mark class="d-safeguards" tabindex="0" data-domain="safeguards">double-blind</mark>, superiority, placebo-controlled trial, <mark class="d-safeguards" tabindex="0" data-domain="safeguards">we randomly assigned</mark> <mark class="d-decision" tabindex="0" data-domain="decision">adult patients without known methicillin-resistant (MRSA) colonization who were undergoing arthroplasty</mark> to receive 1.5 g of vancomycin or <mark class="d-decision" tabindex="0" data-domain="decision">normal saline placebo, in addition to cefazolin prophylaxis</mark>. The primary outcome was <mark class="d-decision" tabindex="0" data-domain="decision">surgical-site infection within 90 days after surgery</mark>. <mark class="d-size" tabindex="0" data-domain="size">A total of 4239 patients underwent randomization</mark>. Among <mark class="d-safeguards" tabindex="0" data-domain="safeguards">4113 patients in the modified intention-to-treat population</mark> … surgical-site infections occurred in <mark class="d-decision" tabindex="0" data-domain="decision">91 of 2044 patients (4.5%)</mark> in the vancomycin group and in <mark class="d-decision" tabindex="0" data-domain="decision">72 of 2069 patients (3.5%)</mark> in the placebo group (<mark class="d-decision" tabindex="0" data-domain="decision">relative risk, 1.28</mark>; <mark class="d-decision" tabindex="0" data-domain="decision">95% confidence interval [CI], 0.94 to 1.73</mark>; P = 0.11). … (<mark class="d-transparency" tabindex="0" data-domain="transparency">Funded by the Australian National Health and Medical Research Council</mark>; <mark class="d-safeguards" tabindex="0" data-domain="safeguards">Australian New Zealand Clinical Trials Registry number, ACTRN12618000642280</mark>.)</blockquote></div></section><section id="s-survivorship-of-cementless-compared-with-cemented-total-knee-arthroplasty" class="band alt"><div class="shell reveal"><p class="kicker">EXAMPLE 2 · KEY READING</p><h2>Survivorship of cementless compared with cemented total knee arthroplasty</h2><p class="small">Chen W, et al. &nbsp;·&nbsp; <strong>Clin Orthop Relat Res</strong>, 2025 &nbsp;·&nbsp; doi 10.1097/CORR.0000000000003385 &nbsp;·&nbsp; abstract from PubMed, abridged.</p><div class="legend"><span class="seg d-decision" data-domain="decision">Decision information</span><span class="seg d-design" data-domain="design">Design</span><span class="seg d-safeguards" data-domain="safeguards">Safeguards</span><span class="seg d-size" data-domain="size">Size</span><span class="seg d-transparency" data-domain="transparency">Transparency</span></div><blockquote class="abstract">We conducted <mark class="d-design" tabindex="0" data-domain="design">a cohort study using data from the Kaiser Permanente Total Joint Replacement Registry</mark>. <mark class="d-safeguards" tabindex="0" data-domain="safeguards">The TJRR prospectively collects patient, perioperative, and implant details on all patients who undergo TKA</mark> in a multiregional organization with 12 million members; <mark class="d-safeguards" tabindex="0" data-domain="safeguards">patients included in the TJRR are longitudinally monitored for outcomes after TKA</mark>, and <mark class="d-safeguards" tabindex="0" data-domain="safeguards">identified outcomes are manually validated through chart review</mark>. <mark class="d-decision" tabindex="0" data-domain="decision">Patients who underwent primary TKA for osteoarthritis from 2009 to 2023</mark> with <mark class="d-decision" tabindex="0" data-domain="decision">a fully cementless construct of either twin-peg or spikes-and-keel, and their fully cemented options</mark>, were included … <mark class="d-size" tabindex="0" data-domain="size">The final study sample included 130,242 primary TKAs</mark> … <mark class="d-safeguards" tabindex="0" data-domain="safeguards">9.2% who received cemented and 12.3% who received cementless were lost to follow-up</mark> … <mark class="d-safeguards" tabindex="0" data-domain="safeguards">propensity score weights were calculated using multivariable logistic regression models</mark> … to evaluate <mark class="d-decision" tabindex="0" data-domain="decision">aseptic revision risk</mark> … cementless fixation had a higher risk of aseptic revision compared with cemented fixation (<mark class="d-decision" tabindex="0" data-domain="decision">HR 2.13</mark> [<mark class="d-decision" tabindex="0" data-domain="decision">95% confidence interval (CI) 1.30 to 3.50</mark>]; p = 0.003).</blockquote></div></section><section id="s-definitions-and-reporting-of-failure-after-rotator-cuff-repair" class="band"><div class="shell reveal"><p class="kicker">EXAMPLE 3 · WORTH A LOOK</p><h2>Definitions and reporting of ‘failure’ after rotator cuff repair</h2><p class="small">Cecere M, et al. &nbsp;·&nbsp; <strong>Shoulder &amp; Elbow</strong>, 2026 &nbsp;·&nbsp; doi 10.1177/17585732261501972 &nbsp;·&nbsp; full abstract.</p><div class="legend"><span class="seg d-decision" data-domain="decision">Decision information</span><span class="seg d-design" data-domain="design">Design</span><span class="seg d-safeguards" data-domain="safeguards">Safeguards</span><span class="seg d-size" data-domain="size">Size</span></div><blockquote class="abstract">Background: <mark class="d-design" tabindex="0" data-domain="design">Failure is widely reported in randomised controlled trials assessing rotator cuff repair (RCR)</mark>, yet the term lacks a consensus definition and <mark class="d-safeguards" tabindex="0" data-domain="safeguards">reported rates vary widely</mark>. This systematic review characterised how RCR failure is defined and reported in Level I and II studies and proposes a reporting standard. Methods: <mark class="d-safeguards" tabindex="0" data-domain="safeguards">MEDLINE, Embase and Cochrane were searched for English-language Level of Evidence I and II studies published between January 2003 and April 2025</mark> <mark class="d-decision" tabindex="0" data-domain="decision">reporting on failure following RCR</mark>. Data on definitions, parameters and etiologies of failure were extracted and summarised through descriptive statistics. Results: <mark class="d-size" tabindex="0" data-domain="size">Twenty-two studies met the inclusion criteria.</mark> <mark class="d-safeguards" tabindex="0" data-domain="safeguards">Ten (45.5%) provided a formal definition of failure; the remainder described specific etiologies.</mark> Imaging-based assessment of tendon integrity was the most common parameter among formal definitions (7 of 10), and re-tear was the most common etiology among studies without one (9 of 12). Reported failure rates tracked closely with the parameter used, <mark class="d-size" tabindex="0" data-domain="size">exceeding 50% under imaging-based definitions and reaching 0% under a patient-reported outcome measure (PROM)-based definition</mark>. Discussion: RCR trials lack a uniform definition of failure. We propose a multi-domain reporting standard incorporating structural, patient-reported and clinical outcomes, with thresholds to be established through expert consensus.</blockquote></div></section>
+
+    <section id="s-faq" class="band alt">
+      <div class="shell reveal">
+        <h2>The RES — Frequently asked questions</h2>
+        <div class="faq-cols"><div class="faq-group"><h3>The Rounds Evidence Score</h3><details class='qa'><summary>What is the score for?</summary><div class='answer'><p>Triage. More than 1.8 million records reached PubMed in 2025, and no clinician can read more than a fraction of them. The score orders each day's papers so the ones that report the most decision-relevant evidence come first.</p></div></details><details class='qa'><summary>What does the number mean?</summary><div class='answer'><p>How much of what a reader needs to judge a result is stated in the abstract, out of 100.</p></div></details><details class='qa'><summary>Who is it for?</summary><div class='answer'><p>Anyone keeping up with the literature who needs a place to start: surgeons, fellows, residents, medical students and researchers. An academic reader can use it the same way, as a first pass rather than a replacement for their own reading.</p></div></details><details class='qa'><summary>Is a low score a criticism of the study?</summary><div class='answer'><p><strong>No.</strong> It often means a short abstract, or a paper answering a question that is not a clinical one. Basic science, case series and technique papers are what later trials are built on, and many score modestly for that reason.</p></div></details><details class='qa'><summary>Is it a percentile?</summary><div class='answer'><p><strong>No.</strong> The score belongs to the paper alone. Other papers do not move it, and any number of papers can score 100.</p></div></details><details class='qa'><summary>Is it based on evidence?</summary><div class='answer'><p>The structure is. What it checks for comes from the published standards for abstracts, CONSORT and PRISMA for Abstracts,<sup>4,5</sup> and each module follows its own design's reporting guideline. Allocation concealment and blinding weigh more because trials without them have been shown to overstate treatment effects.<sup>6</sup> The point values themselves were set by judgement. The sources are listed at the end.</p></div></details><details class='qa'><summary>Is it validated?</summary><div class='answer'><p><strong>Not yet.</strong> It is deterministic and auditable, and we never describe it as validated or clinically verified. A validation study is planned: blinded clinicians and methodologists ranking papers against one another, to see whether the score's order matches theirs.</p></div></details><details class='qa'><summary>Is it GRADE, RoB 2 or AMSTAR 2?</summary><div class='answer'><p><strong>No.</strong> Those need the full methods.<sup>11,13,14</sup> The score checks the abstract for what those tools ask a paper to report. It replaces none of them.</p></div></details></div><div class="faq-group"><h3>How the Score is calculated</h3><details class='qa'><summary>Does AI decide the score?</summary><div class='answer'><p><strong>No.</strong> A model reads the abstract and quotes what it states. Fixed rules in ordinary code assign every point and every label.</p></div></details><details class='qa'><summary>What stops the model making something up?</summary><div class='answer'><p>Every fact comes back with a quote, and the quote is checked against the abstract automatically. If those exact words are not there, the fact counts as not reported and earns nothing. A claim the model invented cannot survive that check.</p></div></details><details class='qa'><summary>Why do different papers get different questions?</summary><div class='answer'><p>Randomization matters for a treatment trial and means nothing for a diagnostic study. Each paper is read by the module for its kind of question.</p></div></details><details class='qa'><summary>Do the journal or citations count?</summary><div class='answer'><p><strong>No.</strong> Neither do impact factor, novelty, statistical significance, or whether the result was positive.</p></div></details></div><div class="faq-group"><h3>Rationale</h3><details class='qa'><summary>The method is in the paper. Why was it not counted?</summary><div class='answer'><p>Our model only examines the abstract. A method described in the full text but not in the abstract earns nothing.</p></div></details><details class='qa'><summary>We reported p-values. Why did we lose the uncertainty points?</summary><div class='answer'><p>A p-value says an effect was found, not how large it might be. <strong class="dt-decision">Uncertainty</strong> needs a confidence interval or a stated error. This is the most common reason a strong paper scores lower than expected.</p></div></details><details class='qa'><summary>My trial scored 90 and is only <span class="t-look">Worth a look</span>.</summary><div class='answer'><p><span class="t-key">Key reading</span> needs 85 <strong>and</strong> the final checklist. For a trial that is: a randomized design, the main estimate, its uncertainty, randomization, and loss to follow-up. One of those is missing from the abstract.</p></div></details><details class='qa'><summary>Our meta-analysis pooled 400,000 patients and scored below a trial.</summary><div class='answer'><p>Size credit for a review comes from the number of studies it included rather than the patients those studies enrolled, because the patient count is a property of the field rather than of the review. A review is scored on how it was conducted: its protocol, its search, its appraisal of the included studies, its synthesis method, and a pooled estimate reported with its interval.</p></div></details><details class='qa'><summary>Can a guideline be <span class="t-key">Key reading</span>?</summary><div class='answer'><p><strong>Yes</strong>, when its abstract states where the evidence came from, how its certainty was graded, how the panel reached its recommendations, and its funding and conflicts.</p></div></details><details class='qa'><summary>Why are conflicts required for guidelines and nothing else?</summary><div class='answer'><p>Because a guideline is the one kind of paper a clinician may act on directly, without weighing the study behind it, so who funded the panel is part of reading it. For every other design, declaring funding earns points rather than being required.</p></div></details><details class='qa'><summary>Can a case report be <span class="t-key">Key reading</span>?</summary><div class='answer'><p><strong>No.</strong> Within our model, case reports, narrative reviews, laboratory studies and general research have lower ceilings and no final checklist. The model is a triage that sets reading order; it is not a judgement on the paper.</p></div></details><details class='qa'><summary>Does industry funding lower the score?</summary><div class='answer'><p><strong>No.</strong> It raises a flag the reader sees. Declaring industry funding earns exactly the same credit as declaring any other funding.</p></div></details><details class='qa'><summary>What is “design uncertain”?</summary><div class='answer'><p>The publication type and the abstract disagree about the design. Both are kept, and the paper is not promoted until the disagreement is resolved — by a person reading the two and recording which is right.</p></div></details><details class='qa'><summary>What happens to a retracted paper?</summary><div class='answer'><p>It scores 0, moves to <span class="t-back">Background</span>, and the reader is warned on the card. An erratum costs 5 points in total and is flagged.</p></div></details></div><div class="faq-group"><h3>Corrections and audit</h3><details class='qa'><summary>Can I see how my paper was scored?</summary><div class='answer'><p>We keep the full record of every score — which module read the paper, which aspects were found, and the exact words that earned each one. We do not publish those ledgers, but if you think a paper of yours was read wrongly, write to hello@getrounds.ca and we will check it against the abstract.</p></div></details><details class='qa'><summary>What if my paper was put in the wrong module?</summary><div class='answer'><p>Write to hello@getrounds.ca. We check the paper against the stored quotes and rescore it if it was misread.</p></div></details><details class='qa'><summary>Can I appeal a score?</summary><div class='answer'><p>Unfortunately we are not able to offer appeals: the arithmetic is fixed and applied identically to every paper, so there is nothing in it to appeal. What we do review is whether we read the abstract correctly — a missed aspect or the wrong module — and we correct those.</p></div></details><details class='qa'><summary>Why does the app not show the breakdown?</summary><div class='answer'><p>Readers get the number, the label, and one sentence on what the abstract covers and leaves out. A points table pulls attention to the arithmetic instead of the paper. The method is published; the point-by-point calculation is proprietary.</p></div></details><details class='qa'><summary>Will the weights change?</summary><div class='answer'><p>Very possibly. We are always looking to improve the model, and validation is likely to tell us where it is wrong. Any change is a new version applied by rescoring, and older scores keep the version that produced them.</p></div></details><details class='qa'><summary>Does reading or saving a paper change its score?</summary><div class='answer'><p><strong>No.</strong> Nothing a reader does affects it.</p></div></details></div></div>
+      </div>
+    </section>
+
+    <section id="s-references" class="band"><div class="shell reveal"><h2>References</h2><ol class="refs"><li><span>1</span><div>Bastian H, Glasziou P, Chalmers I. Seventy-five trials and eleven systematic reviews a day: how will we ever keep up? PLoS Med 2010;7:e1000326. <a href="https://doi.org/10.1371/journal.pmed.1000326" rel="noopener">doi 10.1371/journal.pmed.1000326</a></div></li><li><span>2</span><div>Alper BS, Hand JA, Elliott SG, et al. How much effort is needed to keep up with the literature relevant for primary care? J Med Libr Assoc 2004;92:429–37. <a href="https://pubmed.ncbi.nlm.nih.gov/15494758/" rel="noopener">PMID 15494758</a></div></li><li><span>3</span><div>Saint S, Christakis DA, Saha S, et al. Journal reading habits of internists. J Gen Intern Med 2000;15:881–4. <a href="https://doi.org/10.1046/j.1525-1497.2000.00202.x" rel="noopener">doi 10.1046/j.1525-1497.2000.00202.x</a></div></li><li><span>4</span><div>Hopewell S, Clarke M, Moher D, et al. CONSORT for reporting randomised trials in journal and conference abstracts. Lancet 2008;371:281–3. <a href="https://doi.org/10.1016/S0140-6736(07)61835-2" rel="noopener">doi 10.1016/S0140-6736(07)61835-2</a></div></li><li><span>5</span><div>Beller EM, Glasziou PP, Altman DG, et al. PRISMA for Abstracts: reporting systematic reviews in journal and conference abstracts. PLoS Med 2013;10:e1001419. <a href="https://doi.org/10.1371/journal.pmed.1001419" rel="noopener">doi 10.1371/journal.pmed.1001419</a></div></li><li><span>6</span><div>Schulz KF, Chalmers I, Hayes RJ, Altman DG. Empirical evidence of bias. JAMA 1995;273:408–12. <a href="https://doi.org/10.1001/jama.273.5.408" rel="noopener">doi 10.1001/jama.273.5.408</a></div></li><li><span>7</span><div>Jüni P, Witschi A, Bloch R, Egger M. The hazards of scoring the quality of clinical trials for meta-analysis. JAMA 1999;282:1054–60. <a href="https://doi.org/10.1001/jama.282.11.1054" rel="noopener">doi 10.1001/jama.282.11.1054</a></div></li><li><span>8</span><div>Boutron I, Dutton S, Ravaud P, Altman DG. Reporting and interpretation of randomized controlled trials with statistically nonsignificant results for primary outcomes. JAMA 2010;303:2058–64. <a href="https://doi.org/10.1001/jama.2010.651" rel="noopener">doi 10.1001/jama.2010.651</a></div></li><li><span>9</span><div>Haynes RB, Cotoi C, Holland J, et al. Second-order peer review of the medical literature for clinical practitioners. JAMA 2006;295:1801–8. <a href="https://doi.org/10.1001/jama.295.15.1801" rel="noopener">doi 10.1001/jama.295.15.1801</a></div></li><li><span>10</span><div>PRISMA 2020 statement for reporting systematic reviews. Page MJ, McKenzie JE, Bossuyt PM, et al. BMJ 2021;372:n71. <a href="https://doi.org/10.1136/bmj.n71" rel="noopener">doi 10.1136/bmj.n71</a></div></li><li><span>11</span><div>AMSTAR 2 for appraising systematic reviews. Shea BJ, Reeves BC, Wells G, et al. BMJ 2017;358:j4008. <a href="https://doi.org/10.1136/bmj.j4008" rel="noopener">doi 10.1136/bmj.j4008</a></div></li><li><span>12</span><div>ROBIS tool for risk of bias in systematic reviews. Whiting P, Savović J, Higgins JP, et al. J Clin Epidemiol 2016;69:225–34. <a href="https://pubmed.ncbi.nlm.nih.gov/26092286/" rel="noopener">PMID 26092286</a></div></li><li><span>13</span><div>Cochrane risk-of-bias tool for randomized trials (RoB 2). Cochrane Handbook, chapter 8. <a href="https://www.cochrane.org/authors/handbooks-and-manuals/handbook/current/chapter-08" rel="noopener">cochrane.org</a></div></li><li><span>14</span><div>GRADE approach to the certainty of evidence. Cochrane Handbook, chapter 14. <a href="https://www.cochrane.org/authors/handbooks-and-manuals/handbook/current/chapter-14" rel="noopener">cochrane.org</a></div></li><li><span>15</span><div>STROBE statement for observational studies. von Elm E, Altman DG, Egger M, et al. PLoS Med 2007;4:e296. <a href="https://doi.org/10.1371/journal.pmed.0040296" rel="noopener">doi 10.1371/journal.pmed.0040296</a></div></li><li><span>16</span><div>STARD 2015 for diagnostic accuracy studies. Bossuyt PM, Reitsma JB, Bruns DE, et al. BMJ 2015;351:h5527. <a href="https://doi.org/10.1136/bmj.h5527" rel="noopener">doi 10.1136/bmj.h5527</a></div></li><li><span>17</span><div>TRIPOD statement for prediction models. Collins GS, Reitsma JB, Altman DG, Moons KG. BMJ 2015;350:g7594. <a href="https://doi.org/10.1136/bmj.g7594" rel="noopener">doi 10.1136/bmj.g7594</a></div></li><li><span>18</span><div>CARE guideline for case reports. <a href="https://www.care-statement.org/" rel="noopener">care-statement.org</a></div></li><li><span>19</span><div>SANRA scale for narrative reviews. Baethge C, Goldbeck-Wood S, Mertens S. Res Integr Peer Rev 2019;4:5. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6434870/" rel="noopener">PMC6434870</a></div></li><li><span>20</span><div>QUACS scale for the quality of cadaveric studies. J Anat 2015. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4450944/" rel="noopener">PMC4450944</a></div></li><li><span>21</span><div>BOBQAT tool for biomechanical studies. Arthroscopy 2024. <a href="https://www.sciencedirect.com/science/article/pii/S0749806324000033" rel="noopener">sciencedirect.com</a></div></li><li><span>22</span><div>ARRIVE 2.0 guidelines for animal research. Percie du Sert N, Hurst V, Ahluwalia A, et al. PLoS Biol 2020;18:e3000410. <a href="https://doi.org/10.1371/journal.pbio.3000410" rel="noopener">doi 10.1371/journal.pbio.3000410</a></div></li><li><span>23</span><div>SAMPL guidelines for statistical reporting. Lang TA, Altman DG. <a href="https://www.equator-network.org/reporting-guidelines/sampl/" rel="noopener">equator-network.org</a></div></li><li><span>24</span><div>MMAT 2018 for mixed-methods studies. Hong QN, Fàbregues S, Bartlett G, et al. Educ Inf 2018;34:285–91. <a href="https://doi.org/10.3233/EFI-180221" rel="noopener">doi 10.3233/EFI-180221</a></div></li></ol></div></section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <a class="brand" href="../"><img class="brand-wordmark" src="../rounds-wordmark.svg" alt="Rounds" /></a>
+        <nav class="footer-links" aria-label="Footer"><a href="../score/">The RES</a><a href="../privacy/">Privacy</a><a href="../terms/">Terms</a><a href="../support/">Support</a></nav>
+      </div>
+      <p class="footer-note">Rounds is an educational literature-discovery service. It does not provide medical advice and should not be used as the sole basis for a clinical decision.</p>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    "use strict";
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var all = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+
+    var blocks = all(".reveal");
+    if (reduced || !("IntersectionObserver" in window)) {
+      blocks.forEach(function (n) { n.classList.add("in"); });
+    } else {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.04 });
+      blocks.forEach(function (n) { io.observe(n); });
+    }
+
+    /* the tier scores count up once, when they come into view */
+    var nums = all(".ring-centre b");
+    function count(el) {
+      var target = Number(el.dataset.score), start = null;
+      if (reduced) { el.textContent = String(target); return; }
+      requestAnimationFrame(function tick(ts) {
+        if (start === null) { start = ts; }
+        var p = Math.min(1, (ts - start) / 1000);
+        el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+        if (p < 1) { requestAnimationFrame(tick); }
+      });
+    }
+    if (!reduced && "IntersectionObserver" in window) {
+      nums.forEach(function (n) { n.textContent = "0"; });
+      var ro = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { count(e.target); ro.unobserve(e.target); } });
+      }, { threshold: 0.6 });
+      nums.forEach(function (n) { ro.observe(n); });
+    }
+
+    /* a domain in an abstract's legend, or any phrase, lifts every phrase of that domain */
+    all(".abstract").forEach(function (box) {
+      var legend = box.previousElementSibling;
+      function lift(domain, on) {
+        all("mark.d-" + domain, box).forEach(function (m) { m.classList.toggle("lift", on); });
+      }
+      function bind(el, domain) {
+        el.addEventListener("mouseenter", function () { lift(domain, true); });
+        el.addEventListener("mouseleave", function () { lift(domain, false); });
+        el.addEventListener("focus", function () { lift(domain, true); });
+        el.addEventListener("blur", function () { lift(domain, false); });
+      }
+      all("mark", box).forEach(function (m) { bind(m, m.dataset.domain); });
+      if (legend && legend.classList.contains("legend")) {
+        all(".seg", legend).forEach(function (s) { bind(s, s.dataset.domain); });
+      }
+    });
+  })();
+  </script>
+</body>
+</html>
