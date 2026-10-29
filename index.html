@@ -1047,9 +1047,9 @@ function BrandRingLogo({ size = 100 }) {
    the title so each card is stable — the same "within-tier spread" idea the app uses. */
 
 const RES_TIERS = {
-  key:        { name: "Key reading",  range: "82–98", color: "var(--r-tier-key)",        blurb: "Strong, well-run evidence on a question that can change how you practise. This is where to start." },
-  notable:    { name: "Worth a look", range: "62–80", color: "var(--r-tier-notable)",    blurb: "Solid, useful findings that add to the picture without demanding a decision today." },
-  background: { name: "Background",    range: "40–58", color: "var(--r-tier-background)", blurb: "Context and incremental updates. Present when you want them, tucked below the fold by default." },
+  key:        { name: "Key reading",  range: "85 or more", color: "var(--r-tier-key)",        blurb: "Strong, well-run evidence on a question that can change how you practise. This is where to start." },
+  notable:    { name: "Worth a look", range: "40 or more", color: "var(--r-tier-notable)",    blurb: "Solid, useful findings that add to the picture without demanding a decision today." },
+  background: { name: "Background",    range: "below 40", color: "var(--r-tier-background)", blurb: "Context and incremental updates. Present when you want them, tucked below the fold by default." },
 };
 
 function resForLiterature(title, forceKey) {
@@ -1057,8 +1057,8 @@ function resForLiterature(title, forceKey) {
   for (let i = 0; i < title.length; i++) { h = Math.imul(h ^ title.charCodeAt(i), 16777619); }
   h = h >>> 0;
   const tier = (forceKey || h % 100 < 30) ? "key" : "notable";
-  const base = tier === "key" ? 82 : 62;
-  const span = tier === "key" ? 16 : 18;
+  const base = tier === "key" ? 85 : 62;
+  const span = tier === "key" ? 13 : 18;
   return { tier, score: base + (Math.floor(h / 128) % (span + 1)) };
 }
 
@@ -2409,7 +2409,8 @@ const CADENCE = [
   { when: "Weekly", sub: "The whole week in one go." },
 ];
 
-const RES_WEIGHS = ["Study design", "Level of evidence", "Journal standing", "Sample size", "Reported outcomes", "Retractions and corrections"];
+// The five domains of the published method (getrounds.ca/score/). Journal standing is never one.
+const RES_WEIGHS = ["Design", "Decision information", "Safeguards", "Size and precision", "Transparency"];
 
 // Same paper as the phone's hero card above, scored through the same function, so the
 // illustration and the live demo can never disagree about its number.
