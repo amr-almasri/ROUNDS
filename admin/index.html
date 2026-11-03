@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Rounds Admin</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --teal: #0D7A6B; --teal-pressed: #0A5E55; --teal-faint: #E6F5F2;
+    --text: #111827; --text-soft: #374151; --text-muted: #6B7280; --text-faint: #9CA3AF;
+    --border: #E5E7EB; --hairline: #EDEFF2; --bg: #F9FAFB; --card: #FFFFFF;
+    --warning: #991B1B; --warning-faint: #FDECEC; --good: #006300;
+    --grid: #e1e0d9; --axis: #c3c2b7;
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+    --s5: #e87ba4; --s6: #008300; --s7: #6250d6; --s8: #e34948;
+    --radius: 12px; --radius-sm: 8px;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --teal: #2BB39F; --teal-pressed: #22917F; --teal-faint: #12302B;
+      --text: #F3F4F6; --text-soft: #D1D5DB; --text-muted: #9CA3AF; --text-faint: #6B7280;
+      --border: #2A2D33; --hairline: #24272C; --bg: #0E1013; --card: #171A1F;
+      --warning: #F08A8A; --warning-faint: #3A1A1A; --good: #0ca30c;
+      --grid: #2c2c2a; --axis: #383835;
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+      --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+    }
+  }
+  :root[data-theme="dark"] {
+    --teal: #2BB39F; --teal-pressed: #22917F; --teal-faint: #12302B;
+    --text: #F3F4F6; --text-soft: #D1D5DB; --text-muted: #9CA3AF; --text-faint: #6B7280;
+    --border: #2A2D33; --hairline: #24272C; --bg: #0E1013; --card: #171A1F;
+    --warning: #F08A8A; --warning-faint: #3A1A1A; --good: #0ca30c;
+    --grid: #2c2c2a; --axis: #383835;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased; font-size: 14px; }
+  h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; margin: 0; }
+  button, input, select { font-family: inherit; font-size: 13.5px; color: var(--text); }
+  a { color: var(--teal); }
+
+  .top { position: sticky; top: 0; z-index: 20; background: var(--bg);
+    border-bottom: 1px solid var(--border); }
+  .top-inner { max-width: 1280px; margin: 0 auto; padding: 14px 16px 0; }
+  .top-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .brand { font-family: 'Playfair Display', Georgia, serif; font-size: 21px; font-weight: 600; flex: 1; min-width: 160px; }
+  .brand small { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .09em;
+    text-transform: uppercase; color: var(--text-muted); margin-left: 8px; }
+  .tabs { display: flex; gap: 2px; overflow-x: auto; margin-top: 12px; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 9px 12px 10px;
+    font-weight: 600; color: var(--text-muted); cursor: pointer; white-space: nowrap; }
+  .tabs button[aria-selected="true"] { color: var(--teal); border-bottom-color: var(--teal); }
+  .tabs .count { display: inline-block; min-width: 18px; padding: 1px 6px; margin-left: 6px; border-radius: 9px;
+    background: var(--warning-faint); color: var(--warning); font-size: 11px; }
+
+  main { max-width: 1280px; margin: 0 auto; padding: 20px 16px 60px; }
+  .grid { display: grid; gap: 14px; }
+  .g-kpi { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+  .g-2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; min-width: 0; }
+  .card h3 { font-size: 16px; margin-bottom: 4px; }
+  .card .sub { color: var(--text-muted); font-size: 12.5px; margin-bottom: 12px; line-height: 1.45; }
+  .section-title { font-size: 19px; margin: 26px 0 12px; }
+  .muted { color: var(--text-muted); }
+  .faint { color: var(--text-faint); font-size: 12px; }
+
+  .kpi { cursor: default; }
+  .kpi .label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+  .kpi .value { font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: 600; margin: 6px 0 4px; line-height: 1; }
+  .kpi .delta { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+  .kpi .delta.up { color: var(--good); } .kpi .delta.down { color: var(--warning); }
+  .kpi.alert { border-color: var(--warning); }
+  .kpi.alert .value { color: var(--warning); }
+  .kpi.link { cursor: pointer; } .kpi.link:hover { border-color: var(--teal); }
+
+  .btn { border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-sm);
+    padding: 7px 12px; font-weight: 600; cursor: pointer; transition: border-color .15s var(--ease); }
+  .btn:hover { border-color: var(--teal); }
+  .btn-primary { background: var(--teal); border-color: var(--teal); color: #fff; }
+  .btn-primary:hover { background: var(--teal-pressed); }
+  .btn:disabled { opacity: .55; cursor: default; }
+  select, input[type=text], input[type=search], input[type=email] {
+    border: 1px solid var(--border); background: var(--card); border-radius: var(--radius-sm); padding: 7px 10px; }
+  input:focus, select:focus, button:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; }
+
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { border: 1px solid var(--border); background: var(--card); border-radius: 999px; padding: 5px 11px;
+    font-size: 12.5px; font-weight: 600; cursor: pointer; color: var(--text-soft); }
+  .chip[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: #fff; }
+
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+  .toolbar .grow { flex: 1; min-width: 160px; }
+
+  .tbl-wrap { overflow-x: auto; border: 1px solid var(--hairline); border-radius: var(--radius-sm); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--text-muted); padding: 9px 10px; border-bottom: 1px solid var(--border); background: var(--bg);
+    cursor: pointer; user-select: none; white-space: nowrap; position: sticky; top: 0; }
+  th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  th .arrow { color: var(--teal); margin-left: 3px; }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  tbody tr:hover td { background: var(--teal-faint); }
+  td.title { min-width: 240px; max-width: 460px; }
+  td.wrap { white-space: normal; max-width: 420px; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 600;
+    background: var(--hairline); color: var(--text-soft); white-space: nowrap; }
+  .pill.good { background: var(--teal-faint); color: var(--teal); }
+  .pill.bad { background: var(--warning-faint); color: var(--warning); }
+  .more { margin-top: 10px; display: flex; gap: 10px; align-items: center; }
+
+  .bars { display: grid; gap: 7px; }
+  .bar-row { display: grid; grid-template-columns: minmax(90px, 38%) 1fr 56px; gap: 10px; align-items: center; font-size: 13px; }
+  .bar-row .bl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-soft); }
+  .bar-track { height: 10px; border-radius: 0 4px 4px 0; position: relative; }
+  .bar-fill { height: 100%; border-radius: 0 4px 4px 0; background: var(--teal); min-width: 2px; }
+  .bar-row .bn { text-align: right; font-variant-numeric: tabular-nums; color: var(--text); font-weight: 600; }
+  .bar-row:hover .bl { color: var(--text); }
+
+  .chart { position: relative; width: 100%; }
+  .chart svg { display: block; width: 100%; overflow: visible; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-soft); margin-bottom: 8px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  .legend span.off { opacity: .4; }
+  .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+  .tip { position: absolute; pointer-events: none; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 8px 10px; font-size: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.12);
+    z-index: 5; min-width: 130px; white-space: nowrap; }
+  .tip b { display: block; margin-bottom: 4px; }
+  .tip div { display: flex; justify-content: space-between; gap: 14px; }
+  .tip i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; margin-right: 6px; }
+
+  .funnel-row { display: grid; grid-template-columns: 150px 1fr 120px; gap: 12px; align-items: center; margin-bottom: 8px; font-size: 13px; }
+  .funnel-bar { height: 26px; background: var(--teal); border-radius: 0 4px 4px 0; min-width: 2px; }
+  .funnel-row .drop { color: var(--text-muted); font-size: 12px; text-align: right; }
+
+  .heat td { text-align: center; font-variant-numeric: tabular-nums; font-size: 12px; min-width: 48px; }
+  .heat td.lbl { text-align: left; white-space: nowrap; }
+
+  .login { max-width: 400px; margin: 70px auto; }
+  .login label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 12px; }
+  .login input { width: 100%; margin-top: 6px; padding: 10px 12px; font-size: 15px; }
+  .err { margin-top: 12px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--warning-faint);
+    color: var(--warning); font-size: 13px; }
+  .empty { color: var(--text-muted); padding: 22px; text-align: center; font-size: 13px; }
+  .loading { color: var(--text-muted); padding: 40px; text-align: center; }
+  .note { font-size: 12px; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+
+  @media (max-width: 640px) {
+    .bar-row { grid-template-columns: 34% 1fr 46px; }
+    .funnel-row { grid-template-columns: 100px 1fr 74px; }
+    .kpi .value { font-size: 24px; }
+    .g-kpi { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .kpi { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  "use strict";
+
+  var API = "https://roundsapp.onrender.com";
+  if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+    var override = new URLSearchParams(location.search).get("api");
+    if (override) API = override;
+  }
+  var TOKEN_KEY = "rounds_admin_token";
+  var root = document.getElementById("root");
+  var token = null;
+  try { token = sessionStorage.getItem(TOKEN_KEY) || sessionStorage.getItem("rounds_beta_admin_token"); } catch (e) {}
+
+  var TABS = [
+    ["overview", "Overview"], ["papers", "Search & papers"], ["content", "Content"],
+    ["access", "Access"], ["growth", "Growth"], ["feedback", "Feedback"], ["errors", "Errors"]
+  ];
+  var RANGES = [[7, "7 days"], [30, "30 days"], [90, "90 days"], [365, "12 months"]];
+  var state = { tab: "overview", days: 30, cache: {}, openErrors: 0 };
+  var SERIES = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)", "var(--s6)", "var(--s7)", "var(--s8)"];
+
+  // ---------------------------------------------------------------- helpers
+  function el(tag, attrs, children) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "class") n.className = attrs[k];
+      else if (k === "html") n.innerHTML = attrs[k];
+      else if (k === "text") n.textContent = attrs[k];
+      else if (k.indexOf("on") === 0) n.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] !== null && attrs[k] !== undefined) n.setAttribute(k, attrs[k]);
+    });
+    (children || []).forEach(function (c) { if (c) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function esc(s) {
+    return String(s === null || s === undefined ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+  function num(n) { return n === null || n === undefined ? "–" : Number(n).toLocaleString(); }
+  function pct(r) { return r === null || r === undefined ? "–" : Math.round(r * 100) + "%"; }
+  function ratio(a, b) { return b ? a / b : null; }
+  function ms(n) { return n === null || n === undefined ? "–" : (n >= 1000 ? (n / 1000).toFixed(1) + " s" : Math.round(n) + " ms"); }
+  function when(iso) {
+    if (!iso) return "–";
+    var d = new Date(iso);
+    if (isNaN(d)) return iso;
+    var diff = (Date.now() - d) / 60000;
+    if (diff < 60) return Math.max(1, Math.round(diff)) + " min ago";
+    if (diff < 1440) return Math.round(diff / 60) + " h ago";
+    if (diff < 10080) return Math.round(diff / 1440) + " d ago";
+    return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  }
+  function shortDate(d) {
+    var x = new Date(d + (d.length === 10 ? "T00:00:00" : ""));
+    return isNaN(x) ? d : x.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  }
+  var LABELS = {
+    search: "Search", digest: "Rounds digest", library: "Library", reader: "Reader", open: "Read tap",
+    doi: "DOI", title: "Title", url: "Link", author: "Author", scan: "Scan",
+    success: "Found", not_found: "No full text", unresolvable: "Not identified", timeout: "Timed out",
+    libkey: "LibKey", proxy: "Library proxy", mock: "Mock", none: "None",
+    pdf: "PDF", html: "Webpage", request: "Request", options: "Options", browzine: "BrowZine",
+    essential: "Key reading", notable: "Worth a look", background: "Background", unscored: "Unscored",
+    peer_reviewed_literature: "Literature", society_update: "Society", industry_update: "Industry",
+    regulatory_update: "Regulatory", surgical_technique_video: "Surgical video", cme_opportunity: "CME",
+    provincial_news: "Provincial news",
+    wrong_paper: "Wrong paper", wont_open: "Wouldn't open", too_slow: "Too slow", other: "Something else",
+    no_access: "Couldn't access full text", wrong_article: "Right topic, wrong article",
+    not_relevant: "Not relevant", nothing_new: "Nothing new", too_little: "Too little content",
+    too_large: "Over 50 MB", timed_out: "Timed out", non_pdf: "Publisher returned a webpage",
+    page_copy_failed: "Page copy failed", files_write_failed: "Couldn't write to Files",
+    surgeon: "Surgeon", resident: "Resident", medical_student: "Medical student", researcher: "Researcher",
+    administrator: "Administrator", read: "Open and read", save: "Save to library"
+  };
+  function label(k) { return k === null || k === undefined || k === "" ? "–" : (LABELS[k] || k); }
+
+  function api(path, opts) {
+    opts = opts || {};
+    var headers = { "Content-Type": "application/json" };
+    if (token) headers.Authorization = "Bearer " + token;
+    return fetch(API + path, { method: opts.method || "GET", headers: headers,
+      body: opts.body ? JSON.stringify(opts.body) : undefined })
+      .then(function (res) {
+        return res.text().then(function (text) {
+          var data = null; try { data = text ? JSON.parse(text) : null; } catch (e) {}
+          if (!res.ok) {
+            var msg = (data && data.detail) || ("Request failed (" + res.status + ")");
+            var err = new Error(typeof msg === "string" ? msg : "Request failed");
+            err.status = res.status; throw err;
+          }
+          return data;
+        });
+      });
+  }
+  function load(path) {
+    var key = path;
+    if (!state.cache[key]) state.cache[key] = api(path).catch(function (e) { delete state.cache[key]; throw e; });
+    return state.cache[key];
+  }
+  function csvDownload(name, columns, rows) {
+    var lines = [columns.map(function (c) { return c.label; }).join(",")];
+    rows.forEach(function (r) {
+      lines.push(columns.map(function (c) {
+        var v = c.csv ? c.csv(r) : r[c.key];
+        v = v === null || v === undefined ? "" : String(v);
+        return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+      }).join(","));
+    });
+    var blob = new Blob([lines.join("\n")], { type: "text/csv" });
+    var a = el("a", { href: URL.createObjectURL(blob), download: name + ".csv" });
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  // ---------------------------------------------------------- components
+  function card(title, sub, body) {
+    var c = el("div", { class: "card" });
+    if (title) c.appendChild(el("h3", { text: title }));
+    if (sub) c.appendChild(el("div", { class: "sub", text: sub }));
+    if (body) c.appendChild(body);
+    return c;
+  }
+
+  function kpi(labelText, value, prev, opts) {
+    opts = opts || {};
+    var c = el("div", { class: "card kpi" + (opts.alert ? " alert" : "") + (opts.onclick ? " link" : ""),
+      onclick: opts.onclick || null, title: opts.hint || "" });
+    c.appendChild(el("div", { class: "label", text: labelText }));
+    c.appendChild(el("div", { class: "value", text: opts.format ? opts.format(value) : num(value) }));
+    if (prev !== undefined && prev !== null && value !== null && value !== undefined) {
+      var diff = value - prev, cls = "delta";
+      var good = opts.lowerIsBetter ? diff < 0 : diff > 0;
+      if (diff !== 0) cls += good ? " up" : " down";
+      var txt = opts.format === pct
+        ? (diff >= 0 ? "+" : "") + Math.round(diff * 100) + " pts"
+        : (diff >= 0 ? "+" : "") + num(diff) + (prev ? " (" + (diff >= 0 ? "+" : "") + Math.round(diff / prev * 100) + "%)" : "");
+      c.appendChild(el("div", { class: cls, text: txt + " vs previous" }));
+    } else if (opts.note) {
+      c.appendChild(el("div", { class: "delta", text: opts.note }));
+    }
+    return c;
+  }
+
+  // Horizontal bar list. Direct numeric labels, so no tooltip is needed to read a value.
+  function barList(rows, opts) {
+    opts = opts || {};
+    var wrap = el("div", { class: "bars" });
+    if (!rows.length) return el("div", { class: "empty", text: opts.empty || "Nothing in this period." });
+    var max = Math.max.apply(null, rows.map(function (r) { return r.value; })) || 1;
+    rows.forEach(function (r) {
+      var row = el("div", { class: "bar-row", title: r.title || (r.label + ": " + num(r.value)) });
+      row.appendChild(el("div", { class: "bl", text: r.label }));
+      var track = el("div", { class: "bar-track" });
+      track.appendChild(el("div", { class: "bar-fill", style: "width:" + (r.value / max * 100) + "%" +
+        (r.color ? ";background:" + r.color : "") }));
+      row.appendChild(track);
+      row.appendChild(el("div", { class: "bn", text: opts.format ? opts.format(r.value, r) : num(r.value) }));
+      wrap.appendChild(row);
+    });
+    return wrap;
+  }
+
+  // Line chart with toggleable legend and a crosshair tooltip. One y-axis only.
+  function lineChart(data, series, opts) {
+    opts = opts || {};
+    var box = el("div", { class: "chart" });
+    var hidden = {};
+    var legend = el("div", { class: "legend" });
+    if (series.length > 1) {
+      series.forEach(function (s) {
+        var item = el("span", { role: "button", tabindex: "0" }, [el("i", { style: "background:" + s.color }), s.label]);
+        item.addEventListener("click", function () {
+          hidden[s.key] = !hidden[s.key]; item.classList.toggle("off", !!hidden[s.key]); draw();
+        });
+        legend.appendChild(item);
+      });
+      box.appendChild(legend);
+    }
+    var holder = el("div", { style: "position:relative" });
+    box.appendChild(holder);
+    var tip = el("div", { class: "tip", style: "display:none" });
+    holder.appendChild(tip);
+    var H = opts.height || 200, P = { t: 10, r: 12, b: 26, l: 40 };
+
+    function draw() {
+      var W = Math.max(280, holder.clientWidth || 600);
+      var shown = series.filter(function (s) { return !hidden[s.key]; });
+      var max = 0;
+      data.forEach(function (d) { shown.forEach(function (s) { max = Math.max(max, d[s.key] || 0); }); });
+      max = niceMax(max);
+      var x = function (i) { return P.l + (data.length < 2 ? 0 : i * (W - P.l - P.r) / (data.length - 1)); };
+      var y = function (v) { return P.t + (H - P.t - P.b) * (1 - v / max); };
+      var svg = '<svg viewBox="0 0 ' + W + " " + H + '" height="' + H + '" role="img" aria-label="' + esc(opts.title || "Trend") + '">';
+      for (var g = 0; g <= 5; g++) {
+        var gv = max * g / 5, gy = y(gv);
+        svg += '<line x1="' + P.l + '" x2="' + (W - P.r) + '" y1="' + gy + '" y2="' + gy + '" stroke="var(' + (g ? "--grid" : "--axis") + ')" stroke-width="1"/>';
+        svg += '<text x="' + (P.l - 8) + '" y="' + (gy + 4) + '" text-anchor="end" font-size="11" fill="var(--text-muted)">' + num(Math.round(gv)) + "</text>";
+      }
+      var step = Math.max(1, Math.ceil(data.length / Math.floor((W - P.l) / 70)));
+      data.forEach(function (d, i) {
+        if (i % step === 0 || i === data.length - 1) {
+          svg += '<text x="' + x(i) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="11" fill="var(--text-muted)">' + esc(opts.xLabel ? opts.xLabel(d) : shortDate(d.date)) + "</text>";
+        }
+      });
+      shown.forEach(function (s) {
+        var pts = data.map(function (d, i) { return x(i).toFixed(1) + "," + y(d[s.key] || 0).toFixed(1); });
+        svg += '<polyline fill="none" stroke="' + s.color + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="' + pts.join(" ") + '"/>';
+      });
+      svg += '<line class="xh" x1="0" x2="0" y1="' + P.t + '" y2="' + (H - P.b) + '" stroke="var(--axis)" stroke-width="1" style="display:none"/>';
+      shown.forEach(function (s) { svg += '<circle class="dot" data-k="' + s.key + '" r="4" fill="' + s.color + '" stroke="var(--card)" stroke-width="2" style="display:none"/>'; });
+      svg += '<rect x="' + P.l + '" y="0" width="' + (W - P.l - P.r) + '" height="' + H + '" fill="transparent" class="hit"/></svg>';
+      holder.innerHTML = svg; holder.appendChild(tip);
+      var svgEl = holder.querySelector("svg"), hit = holder.querySelector(".hit"), xh = holder.querySelector(".xh");
+      function move(ev) {
+        var rect = svgEl.getBoundingClientRect();
+        var cx = (ev.touches ? ev.touches[0].clientX : ev.clientX) - rect.left;
+        var i = data.length < 2 ? 0 : Math.round((cx - P.l) / ((W - P.l - P.r) / (data.length - 1)));
+        i = Math.max(0, Math.min(data.length - 1, i));
+        var d = data[i], px = x(i);
+        xh.setAttribute("x1", px); xh.setAttribute("x2", px); xh.style.display = "";
+        holder.querySelectorAll(".dot").forEach(function (c) {
+          c.setAttribute("cx", px); c.setAttribute("cy", y(d[c.getAttribute("data-k")] || 0)); c.style.display = "";
+        });
+        tip.innerHTML = "<b>" + esc(opts.xLabel ? opts.xLabel(d) : shortDate(d.date)) + "</b>" + shown.map(function (s) {
+          return '<div><span><i style="background:' + s.color + '"></i>' + esc(s.label) + "</span><span>" + num(d[s.key] || 0) + "</span></div>";
+        }).join("");
+        tip.style.display = "";
+        var left = px + 14; if (left + 170 > W) left = px - 180;
+        tip.style.left = left + "px"; tip.style.top = "8px";
+      }
+      function leave() { tip.style.display = "none"; xh.style.display = "none";
+        holder.querySelectorAll(".dot").forEach(function (c) { c.style.display = "none"; }); }
+      hit.addEventListener("mousemove", move); hit.addEventListener("touchmove", move, { passive: true });
+      hit.addEventListener("mouseleave", leave); hit.addEventListener("touchend", leave);
+    }
+    requestAnimationFrame(draw);
+    window.addEventListener("resize", draw);
+    return box;
+  }
+
+  // Stacked columns per day (content volume by category).
+  function stackedColumns(data, keys, opts) {
+    opts = opts || {};
+    var box = el("div", { class: "chart" });
+    var legend = el("div", { class: "legend" });
+    keys.forEach(function (k, i) { legend.appendChild(el("span", {}, [el("i", { style: "background:" + SERIES[i % 8] }), label(k)])); });
+    box.appendChild(legend);
+    var holder = el("div", { style: "position:relative" });
+    box.appendChild(holder);
+    var tip = el("div", { class: "tip", style: "display:none" });
+    var H = 220, P = { t: 10, r: 8, b: 26, l: 40 };
+    function draw() {
+      var W = Math.max(280, holder.clientWidth || 600);
+      var max = niceMax(Math.max.apply(null, data.map(function (d) { return d.total; }).concat([1])));
+      var bw = (W - P.l - P.r) / data.length, inner = Math.max(2, bw - 3);
+      var y = function (v) { return (H - P.t - P.b) * v / max; };
+      var svg = '<svg viewBox="0 0 ' + W + " " + H + '" height="' + H + '" role="img" aria-label="Items ingested per day">';
+      for (var g = 0; g <= 5; g++) {
+        var gy = H - P.b - y(max * g / 5);
+        svg += '<line x1="' + P.l + '" x2="' + (W - P.r) + '" y1="' + gy + '" y2="' + gy + '" stroke="var(' + (g ? "--grid" : "--axis") + ')"/>';
+        svg += '<text x="' + (P.l - 8) + '" y="' + (gy + 4) + '" text-anchor="end" font-size="11" fill="var(--text-muted)">' + num(Math.round(max * g / 5)) + "</text>";
+      }
+      var step = Math.max(1, Math.ceil(data.length / Math.floor((W - P.l) / 64)));
+      data.forEach(function (d, i) {
+        var x0 = P.l + i * bw + 1.5, base = H - P.b;
+        keys.forEach(function (k, ki) {
+          var v = d.byCategory[k] || 0; if (!v) return;
+          var h = y(v);
+          svg += '<rect x="' + x0 + '" y="' + (base - h + 1) + '" width="' + inner + '" height="' + Math.max(0, h - 1) + '" fill="' + SERIES[ki % 8] + '"/>';
+          base -= h;
+        });
+        if (!d.total) svg += '<rect x="' + x0 + '" y="' + (H - P.b - 3) + '" width="' + inner + '" height="3" fill="var(--warning)"/>';
+        svg += '<rect class="hb" data-i="' + i + '" x="' + (P.l + i * bw) + '" y="0" width="' + bw + '" height="' + H + '" fill="transparent"/>';
+        if (i % step === 0) svg += '<text x="' + (x0 + inner / 2) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="11" fill="var(--text-muted)">' + esc(shortDate(d.date)) + "</text>";
+      });
+      holder.innerHTML = svg + "</svg>"; holder.appendChild(tip);
+      holder.querySelectorAll(".hb").forEach(function (r) {
+        r.addEventListener("mouseenter", function () {
+          var d = data[+r.getAttribute("data-i")];
+          tip.innerHTML = "<b>" + esc(shortDate(d.date)) + " · " + num(d.total) + " items</b>" + (d.total ? keys.filter(function (k) { return d.byCategory[k]; }).map(function (k) {
+            return '<div><span><i style="background:' + SERIES[keys.indexOf(k) % 8] + '"></i>' + esc(label(k)) + "</span><span>" + num(d.byCategory[k]) + "</span></div>";
+          }).join("") : '<div>No items ingested</div>');
+          var left = +r.getAttribute("x") + bw + 6; if (left + 180 > W) left = +r.getAttribute("x") - 186;
+          tip.style.left = left + "px"; tip.style.top = "8px"; tip.style.display = "";
+        });
+        r.addEventListener("mouseleave", function () { tip.style.display = "none"; });
+      });
+    }
+    requestAnimationFrame(draw);
+    window.addEventListener("resize", draw);
+    return box;
+  }
+
+  function niceMax(v) {
+    if (v <= 5) return 5;
+    var p = Math.pow(10, Math.floor(Math.log10(v))), m = v / p;
+    return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p;
+  }
+
+  // Sortable, searchable table with CSV export and progressive "show more".
+  function dataTable(columns, rows, opts) {
+    opts = opts || {};
+    var wrap = el("div");
+    var allColumns = columns;
+    columns = columns.filter(function (c) { return !c.csvOnly; });
+    var sortKey = opts.sort || null, sortDir = opts.sortDir || -1, query = "", limit = opts.pageSize || 25;
+    var filters = opts.filters || [];
+    var active = {};
+    var bar = el("div", { class: "toolbar" });
+    if (opts.search !== false) {
+      var q = el("input", { type: "search", class: "grow", placeholder: opts.placeholder || "Filter rows", "aria-label": "Filter rows" });
+      q.addEventListener("input", function () { query = q.value.toLowerCase(); limit = opts.pageSize || 25; render(); });
+      bar.appendChild(q);
+    }
+    filters.forEach(function (f) {
+      var values = {};
+      rows.forEach(function (r) { var v = f.value(r); if (v !== null && v !== undefined && v !== "") values[v] = true; });
+      var sel = el("select", { "aria-label": f.label });
+      sel.appendChild(el("option", { value: "", text: "All " + f.label.toLowerCase() }));
+      Object.keys(values).sort().forEach(function (v) { sel.appendChild(el("option", { value: v, text: f.display ? f.display(v) : label(v) })); });
+      sel.addEventListener("change", function () { active[f.label] = sel.value; render(); });
+      bar.appendChild(sel);
+    });
+    var csvBtn = el("button", { class: "btn", type: "button", text: "Export CSV" });
+    bar.appendChild(csvBtn);
+    wrap.appendChild(bar);
+    var tw = el("div", { class: "tbl-wrap" }); wrap.appendChild(tw);
+    var more = el("div", { class: "more" }); wrap.appendChild(more);
+
+    function visible() {
+      var out = rows.filter(function (r) {
+        for (var i = 0; i < filters.length; i++) {
+          var want = active[filters[i].label];
+          if (want && String(filters[i].value(r)) !== want) return false;
+        }
+        if (!query) return true;
+        return columns.some(function (c) {
+          var v = c.csv ? c.csv(r) : r[c.key];
+          return v !== null && v !== undefined && String(v).toLowerCase().indexOf(query) >= 0;
+        });
+      });
+      if (sortKey) {
+        var col = columns.filter(function (c) { return c.key === sortKey; })[0];
+        var get = col && col.sortValue ? col.sortValue : function (r) { return r[sortKey]; };
+        out = out.slice().sort(function (a, b) {
+          var x = get(a), y = get(b);
+          if (x === y) return 0; if (x === null || x === undefined) return 1; if (y === null || y === undefined) return -1;
+          return (x > y ? 1 : -1) * sortDir;
+        });
+      }
+      return out;
+    }
+    function render() {
+      var list = visible();
+      if (opts.onFilter) opts.onFilter(list);
+      var html = "<table><thead><tr>" + columns.map(function (c) {
+        return '<th data-k="' + c.key + '" class="' + (c.num ? "num" : "") + '">' + esc(c.label) +
+          (sortKey === c.key ? '<span class="arrow">' + (sortDir > 0 ? "↑" : "↓") + "</span>" : "") + "</th>";
+      }).join("") + "</tr></thead><tbody>";
+      if (!list.length) html += '<tr><td colspan="' + columns.length + '"><div class="empty">' + esc(opts.empty || "No rows match.") + "</div></td></tr>";
+      list.slice(0, limit).forEach(function (r) {
+        html += "<tr>" + columns.map(function (c) {
+          var v = c.render ? c.render(r) : esc(c.fmt ? c.fmt(r[c.key], r) : (r[c.key] === null || r[c.key] === undefined ? "–" : r[c.key]));
+          return '<td class="' + (c.num ? "num " : "") + (c.cls || "") + '">' + v + "</td>";
+        }).join("") + "</tr>";
+      });
+      tw.innerHTML = html + "</tbody></table>";
+      tw.querySelectorAll("th").forEach(function (th) {
+        th.addEventListener("click", function () {
+          var k = th.getAttribute("data-k");
+          if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = -1; }
+          render();
+        });
+      });
+      if (opts.afterRender) opts.afterRender(tw, list);
+      more.innerHTML = "";
+      more.appendChild(el("span", { class: "faint", text: "Showing " + Math.min(limit, list.length) + " of " + list.length }));
+      if (list.length > limit) more.appendChild(el("button", { class: "btn", type: "button", text: "Show more",
+        onclick: function () { limit += 50; render(); } }));
+    }
+    csvBtn.addEventListener("click", function () { csvDownload(opts.csvName || "rounds-export", allColumns, visible()); });
+    render();
+    wrap.rerender = render;
+    return wrap;
+  }
+
+  function chips(options, current, onChange) {
+    var row = el("div", { class: "chips", role: "group" });
+    options.forEach(function (o) {
+      row.appendChild(el("button", { class: "chip", type: "button", "aria-pressed": String(o[0] === current), text: o[1],
+        onclick: function () { onChange(o[0]); } }));
+    });
+    return row;
+  }
+
+  function doiLink(doi) {
+    return doi ? '<a href="https://doi.org/' + encodeURI(doi) + '" target="_blank" rel="noopener noreferrer">' + esc(doi) + "</a>" : "–";
+  }
+  function paperCell(r) {
+    return "<div>" + esc(r.title || "Untitled") + '</div><div class="faint">' + esc(r.journal || "") +
+      (r.journal && r.doi ? " · " : "") + doiLink(r.doi) + "</div>";
+  }
+
+  // ----------------------------------------------------------------- views
+  var views = {};
+
+  views.overview = function (stage) {
+    return load("/admin/insights/overview?days=" + state.days).then(function (o) {
+      state.openErrors = o.openErrors; renderTabs();
+      var c = o.current, p = o.previous;
+      var g = el("div", { class: "grid g-kpi" });
+      g.appendChild(kpi("Users", o.usersTotal, null, { note: num(c.signups) + " new in period" }));
+      g.appendChild(kpi("New sign-ups", c.signups, p.signups, { onclick: function () { go("growth"); } }));
+      g.appendChild(kpi("Active readers", c.activeUsers, p.activeUsers, { note: "DAU " + num(o.dau) + " · WAU " + num(o.wau) + " · MAU " + num(o.mau) }));
+      g.appendChild(kpi("Searches", c.searches, p.searches, { onclick: function () { go("papers"); } }));
+      g.appendChild(kpi("Search success", c.searchSuccessRate, p.searchSuccessRate, { format: pct }));
+      g.appendChild(kpi("Guest searches", c.guestSearches, p.guestSearches));
+      g.appendChild(kpi("Papers read", c.reads, p.reads, { onclick: function () { go("papers"); } }));
+      g.appendChild(kpi("Read failures", c.readFailures, p.readFailures, { lowerIsBetter: true, onclick: function () { go("access"); } }));
+      g.appendChild(kpi("Saved", c.saves, p.saves));
+      g.appendChild(kpi("PDFs saved", c.pdfSaves, p.pdfSaves));
+      g.appendChild(kpi("PDF failures", c.pdfFailures, p.pdfFailures, { lowerIsBetter: true, onclick: function () { go("access"); } }));
+      g.appendChild(kpi("Digest opens", c.digestOpens, p.digestOpens, { onclick: function () { go("content"); } }));
+      g.appendChild(kpi("Open errors", o.openErrors, null, { alert: o.openErrors > 0, note: num(c.errors) + " in period", onclick: function () { go("errors"); } }));
+      g.appendChild(kpi("Open paper reports", o.openReports, null, { alert: o.openReports > 0, note: num(c.flags) + " filed in period", onclick: function () { go("feedback"); } }));
+      stage.appendChild(g);
+
+      var two = el("div", { class: "grid g-2", style: "margin-top:14px" });
+      two.appendChild(card("Engagement", "Searches, reads and saves per day. Click a legend item to hide it.",
+        lineChart(o.series, [
+          { key: "searches", label: "Searches", color: "var(--s1)" },
+          { key: "reads", label: "Reads", color: "var(--s2)" },
+          { key: "saves", label: "Saves", color: "var(--s3)" }
+        ], { title: "Engagement per day" })));
+      two.appendChild(card("People", "Active readers and new sign-ups per day.",
+        lineChart(o.series, [
+          { key: "activeUsers", label: "Active readers", color: "var(--s1)" },
+          { key: "signups", label: "Sign-ups", color: "var(--s2)" }
+        ], { title: "People per day" })));
+      two.appendChild(card("Errors", "Server errors per day.",
+        lineChart(o.series, [{ key: "errors", label: "Errors", color: "var(--s8)" }], { title: "Errors per day" })));
+      stage.appendChild(two);
+      stage.appendChild(el("p", { class: "note", text: "Reads, saves and PDF events are recorded by app builds from 1.x onward that include usage events; older installs only appear in searches and sign-ups." }));
+    });
+  };
+
+  views.papers = function (stage) {
+    return load("/admin/insights/papers?days=" + state.days + "&limit=200").then(function (d) {
+      stage.appendChild(el("p", { class: "note", style: "margin-top:0", text: "Rounds never stores what someone typed. These are the papers searches resolved to and the papers people opened." }));
+      stage.appendChild(card("Top papers", "Ranked by reads, saves and PDFs. Click a column to sort.", dataTable([
+        { key: "title", label: "Paper", cls: "title", render: paperCell, csv: function (r) { return r.title; } },
+        { key: "doi", label: "DOI", csvOnly: true },
+        { key: "searches", label: "Searches", num: true },
+        { key: "reads", label: "Reads", num: true },
+        { key: "saves", label: "Saves", num: true },
+        { key: "pdfs", label: "PDFs", num: true },
+        { key: "digest", label: "Digest opens", num: true },
+        { key: "problems", label: "Problems", num: true, render: function (r) { return r.problems ? '<span class="pill bad">' + r.problems + "</span>" : "0"; } },
+        { key: "last_at", label: "Last", fmt: when }
+      ], d.topPapers, { sort: "reads", csvName: "rounds-top-papers", placeholder: "Filter by title, journal or DOI" })));
+
+      var two = el("div", { class: "grid g-2", style: "margin-top:14px" });
+      two.appendChild(card("Journals", "Searches and reads by journal.", barList(d.journals.slice(0, 15).map(function (j) {
+        return { label: j.journal, value: j.searches + j.reads, title: j.journal + ": " + j.searches + " searches, " + j.reads + " reads, " + j.papers + " papers" };
+      }))));
+      two.appendChild(card("Subspecialties read", "Tags on papers opened, saved, or opened from the digest.", barList(d.subspecialties.map(function (s) { return { label: s.name, value: s.c }; }))));
+
+      var byInput = {};
+      d.searchOutcomes.forEach(function (o) {
+        byInput[o.input] = byInput[o.input] || { total: 0, success: 0 };
+        byInput[o.input].total += o.c; if (o.status === "success") byInput[o.input].success += o.c;
+      });
+      two.appendChild(card("Search success by input", "Share of searches that reached full text, by what was entered.",
+        barList(Object.keys(byInput).map(function (k) {
+          return { label: label(k) + " (" + num(byInput[k].total) + ")", value: byInput[k].success / byInput[k].total * 100,
+            title: byInput[k].success + " of " + byInput[k].total };
+        }).sort(function (a, b) { return b.value - a.value; }), { format: function (v) { return Math.round(v) + "%"; } })));
+      var outcomes = {};
+      d.searchOutcomes.forEach(function (o) { outcomes[o.status] = (outcomes[o.status] || 0) + o.c; });
+      two.appendChild(card("Search outcomes", "Every search in the period.", barList(Object.keys(outcomes).map(function (k) {
+        return { label: label(k), value: outcomes[k], color: k === "success" ? "var(--teal)" : "var(--text-faint)" };
+      }).sort(function (a, b) { return b.value - a.value; }))));
+      two.appendChild(card("Where reads start", "The screen a paper was opened from.", barList(d.readOrigins.map(function (o) { return { label: label(o.origin), value: o.c }; }))));
+      stage.appendChild(two);
+
+      stage.appendChild(el("h2", { class: "section-title", text: "Resolver routes and speed" }));
+      stage.appendChild(card(null, "How each resolve reached a link, and how long it took (median and 90th percentile).", dataTable([
+        { key: "route", label: "Route", fmt: label },
+        { key: "link_type", label: "Link", fmt: label },
+        { key: "c", label: "Resolves", num: true },
+        { key: "p50", label: "Median", num: true, fmt: ms },
+        { key: "p90", label: "p90", num: true, fmt: ms }
+      ], d.routes, { sort: "c", search: false, csvName: "rounds-routes" })));
+
+      stage.appendChild(el("h2", { class: "section-title", text: "Recent paper activity" }));
+      stage.appendChild(card(null, "The latest 100 paper events, newest first.", dataTable([
+        { key: "created_at", label: "When", fmt: when, sortValue: function (r) { return r.created_at; } },
+        { key: "kind", label: "Event", render: function (r) { return '<span class="pill' + (/fail|flag/.test(r.kind) ? " bad" : "") + '">' + esc(eventLabel(r.kind)) + "</span>"; }, csv: function (r) { return r.kind; } },
+        { key: "title", label: "Paper", cls: "title", render: paperCell, csv: function (r) { return r.title; } }, { key: "doi", label: "DOI", csvOnly: true },
+        { key: "origin", label: "From", fmt: label },
+        { key: "institution", label: "School" }
+      ], d.recent, { sort: "created_at", csvName: "rounds-recent-paper-events",
+        filters: [{ label: "Events", value: function (r) { return r.kind; }, display: eventLabel }] })));
+    });
+  };
+  function eventLabel(k) {
+    return { resolved: "Searched", opened: "Read", load_failed: "Read failed", saved: "Saved", pdf_saved: "PDF saved",
+      pdf_failed: "PDF failed", digest_opened: "Digest open", flagged: "Flagged" }[k] || k;
+  }
+
+  views.content = function (stage) {
+    return Promise.all([
+      load("/admin/insights/content?days=" + Math.min(state.days, 90)),
+      load("/admin/insights/digest?days=" + state.days)
+    ]).then(function (out) {
+      var c = out[0], d = out[1];
+      var g = el("div", { class: "grid g-kpi" });
+      var ingested = c.perDay.reduce(function (s, x) { return s + x.total; }, 0);
+      g.appendChild(kpi("Items ingested", ingested, null, { note: "last " + c.days + " days · " + num(c.totalItems) + " total" }));
+      g.appendChild(kpi("Empty days", c.emptyDays.length, null, { alert: c.emptyDays.length > 0, note: c.emptyDays.length ? "latest " + shortDate(c.emptyDays[c.emptyDays.length - 1]) : "none" }));
+      g.appendChild(kpi("Literature scored", ratio(c.scoring.scored, c.scoring.literature), null, { format: pct, note: num(c.scoring.scored) + " of " + num(c.scoring.literature) }));
+      g.appendChild(kpi("Key reading", c.scoring.key_reading, null, { note: num(c.scoring.worth_a_look) + " worth a look · " + num(c.scoring.background) + " background" }));
+      var last = c.runs[0];
+      g.appendChild(kpi("Last pipeline run", null, null, { format: function () { return last ? shortDate(last.run_date) : "–"; },
+        alert: last && last.status !== "completed", note: last ? label(last.status) + " · " + when(last.completed_at || last.started_at) : "" }));
+      g.appendChild(kpi("Digest opens", d.byTier.reduce(function (s, x) { return s + x.c; }, 0), null, { note: num(d.readsFromDigest) + " went on to read" }));
+      stage.appendChild(g);
+
+      var cats = {};
+      c.perDay.forEach(function (x) { Object.keys(x.byCategory).forEach(function (k) { cats[k] = (cats[k] || 0) + x.byCategory[k]; }); });
+      var keys = Object.keys(cats).sort(function (a, b) { return cats[b] - cats[a]; });
+      stage.appendChild(el("div", { style: "margin-top:14px" }, [card("Ingested per day", "By content category. A red tick marks a day with nothing ingested.", stackedColumns(c.perDay, keys))]));
+
+      var two = el("div", { class: "grid g-2", style: "margin-top:14px" });
+      two.appendChild(card("Sources", "Items per source in the period, with the last day each source delivered.", dataTable([
+        { key: "source", label: "Source" }, { key: "c", label: "Items", num: true },
+        { key: "last_day", label: "Last item", fmt: function (v) { return v ? shortDate(v) : "–"; } }
+      ], c.sources, { sort: "c", pageSize: 12, csvName: "rounds-sources" })));
+      two.appendChild(card("Pipeline runs", "The last 30 runs.", dataTable([
+        { key: "run_date", label: "Run" },
+        { key: "status", label: "Status", render: function (r) { return '<span class="pill ' + (r.status === "completed" ? "good" : "bad") + '">' + esc(label(r.status)) + "</span>"; }, csv: function (r) { return r.status; } },
+        { key: "completed_at", label: "Finished", fmt: when }
+      ], c.runs, { sort: "run_date", search: false, pageSize: 10, csvName: "rounds-pipeline-runs" })));
+      two.appendChild(card("Digest opens by tier", "Which Rounds tiers readers open.", barList(d.byTier.map(function (t) { return { label: label(t.tier), value: t.c }; }))));
+      two.appendChild(card("Digest opens by section", "Which sections readers open.", barList(d.byCategory.map(function (t) { return { label: label(t.category), value: t.c }; }))));
+      stage.appendChild(two);
+      stage.appendChild(el("h2", { class: "section-title", text: "Most opened digest items" }));
+      stage.appendChild(card(null, null, dataTable([
+        { key: "title", label: "Item", cls: "title", render: paperCell, csv: function (r) { return r.title; } }, { key: "doi", label: "DOI", csvOnly: true },
+        { key: "tier", label: "Tier", fmt: label }, { key: "category", label: "Section", fmt: label },
+        { key: "opens", label: "Opens", num: true }, { key: "reads", label: "Reads", num: true }
+      ], d.topItems, { sort: "opens", csvName: "rounds-digest-items",
+        filters: [{ label: "Tiers", value: function (r) { return r.tier; } }, { label: "Sections", value: function (r) { return r.category; } }] })));
+    });
+  };
+
+  views.access = function (stage) {
+    return load("/admin/insights/access?days=" + state.days).then(function (a) {
+      function rate(ok, all) { var r = ratio(ok, all); return r === null ? "–" : pct(r); }
+      function rateCell(ok, all, warnBelow) {
+        var r = ratio(ok, all);
+        if (r === null) return '<span class="faint">–</span>';
+        return '<span class="pill ' + (r < warnBelow ? "bad" : "good") + '">' + pct(r) + "</span>";
+      }
+      var measures = [
+        { key: "resolves", label: "Resolves", num: true },
+        { key: "resolve_rate", label: "Resolve OK", num: true, sortValue: function (r) { return ratio(r.resolved_ok, r.resolves); },
+          render: function (r) { return rateCell(r.resolved_ok, r.resolves, 0.7); }, csv: function (r) { return rate(r.resolved_ok, r.resolves); } },
+        { key: "reads", label: "Reads", num: true },
+        { key: "read_rate", label: "Read OK", num: true, sortValue: function (r) { return ratio(r.reads, r.reads + r.read_failures); },
+          render: function (r) { return rateCell(r.reads, r.reads + r.read_failures, 0.85); }, csv: function (r) { return rate(r.reads, r.reads + r.read_failures); } },
+        { key: "pdf_rate", label: "PDF OK", num: true, sortValue: function (r) { return ratio(r.pdf_saved, r.pdf_saved + r.pdf_failed); },
+          render: function (r) { return rateCell(r.pdf_saved, r.pdf_saved + r.pdf_failed, 0.7) + ' <span class="faint">' + r.pdf_saved + "/" + (r.pdf_saved + r.pdf_failed) + "</span>"; },
+          csv: function (r) { return rate(r.pdf_saved, r.pdf_saved + r.pdf_failed); } },
+        { key: "flags", label: "Flags", num: true }
+      ];
+      stage.appendChild(card("By school", "Resolve, read and PDF success for each institution. Red is below target (70% resolve, 85% read, 70% PDF).",
+        dataTable([{ key: "school", label: "School" }].concat(measures), a.schools, { sort: "resolves", csvName: "rounds-access-by-school" })));
+      stage.appendChild(el("div", { style: "margin-top:14px" }, [card("By publisher", "Where the reader landed. Publisher hosts are recorded by the app after a read or a PDF attempt.",
+        dataTable([{ key: "host", label: "Publisher host" }].concat(measures.slice(2)), a.publishers, { sort: "reads", csvName: "rounds-access-by-publisher" }))]));
+      var two = el("div", { class: "grid g-2", style: "margin-top:14px" });
+      two.appendChild(card("Why papers were flagged", null, barList(a.flagReasons.map(function (r) { return { label: label(r.reason), value: r.c }; }))));
+      two.appendChild(card("Why PDF saves failed", null, barList(a.pdfFailureReasons.map(function (r) { return { label: label(r.reason), value: r.c }; }))));
+      stage.appendChild(two);
+    });
+  };
+
+  views.growth = function (stage) {
+    var weeks = Math.min(26, Math.max(4, Math.ceil(state.days / 7)));
+    return load("/admin/insights/growth?weeks=" + weeks).then(function (gr) {
+      var top = gr.funnel[0].users || 0;
+      var f = el("div");
+      gr.funnel.forEach(function (s, i) {
+        var prev = i ? gr.funnel[i - 1].users : s.users;
+        var row = el("div", { class: "funnel-row", title: s.label + ": " + s.users + " people" });
+        row.appendChild(el("div", { text: s.label }));
+        var track = el("div"); track.appendChild(el("div", { class: "funnel-bar", style: "width:" + (top ? s.users / top * 100 : 0) + "%" }));
+        row.appendChild(track);
+        row.appendChild(el("div", { class: "drop", html: "<b style='color:var(--text)'>" + num(s.users) + "</b> · " + (i ? pct(ratio(s.users, prev)) + " of prev" : "") }));
+        f.appendChild(row);
+      });
+      stage.appendChild(card("Activation funnel", "People who signed up in the last " + weeks + " weeks, and how many reached each step since.", f));
+      stage.appendChild(el("p", { class: "note", text: "Onboarding, read, save and PDF steps count only from app builds that send usage events." }));
+
+      var two = el("div", { class: "grid g-2", style: "margin-top:14px" });
+      two.appendChild(card("Weekly active readers", "Accounts that searched or read in each week (guests excluded).",
+        lineChart(gr.weeklyActive.map(function (w) { return { date: w.week, users: w.users }; }),
+          [{ key: "users", label: "Active readers", color: "var(--teal)" }], { title: "Weekly active readers", xLabel: function (d) { return "Wk " + shortDate(d.date); } })));
+      var heat = el("div", { class: "tbl-wrap" });
+      var maxCols = gr.cohorts.reduce(function (m, c) { return Math.max(m, c.retention.length); }, 0);
+      var html = '<table class="heat"><thead><tr><th>Sign-up week</th><th class="num">People</th>';
+      for (var k = 0; k < maxCols; k++) html += "<th>Wk " + k + "</th>";
+      html += "</tr></thead><tbody>";
+      gr.cohorts.slice().reverse().forEach(function (c) {
+        html += '<tr><td class="lbl">' + esc(shortDate(c.week)) + '</td><td class="num">' + num(c.size) + "</td>";
+        for (var k = 0; k < maxCols; k++) {
+          var v = c.retention[k];
+          if (v === undefined) { html += "<td></td>"; continue; }
+          if (v === null) { html += '<td class="faint">–</td>'; continue; }
+          html += '<td style="background:color-mix(in srgb, var(--teal) ' + Math.round(v * 85) + '%, transparent);color:' + (v > 0.5 ? "#fff" : "var(--text)") + '">' + pct(v) + "</td>";
+        }
+        html += "</tr>";
+      });
+      heat.innerHTML = html + "</tbody></table>";
+      two.appendChild(card("Retention by sign-up week", "Share of each week's sign-ups who were active N weeks later.", heat));
+      two.appendChild(card("Accounts by profession", null, barList(gr.professions.map(function (p) { return { label: label(p.profession), value: p.c }; }))));
+      two.appendChild(card("Accounts by school", null, barList(gr.schools.slice(0, 20).map(function (p) { return { label: p.school, value: p.c }; }))));
+      stage.appendChild(two);
+    });
+  };
+
+  var FEEDBACK_STREAMS = [["checkins", "Check-ins"], ["reports", "Paper reports"], ["tutorial", "Tutorial"], ["requests", "Requests"], ["beta", "Beta survey"], ["waitlist", "Waitlist"]];
+  state.stream = "checkins";
+  views.feedback = function (stage) {
+    return Promise.all([load("/admin/insights/feedback?days=" + state.days), load("/admin/waitlist")]).then(function (out) {
+      var fb = out[0];
+      fb.waitlist = out[1];
+      var counts = {};
+      FEEDBACK_STREAMS.forEach(function (s) { counts[s[0]] = fb[s[0]].length; });
+      stage.appendChild(chips(FEEDBACK_STREAMS.map(function (s) { return [s[0], s[1] + " (" + counts[s[0]] + ")"]; }), state.stream,
+        function (v) { state.stream = v; render(); }));
+      var body = el("div", { style: "margin-top:14px" });
+      stage.appendChild(body);
+      var who = [
+        { key: "profession", label: "Profession", fmt: label },
+        { key: "institution", label: "School" }
+      ];
+      var whoFilters = [
+        { label: "Professions", value: function (r) { return r.profession; } },
+        { label: "Schools", value: function (r) { return r.institution; }, display: function (v) { return v; } }
+      ];
+      var renderers = {
+        checkins: function () {
+          var summary = el("div", { class: "grid g-2" });
+          var chart = el("div"), reasons = el("div");
+          summary.appendChild(card("Was it useful?", "Yes rate by surface for the rows currently shown.", chart));
+          summary.appendChild(card("Why it fell short", "Reasons given on No.", reasons));
+          body.appendChild(summary);
+          body.appendChild(el("div", { style: "margin-top:14px" }, [card("All check-ins", null, dataTable([
+            { key: "at", label: "When", fmt: when, sortValue: function (r) { return r.at; } },
+            { key: "surface", label: "Surface", fmt: label },
+            { key: "positive", label: "Answer", render: function (r) { return '<span class="pill ' + (r.positive ? "good" : "bad") + '">' + (r.positive ? "Yes" : "No") + "</span>"; }, csv: function (r) { return r.positive ? "yes" : "no"; } },
+            { key: "reason", label: "Reason", fmt: label },
+            { key: "context", label: "Context" }
+          ].concat(who), fb.checkins, { sort: "at", csvName: "rounds-checkins",
+            filters: [
+              { label: "Surfaces", value: function (r) { return r.surface; } },
+              { label: "Answers", value: function (r) { return r.positive ? "yes" : "no"; }, display: function (v) { return v === "yes" ? "Yes" : "No"; } },
+              { label: "Reasons", value: function (r) { return r.reason; } }
+            ].concat(whoFilters),
+            onFilter: function (list) {
+              var by = {}, rs = {};
+              list.forEach(function (r) {
+                by[r.surface] = by[r.surface] || { y: 0, n: 0 };
+                by[r.surface][r.positive ? "y" : "n"]++;
+                if (!r.positive && r.reason) rs[r.reason] = (rs[r.reason] || 0) + 1;
+              });
+              chart.innerHTML = ""; reasons.innerHTML = "";
+              chart.appendChild(barList(Object.keys(by).map(function (s) {
+                var t = by[s].y + by[s].n;
+                return { label: label(s) + " (" + t + ")", value: by[s].y / t * 100, title: by[s].y + " yes, " + by[s].n + " no" };
+              }), { format: function (v) { return Math.round(v) + "%"; } }));
+              reasons.appendChild(barList(Object.keys(rs).map(function (k) { return { label: label(k), value: rs[k] }; })
+                .sort(function (a, b) { return b.value - a.value; }), { empty: "No reasons in this selection." }));
+            } }))]));
+        },
+        reports: function () {
+          var summary = el("div");
+          body.appendChild(card("Reasons", "For the rows currently shown.", summary));
+          body.appendChild(el("div", { style: "margin-top:14px" }, [card("Paper reports", "Resolve open reports from the app's Moderation screen.", dataTable([
+            { key: "at", label: "When", fmt: when, sortValue: function (r) { return r.at; } },
+            { key: "reason", label: "Reason", fmt: label },
+            { key: "title", label: "Paper", cls: "title", render: paperCell, csv: function (r) { return r.title; } }, { key: "doi", label: "DOI", csvOnly: true },
+            { key: "status", label: "Status", render: function (r) { return '<span class="pill ' + (r.status === "open" ? "bad" : "") + '">' + esc(r.status) + "</span>"; }, csv: function (r) { return r.status; } },
+            { key: "trace_id", label: "Trace" }
+          ].concat(who), fb.reports, { sort: "at", csvName: "rounds-paper-reports",
+            filters: [
+              { label: "Reasons", value: function (r) { return r.reason; } },
+              { label: "Statuses", value: function (r) { return r.status; }, display: function (v) { return v; } }
+            ].concat(whoFilters),
+            onFilter: function (list) {
+              var rs = {}; list.forEach(function (r) { rs[r.reason] = (rs[r.reason] || 0) + 1; });
+              summary.innerHTML = "";
+              summary.appendChild(barList(Object.keys(rs).map(function (k) { return { label: label(k), value: rs[k] }; }).sort(function (a, b) { return b.value - a.value; })));
+            } }))]));
+        },
+        tutorial: function () {
+          var summary = el("div");
+          body.appendChild(card("Worked rate by step", "For the rows currently shown.", summary));
+          body.appendChild(el("div", { style: "margin-top:14px" }, [card("Tutorial answers", null, dataTable([
+            { key: "at", label: "When", fmt: when, sortValue: function (r) { return r.at; } },
+            { key: "step", label: "Step", fmt: label },
+            { key: "worked", label: "Worked", render: function (r) { return '<span class="pill ' + (r.worked ? "good" : "bad") + '">' + (r.worked ? "Yes" : "No") + "</span>"; }, csv: function (r) { return r.worked ? "yes" : "no"; } },
+            { key: "note", label: "Note", cls: "wrap" },
+            { key: "name", label: "Tester" }
+          ].concat(who), fb.tutorial, { sort: "at", csvName: "rounds-tutorial-feedback",
+            filters: [
+              { label: "Steps", value: function (r) { return r.step; } },
+              { label: "Outcomes", value: function (r) { return r.worked ? "yes" : "no"; }, display: function (v) { return v === "yes" ? "Worked" : "Didn't work"; } }
+            ].concat(whoFilters),
+            onFilter: function (list) {
+              var by = {};
+              list.forEach(function (r) { by[r.step] = by[r.step] || { y: 0, n: 0 }; by[r.step][r.worked ? "y" : "n"]++; });
+              summary.innerHTML = "";
+              summary.appendChild(barList(Object.keys(by).map(function (s) {
+                var t = by[s].y + by[s].n; return { label: label(s) + " (" + t + ")", value: by[s].y / t * 100 };
+              }), { format: function (v) { return Math.round(v) + "%"; } }));
+            } }))]));
+        },
+        requests: function () {
+          body.appendChild(card("Schools and resources readers asked for", "Free text is allowed here by design: it names a school or a source, never a search.", dataTable([
+            { key: "at", label: "When", fmt: when, sortValue: function (r) { return r.at; } },
+            { key: "type", label: "Type", fmt: function (v) { return v === "school" ? "Missing school" : "Resource"; } },
+            { key: "name", label: "Name" },
+            { key: "url", label: "Link", render: function (r) { return r.url ? '<a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer">' + esc(r.url) + "</a>" : "–"; }, csv: function (r) { return r.url; } },
+            { key: "note", label: "Note", cls: "wrap" },
+            { key: "status", label: "Status" }
+          ].concat(who), fb.requests, { sort: "at", csvName: "rounds-requests",
+            filters: [{ label: "Types", value: function (r) { return r.type; }, display: function (v) { return v === "school" ? "Missing school" : "Resource"; } },
+              { label: "Statuses", value: function (r) { return r.status; }, display: function (v) { return v; } }] })));
+        },
+        waitlist: function () {
+          body.appendChild(card("Early-access waitlist", "Every signup from the getrounds.ca form, all time. Not accounts.", dataTable([
+            { key: "createdAt", label: "Joined", fmt: when, sortValue: function (r) { return r.createdAt; } },
+            { key: "email", label: "Email" },
+            { key: "source", label: "Source" }
+          ], fb.waitlist, { sort: "createdAt", csvName: "rounds-waitlist",
+            filters: [{ label: "Sources", value: function (r) { return r.source; }, display: function (v) { return v; } }] })));
+        },
+        beta: function () {
+          body.appendChild(card("Beta survey submissions", "Full answers and the per-question summary live in the beta console.", dataTable([
+            { key: "at", label: "Submitted", fmt: when, sortValue: function (r) { return r.at; } },
+            { key: "name", label: "Tester" },
+            { key: "variant", label: "Survey" },
+            { key: "duration_sec", label: "Time taken", num: true, fmt: function (v) { return v ? Math.round(v / 60) + " min" : "–"; } }
+          ], fb.beta, { sort: "at", csvName: "rounds-beta-submissions" })));
+          body.appendChild(el("p", { class: "note", html: 'Open the <a href="/beta/">beta console</a> for answers.' }));
+        }
+      };
+      function render() {
+        stage.querySelectorAll(".chip").forEach(function (b, i) { b.setAttribute("aria-pressed", String(FEEDBACK_STREAMS[i][0] === state.stream)); });
+        body.innerHTML = "";
+        renderers[state.stream]();
+      }
+      render();
+    });
+  };
+
+  views.errors = function (stage) {
+    var days = Math.min(state.days, 90);
+    return load("/admin/insights/errors?days=" + days).then(function (er) {
+      var open = er.rows.filter(function (r) { return !r.reviewed_at; });
+      state.openErrors = open.length; renderTabs();
+      var head = el("div", { class: "toolbar" });
+      head.appendChild(el("div", { class: "grow muted", text: num(open.length) + " open · " + num(er.rows.length) + " in the last " + days + " days" }));
+      var all = el("button", { class: "btn", type: "button", text: "Mark all reviewed", disabled: open.length ? null : "disabled" });
+      all.addEventListener("click", function () {
+        all.disabled = true;
+        api("/admin/errors/review-all", { method: "POST" }).then(refresh).catch(function (e) { all.disabled = false; alert(e.message); });
+      });
+      head.appendChild(all);
+      stage.appendChild(head);
+      stage.appendChild(card("Grouped", "One row per endpoint and status, so a single fault does not read as hundreds.", dataTable([
+        { key: "path", label: "Endpoint" }, { key: "status", label: "Status" },
+        { key: "c", label: "Count", num: true },
+        { key: "open", label: "Open", num: true, render: function (r) { return r.open ? '<span class="pill bad">' + r.open + "</span>" : "0"; }, csv: function (r) { return r.open; } },
+        { key: "last_at", label: "Last", fmt: when, sortValue: function (r) { return r.last_at; } },
+        { key: "sample", label: "Sample", cls: "wrap" }
+      ], er.groups, { sort: "open", csvName: "rounds-error-groups" })));
+      stage.appendChild(el("div", { style: "margin-top:14px" }, [card("Every error", "Reviewing removes a row from the open queue; it never deletes it.", dataTable([
+        { key: "at", label: "When", fmt: when, sortValue: function (r) { return r.at; } },
+        { key: "path", label: "Endpoint" }, { key: "status", label: "Status" },
+        { key: "detail", label: "Detail", cls: "wrap" },
+        { key: "reviewed_at", label: "Reviewed", render: function (r) {
+          return r.reviewed_at ? '<span class="pill good">Reviewed</span>' : '<button class="btn" type="button" data-review="' + esc(r.id) + '">Review</button>';
+        }, csv: function (r) { return r.reviewed_at || ""; } }
+      ], er.rows, { sort: "at", csvName: "rounds-errors",
+        filters: [
+          { label: "States", value: function (r) { return r.reviewed_at ? "reviewed" : "open"; }, display: function (v) { return v === "open" ? "Open" : "Reviewed"; } },
+          { label: "Endpoints", value: function (r) { return r.path; }, display: function (v) { return v; } }
+        ],
+        afterRender: function (tw) {
+          tw.querySelectorAll("[data-review]").forEach(function (b) {
+            b.addEventListener("click", function () {
+              b.disabled = true;
+              api("/admin/errors/" + encodeURIComponent(b.getAttribute("data-review")) + "/review", { method: "POST" })
+                .then(function () {
+                  var row = er.rows.filter(function (r) { return r.id === b.getAttribute("data-review"); })[0];
+                  if (row) row.reviewed_at = new Date().toISOString();
+                  b.outerHTML = '<span class="pill good">Reviewed</span>';
+                  state.openErrors = Math.max(0, state.openErrors - 1); renderTabs();
+                  delete state.cache["/admin/insights/overview?days=" + state.days];
+                }).catch(function (e) { b.disabled = false; alert(e.message); });
+            });
+          });
+        } }))]));
+    });
+  };
+
+  // ------------------------------------------------------------------ shell
+  var stage, tabsEl;
+  function go(tab) { state.tab = tab; location.hash = tab; renderTabs(); renderStage(); window.scrollTo(0, 0); }
+  function refresh() { state.cache = {}; renderStage(); }
+  function renderTabs() {
+    if (!tabsEl) return;
+    tabsEl.innerHTML = "";
+    TABS.forEach(function (t) {
+      var b = el("button", { role: "tab", type: "button", "aria-selected": String(state.tab === t[0]), onclick: function () { go(t[0]); } }, [t[1]]);
+      if (t[0] === "errors" && state.openErrors) b.appendChild(el("span", { class: "count", text: String(state.openErrors) }));
+      tabsEl.appendChild(b);
+    });
+  }
+  function renderStage() {
+    stage.innerHTML = '<div class="loading">Loading…</div>';
+    var holder = el("div");
+    views[state.tab](holder).then(function () {
+      stage.innerHTML = ""; stage.appendChild(holder);
+    }).catch(function (err) {
+      if (err.status === 401 || err.status === 403) {
+        try { sessionStorage.removeItem(TOKEN_KEY); } catch (e) {}
+        token = null;
+        renderLogin(err.status === 403 ? "That account is not an admin." : "Your session expired. Sign in again.");
+        return;
+      }
+      stage.innerHTML = "";
+      stage.appendChild(el("div", { class: "card" }, [el("div", { class: "err", style: "margin:0", text: err.message || "Could not load." }),
+        el("button", { class: "btn", type: "button", style: "margin-top:12px", text: "Try again", onclick: refresh })]));
+    });
+  }
+  function renderShell() {
+    root.innerHTML = "";
+    var top = el("header", { class: "top" });
+    var inner = el("div", { class: "top-inner" });
+    var row = el("div", { class: "top-row" });
+    row.appendChild(el("div", { class: "brand", html: "Rounds<small>Admin</small>" }));
+    var range = el("select", { "aria-label": "Date range" });
+    RANGES.forEach(function (r) { range.appendChild(el("option", { value: r[0], text: "Last " + r[1] })); });
+    range.value = String(state.days);
+    range.addEventListener("change", function () {
+      state.days = +range.value; try { localStorage.setItem("rounds_admin_days", range.value); } catch (e) {}
+      renderStage();
+    });
+    row.appendChild(range);
+    row.appendChild(el("button", { class: "btn", type: "button", text: "Refresh", onclick: refresh }));
+    row.appendChild(el("button", { class: "btn", type: "button", text: "Sign out", onclick: function () {
+      try { sessionStorage.removeItem(TOKEN_KEY); } catch (e) {}
+      token = null; state.cache = {}; renderLogin();
+    } }));
+    inner.appendChild(row);
+    tabsEl = el("nav", { class: "tabs", role: "tablist", "aria-label": "Sections" });
+    inner.appendChild(tabsEl);
+    top.appendChild(inner);
+    root.appendChild(top);
+    stage = el("main");
+    root.appendChild(stage);
+    renderTabs(); renderStage();
+  }
+
+  function renderLogin(message, prefill) {
+    root.innerHTML = "";
+    var c = el("div", { class: "card login" });
+    c.appendChild(el("div", { class: "brand", html: "Rounds<small>Admin</small>", style: "margin-bottom:6px" }));
+    c.appendChild(el("p", { class: "muted", text: "Enter the email on your Rounds admin account. We will send a six-digit code." }));
+    var form = el("form");
+    form.innerHTML = '<label>Email<input type="email" name="email" autocomplete="username" required></label>';
+    form.email.value = prefill || "";
+    var btn = el("button", { class: "btn btn-primary", type: "submit", style: "width:100%;margin-top:16px;padding:10px", text: "Send code" });
+    form.appendChild(btn);
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = form.email.value.trim();
+      btn.disabled = true; btn.textContent = "Sending…";
+      api("/beta/admin/request-code", { method: "POST", body: { email: email } })
+        .then(function () { renderCode(email); })
+        .catch(function (err) { btn.disabled = false; btn.textContent = "Send code"; showErr(c, err.message || "Could not send a code."); });
+    });
+    c.appendChild(form);
+    if (message) showErr(c, message);
+    root.appendChild(c);
+  }
+  function renderCode(email) {
+    root.innerHTML = "";
+    var c = el("div", { class: "card login" });
+    c.appendChild(el("h2", { text: "Check your email", style: "font-size:22px;margin-bottom:6px" }));
+    c.appendChild(el("p", { class: "muted", html: "If <strong>" + esc(email) + "</strong> is on an admin account, a code is on its way. It expires in half an hour." }));
+    var form = el("form");
+    form.innerHTML = '<label>Code<input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required style="letter-spacing:.3em;text-align:center;font-size:18px"></label>';
+    var btn = el("button", { class: "btn btn-primary", type: "submit", style: "width:100%;margin-top:16px;padding:10px", text: "Sign in" });
+    form.appendChild(btn);
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      btn.disabled = true; btn.textContent = "Signing in…";
+      api("/beta/admin/verify-code", { method: "POST", body: { email: email, code: form.code.value.trim() } })
+        .then(function (data) {
+          token = data.token;
+          try { sessionStorage.setItem(TOKEN_KEY, token); } catch (e) {}
+          renderShell();
+        })
+        .catch(function (err) { btn.disabled = false; btn.textContent = "Sign in"; showErr(c, err.message || "That code is not valid."); });
+    });
+    c.appendChild(form);
+    c.appendChild(el("button", { class: "btn", type: "button", style: "width:100%;margin-top:10px", text: "Use a different email", onclick: function () { renderLogin(null, email); } }));
+    root.appendChild(c);
+  }
+  function showErr(c, msg) {
+    var old = c.querySelector(".err"); if (old) old.remove();
+    c.appendChild(el("div", { class: "err", text: msg }));
+  }
+
+  var hashTab = location.hash.replace("#", "");
+  if (TABS.some(function (t) { return t[0] === hashTab; })) state.tab = hashTab;
+  try { var savedDays = +localStorage.getItem("rounds_admin_days"); if (savedDays) state.days = savedDays; } catch (e) {}
+  window.addEventListener("hashchange", function () {
+    var t = location.hash.replace("#", "");
+    if (token && t !== state.tab && TABS.some(function (x) { return x[0] === t; })) { state.tab = t; renderTabs(); renderStage(); }
+  });
+  if (token) renderShell(); else renderLogin();
+})();
+</script>
+</body>
+</html>
